@@ -5,10 +5,6 @@ design_docs/
 *.pyc
 *.pyo
 
-# Ignore migrations on Django > 1.6, but not third party apps. Only ignore our apps.
-**/migrations/*
-!third_party/**/migrations/
-
 # Ignore any sqlite databases, as those will be development, and will change on each local system.
 sqlite/
 
