@@ -48,6 +48,11 @@ class Thread(models.Model):
 	def get_members(self):
 		return self.threadmember_set.all()
 
+	def add_members(self, account_id):
+		member = ThreadMember(account_id=account_id)
+		self.threadmember_set.append(member)
+		return member
+
 
 class ThreadMember(models.Model):
 	thread_id = models.ForeignKey(Thread, related_name="threadmember_thread_id", on_delete=models.CASCADE, null=False)

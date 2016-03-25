@@ -11,6 +11,14 @@ class Org(models.Model):
 	is_public = models.BooleanField(default=False)
 	description = models.TextField()
 
+	def get_member(self):
+		return self.OrgMember_set.all()
+
+	def add_members(self, account_id, is_owner=False, is_admin=False):
+		member = OrgMember(account_id=account_id, is_owner=is_owner, is_admin=is_admin)
+		self.OrgMember_set.append(member)
+		return member
+
 
 class OrgMember(models.Model):
 	org_id = models.ForeignKey(Org, on_delete=models.CASCADE, null=False)
