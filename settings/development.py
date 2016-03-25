@@ -6,6 +6,7 @@ DEBUG = True
 
 DEVELOPMENT = True
 
+DEFAULT_INDEX_TABLESPACE = "table"
 
 # Database
 DATABASES = {

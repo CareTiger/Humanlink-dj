@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
 import hashlib
-
+from werkzeug.security import generate_password_hash, check_password_hash
+from django.core import *
 
 from django.db import models
+from django.conf import settings
 
 
 class Account(models.Model):
@@ -21,17 +23,17 @@ class Account(models.Model):
     def password(self):
         return self._password
 
-    # def _set_password(self, raw):
-    #     salted = raw + configs['SECRET_KEY']
-    #     self._password = generate_password_hash(salted)
-    #
-    # def check_password(self, other):
-    #     salted = other + configs['SECRET_KEY']
-    #     return check_password_hash(self.password, salted)
-    #
-    # def email_hash(self):
-    #     salted = self.email + configs['SECRET_KEY']
-    #     return hashlib.md5(salted.encode('utf-8')).hexdigest()
+    def _set_password(self, raw):
+        salted = raw + settings.SECRET_KEY
+        self._password = generate_password_hash(salted)
+
+    def check_password(self, other):
+        salted = other + settings.SECRET_KEY
+        return check_password_hash(self.password, salted)
+
+    def email_hash(self):
+        salted = self.email + settings.SECRET_KEY
+        return hashlib.md5(salted.encode('utf-8')).hexdigest()
 
 
     def __str__(self):
