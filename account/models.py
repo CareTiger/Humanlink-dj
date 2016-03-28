@@ -21,7 +21,7 @@ class Account(models.Model):
 
 
     def password(self):
-        return self._password
+        return self.password
 
     def _set_password(self, raw):
         salted = raw + settings.SECRET_KEY
@@ -42,7 +42,6 @@ class Account(models.Model):
     def gravatar_url(self):
         g = 'https://secure.gravatar.com/avatar/{}?d=retro'
         return g.format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
-
 
 
 class CareGiver(models.Model):
