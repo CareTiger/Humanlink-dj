@@ -6,14 +6,15 @@ from django.core import *
 
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
-class Account(models.Model):
+class Account(User):
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    email = models.EmailField(max_length=255, null=True, blank=True, unique=True)
-    password = models.CharField(max_length=120, null=True)
+    email = User.email(max_length=255, null=True, blank=True, unique=True)
+    password = User.password(max_length=120, null=True)
     first = models.CharField(max_length=35, null=True, blank=True)
     last = models.CharField(max_length=35, null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
@@ -21,7 +22,7 @@ class Account(models.Model):
 
 
     def password(self):
-        return self._password
+        return self.password
 
     def _set_password(self, raw):
         salted = raw + settings.SECRET_KEY
