@@ -45,7 +45,6 @@ class Account(User):
         return g.format(hashlib.md5(self.email.encode('utf-8')).hexdigest())
 
 
-
 class CareGiver(models.Model):
     account = models.ForeignKey(Account)
     is_hireable = models.BooleanField(default=False)
