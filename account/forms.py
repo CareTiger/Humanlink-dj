@@ -59,3 +59,8 @@ class CareGiverInfo(forms.ModelForm):
     class Meta:
         model = CareGiver
         fields = ['is_hireable', 'location', 'about', 'certs']
+
+class Payload(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField()
+    token = forms.CharField()
