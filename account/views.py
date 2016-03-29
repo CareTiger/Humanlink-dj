@@ -1,15 +1,20 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from api_helpers import ComposeJsonResponse
 from account.models import Account, CareGiver
-from .forms import BasicInfo, CareGiverInfo
+from .forms import BasicInfo, CareGiverInfo, LoginForm
 
 # Create your views here.
 
 def index(request):
-    """Return Account Template...?"""
+    """ -Return Account Template...?"""
 
 def login(request):
     """ -Log in the user if credentials are valid """
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+    else:
+        form = LoginForm()
 
 def signup(request):
     """ -Register a new account with a new org."""
@@ -18,8 +23,9 @@ def accept_invite(request):
     """ -Create a new account and accept an org member invitation."""
 
 def invite(request, token):
+    """ -Retrieve an org member invitation information """
 
-
+@login_required
 def me(request):
     """ - Retrieve Current Account Information in JSON Format """
 
@@ -32,7 +38,7 @@ def me(request):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def update(request):
     """ - Update Account Information """
 
@@ -56,6 +62,7 @@ def update(request):
 
     return ComposeJsonResponse(200, "", context)
 
+@login_required
 def update_caregiver(request):
     """ -Updates Account's Caregiver Information. """
 
@@ -81,7 +88,7 @@ def update_caregiver(request):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def profile(request, account_id):
     """ -Retrieve Profile With Account ID """
 
@@ -92,7 +99,7 @@ def profile(request, account_id):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def caregiver_info(request, account_id):
     """ -Retrieve Caregiver Details for an Account """
 
