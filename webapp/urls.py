@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from . import views
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps.views import sitemap
 
@@ -12,6 +13,7 @@ admin.autodiscover()
 urlpatterns = [
 	url(r'^admin/filebrowser/', include('filebrowser.urls')),
 	url(r'^admin/', include(admin.site.urls)),
+	url(r'^login', views.login, name="login")
 ]
 
 if settings.DEVELOPMENT:

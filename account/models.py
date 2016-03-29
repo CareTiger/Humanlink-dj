@@ -17,7 +17,7 @@ class Account(User):
     password = User.password(max_length=120, null=True)
     first = models.CharField(max_length=35, null=True, blank=True)
     last = models.CharField(max_length=35, null=True, blank=True)
-    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    phone_number = User.phone(max_length=15, null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=20)
 
 
