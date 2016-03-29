@@ -1,29 +1,42 @@
 from django.shortcuts import render
 from api_helpers import ComposeJsonResponse
+from account.models import Account, CareGiver
 
 # Create your views here.
 
 def index(request):
     """Return Account Template...?"""
 
+
 def me(request):
     """ - Retrieve Current Account Information in JSON Format """
-    user = get_current_user(request)
+    user = request.user
+    account = Account.objects.get(email=user.email)
+    thread = Thread.objects.get(id=account.id)
 
-    return_data = {
+    context = {
         "user": user
     }
 
-    return ComposeJsonResponse(200, "", return_data)
+    return ComposeJsonResponse(200, "", context)
+
 
 def update(request):
     """ - Update Account Information """
 
+    user = request.user
+    account = Account.objects.get(email=user.email)
+
     if request.POST:
-        "Update"
+        cleaned_data = form.cleaned_data
+        account.first_name = cleaned_data['first_name']
+        account.last_name = cleaned_data['last_name']
+        account.phone = cleaned_data['phone']
+        account.save()
     else:
         pass
 
+    return ComposeJsonResponse(200, "", user)
 
 def update_caregiver(request):
     """Update Caregiver Information
@@ -39,6 +52,3 @@ def caregiver_info(request):
     """Retrieve Caregiver Details
        - Retrieve Caregiver Details Associated With the Specified Account
     """
-
-def get_current_user(request):
-    user = request.user
