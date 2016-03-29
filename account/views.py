@@ -27,7 +27,7 @@ def update(request):
     user = request.user
     account = Account.objects.get(email=user.email)
 
-    if request.POST:
+    if request.method == "POST":
         cleaned_data = form.cleaned_data
         account.first_name = cleaned_data['first_name']
         account.last_name = cleaned_data['last_name']

@@ -1,24 +1,33 @@
 from django.shortcuts import render
 from api_helpers import ComposeJsonResponse
+from message.models import Thread, ThreadMember
+
 
 @login_required
 def get_threads(request):
     """Get list of all the threads for the account."""
     user = get_current_user(request)
+    thread = Thread.objects.get()
 
-    #EXAMPLE
-    threads = Thread.objects.filter(account_id=request_id)
-
-    context = {"user": user}
+    context = {"user": user, "thread": thread}
 
     return ComposeJsonResponse(200, "", context)
+
 
 @login_required
 def new_thread(request):
     """Create a new thread."""
-    user = get_current_user(request)
+    thread = Thread()
 
-    context = {"user": user}
+    if request.method=="POST":
+        form = NewThread(data=request.POST)
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            thread.org_id = cleaned_data['org_id']
+            thread.save()
+
+    context = {"thread": thread}
 
     return ComposeJsonResponse(200, "", context)
 
@@ -26,22 +35,41 @@ def new_thread(request):
 @login_required
 def get_thread(thread_id):
     """Retrieve thread information."""
+    thread_id = ThreadMember.objects.get(thread_id=thread_id)
 
-    return json_response(thread)
+    context = {"thread_id": thread_id}
+    return ComposeJsonResponse(200, "", context)
 
 
 @login_required
-def update_thread(thread_id):
+def update_thread(request, thread_id):
     """Update thread information."""
+    thread = Thread()
 
-    return json_response(thread)
+    if request.method=="PUT":
+        form = UpdateThread(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+    context = {"thread": thread}
+    return ComposeJsonResponse(200, "", context)
 
 
 @login_required
-def send(thread_id):
+def send(request, thread_id):
     """Send a message to the thread."""
+    thread_id = ThreadMember.objects.get(thread_id=thread_id)
 
-    return json_response(chat)
+    if request.method=="POST":
+        form = NewChat(data=request.POST)
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            thread_id.message = cleaned_data['message']
+            thread_id.save()
+
+    return ComposeJsonResponse(200, "", context)
 
 
 @login_required
