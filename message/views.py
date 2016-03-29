@@ -1,20 +1,26 @@
 from django.shortcuts import render
-
+from api_helpers import ComposeJsonResponse
 
 @login_required
 def get_threads(request):
     """Get list of all the threads for the account."""
+    user = get_current_user(request)
 
     #EXAMPLE
     threads = Thread.objects.filter(account_id=request_id)
 
-    return json_response(threads)
+    context = {"user": user}
+
+    return ComposeJsonResponse(200, "", context)
 
 @login_required
-def new_thread():
+def new_thread(request):
     """Create a new thread."""
+    user = get_current_user(request)
 
-    return json_response(thread)
+    context = {"user": user}
+
+    return ComposeJsonResponse(200, "", context)
 
 
 @login_required
@@ -76,3 +82,7 @@ def unarchive(thread_id):
     """Un-archive the thread."""
 
     return json_response(chat)
+
+
+def get_current_user(request):
+    user = request.user
