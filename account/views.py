@@ -1,15 +1,25 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from api_helpers import ComposeJsonResponse
 from account.models import Account, CareGiver
-from .forms import BasicInfo, CareGiverInfo
+from org.models import Org, OrgInvite, OrgMember
+from .forms import BasicInfo, CareGiverInfo, LoginForm, Payload
+from django.contrib.auth import logout
 
 # Create your views here.
 
 def index(request):
-    """Return Account Template...?"""
+    """ -Return Account Template...?"""
 
 def login(request):
     """ -Log in the user if credentials are valid """
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+    else:
+        form = LoginForm()
+
+def logout(request):
+    logout(request)
 
 def signup(request):
     """ -Register a new account with a new org."""
@@ -17,9 +27,37 @@ def signup(request):
 def accept_invite(request):
     """ -Create a new account and accept an org member invitation."""
 
+    if request.method == "POST":
+        form = Payload(request.POST)
+        cleaned_data = form.cleaned_data
+        clean_token = cleaned_data['token']
+        clean_email = cleaned_data['email']
+        clean_password = cleaned_data['password']
+
+        invite = OrgInvite.objects.get(token=clean_token)
+
+        new_account = Account(email=clean_email, password=clean_password)
+        new_account.save()
+
+        org = Org.objects.get(id=invite.org_id)
+        org.add_members(new_account.id, False, False)
+
+    else:
+        form = Payload()
+
 def invite(request, token):
+    """ -Retrieve an org member invitation information """
+    invite = OrgInvite.objects.get(token=token)
+    if OrgInvite.used == True:
+        raise "Invitation token has already been used"
 
+    context = {
+        "invite": invite
+    }
 
+    return ComposeJsonResponse(200, "", context)
+
+@login_required
 def me(request):
     """ - Retrieve Current Account Information in JSON Format """
 
@@ -32,7 +70,7 @@ def me(request):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def update(request):
     """ - Update Account Information """
 
@@ -58,12 +96,13 @@ def update(request):
     else:
         pass
 
-            context = {
-                'account': account
-            }
+        context = {
+            'account': account
+        }
 
     return ComposeJsonResponse(200, "", context)
 
+@login_required
 def update_caregiver(request):
     """ -Updates Account's Caregiver Information. """
 
@@ -89,7 +128,7 @@ def update_caregiver(request):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def profile(request, account_id):
     """ -Retrieve Profile With Account ID """
 
@@ -100,7 +139,7 @@ def profile(request, account_id):
 
     return ComposeJsonResponse(200, "", context)
 
-
+@login_required
 def caregiver_info(request, account_id):
     """ -Retrieve Caregiver Details for an Account """
 
