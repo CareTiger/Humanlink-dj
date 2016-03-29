@@ -55,6 +55,14 @@ def update(request):
             account.last_name = cleaned_data['last_name']
             account.phone = cleaned_data['phone']
             account.save()
+    if request.method == "POST":
+        cleaned_data = form.cleaned_data
+        account.first_name = cleaned_data['first_name']
+        account.last_name = cleaned_data['last_name']
+        account.phone = cleaned_data['phone']
+        account.save()
+    else:
+        pass
 
             context = {
                 'account': account
