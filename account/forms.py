@@ -10,6 +10,7 @@ from .models import Account, CareGiver
 class LoginForm(forms.Form):
     email = forms.CharField()
     password = forms.CharField()
+    token = forms.CharField()
 
     def __init__(self, request=None, *args, **kwargs):
         self.cached_user = None
@@ -60,7 +61,16 @@ class CareGiverInfo(forms.ModelForm):
         model = CareGiver
         fields = ['is_hireable', 'location', 'about', 'certs']
 
-class Payload(forms.Form):
+class AcceptInvite(forms.Form):
     email = forms.EmailField()
     password = forms.CharField()
+    password_conf = forms.CharField()
     token = forms.CharField()
+
+class SignUp(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField()
+    password_conf = forms.CharField()
+    org_name = forms.CharField()
+    org_username = forms.CharField()
+    invite = forms.CharField()

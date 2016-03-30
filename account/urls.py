@@ -5,7 +5,6 @@ urlpatterns = [
     url(r'^$', views.index, name="index"),
     url(r'^me', views.me, name="me"),
     url(r'^update', views.update, name="update"),
-    url(r'^login', views.login, name="login"),
     url(r'^signup', views.signup, name="signup"),
     url(r'^accept', views.accept, name="accept_invite"),
     url(r'^caregiver', views.update_caregiver, name="update_caregiver"),

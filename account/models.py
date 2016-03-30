@@ -9,15 +9,15 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 
-class Account(User):
+class Account(models.Model):
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    email = User.email(max_length=255, null=True, blank=True, unique=True)
-    password = User.password(max_length=120, null=True)
+    email = models.EmailField(max_length=255, null=True, blank=True, unique=True)
+    password = models.CharField(max_length=120, null=True)
     first = models.CharField(max_length=35, null=True, blank=True)
     last = models.CharField(max_length=35, null=True, blank=True)
-    phone_number = User.phone(max_length=15, null=True, blank=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=20)
 
 
