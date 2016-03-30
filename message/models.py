@@ -57,7 +57,7 @@ class Thread(models.Model):
 class ThreadMember(models.Model):
 	thread_id = models.ForeignKey(Thread, related_name="threadmember_thread_id", on_delete=models.CASCADE, null=False)
 	account_id = models.ForeignKey(Account, related_name="threadmember_account_id", null=True)
-	last_seen = models.DateTimeField(default=datetime)
+	last_seen = models.DateTimeField(auto_now=True)
 
 	"""Moves the read cursor to the given timestamp. Default is now."""
 	def update_seen(self, ts=None):

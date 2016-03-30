@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import datetime
 from account.models import Account
 from api_helpers import ComposeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory
@@ -85,23 +85,30 @@ def send(request, thread_id):
             threadchat.thread_id = thread.id
             threadchat.save()
 
-    context = {"thread": thread, "threadchat": threadchat}
-    return ComposeJsonResponse(200, "", context)
+            context = {"thread": thread, "threadchat": threadchat}
+            return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def history(request, thread_id):
     """Retrieve messages history for the thread up until `ts`."""
-    thread = ThreadChat.objects.filter()
+
+    messages = None
+
     if request.method=="POST":
         form = ThreadHistory(request.post)
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            .text = cleaned_data['ts']
-            .save()
+            ts = cleaned_data['ts']
+            ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-    context = {"thread": thread}
+            messages = ThreadChat.objects.filter(created_on__lte=ts_date)
+
+    else:
+        form = ThreadHistory()
+
+    context = {"messages": messages, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
