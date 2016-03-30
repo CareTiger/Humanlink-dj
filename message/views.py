@@ -92,11 +92,14 @@ def send(request, thread_id):
 @login_required
 def history(request, thread_id):
     """Retrieve messages history for the thread up until `ts`."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email, password=user.password)
-    thread = Thread.objects.get(id=thread_id)
-    threadchat = ThreadChat(text=thread.id)
+    thread = ThreadChat.objects.filter()
+    if request.method=="POST":
+        form = ThreadHistory(request.post)
 
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            .text = cleaned_data['ts']
+            .save()
 
     context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
