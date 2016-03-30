@@ -74,6 +74,9 @@ class ThreadChat(models.Model):
 
 	text = models.TextField()
 
+	def convert_times():
+
+
 
 class ThreadInvite(models.Model):
 	actor_id = models.ForeignKey(Account, related_name="threadinvite_actor_id", null=True)

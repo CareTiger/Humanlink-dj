@@ -97,6 +97,8 @@ def history(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
     threadchat = ThreadChat(text=thread.id)
 
+    threadchat = ThreadChat.objects.filter()
+
 
     context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
