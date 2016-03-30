@@ -17,3 +17,13 @@ class NewChat(forms.Form):
 
 class ThreadHistory(forms.Form):
 	ts = forms.IntegerField(min=0)
+
+
+class AddMember(forms.Form):
+	account_id = forms.IntegerField(min=0)
+	name = forms.CharField(max_length=70)
+	email = forms.EmailField()
+
+
+class RemoveMember(forms.Form):
+	account_id = forms.IntegerField(min=0)

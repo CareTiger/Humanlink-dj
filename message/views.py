@@ -2,7 +2,7 @@ from django.shortcuts import render
 import datetime
 from account.models import Account
 from api_helpers import ComposeJsonResponse
-from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory
+from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
 from message.models import Thread, ThreadMember, ThreadChat
 
 
@@ -23,7 +23,7 @@ def new_thread(request):
     """Create a new thread."""
     thread = Thread()
 
-    if request.method=="POST":
+    if request.method == "POST":
         form = NewThread(request.POST)
 
         if form.is_valid():
@@ -53,7 +53,7 @@ def update_thread(request, thread_id):
     """Update thread information."""
     thread = Thread.objects.get(id=thread_id)
 
-    if request.method=="PUT":
+    if request.method == "PUT":
         form = UpdateThread(request.POST)
 
         if form.is_valid():
@@ -75,7 +75,7 @@ def send(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
     threadchat = ThreadChat()
 
-    if request.method=="POST":
+    if request.method == "POST":
         form = NewChat(request.POST)
 
         if form.is_valid():
@@ -95,7 +95,7 @@ def history(request, thread_id):
 
     messages = None
 
-    if request.method=="POST":
+    if request.method == "POST":
         form = ThreadHistory(request.post)
 
         if form.is_valid():
@@ -114,14 +114,24 @@ def history(request, thread_id):
 
 def add_member(request, thread_id):
     """Add a member to the thread."""
-    thread_id = ThreadMember.objects.get(thread_id=thread_id)
 
-    if request.method=="POST":
-        form = AddMember(data=request.POST)
+    thread = Thread.objects.get(id=thread_id)
+    member = ThreadMember()
+    if request.method == "POST":
+        form = AddMember(request.POST)
 
         if form.is_valid():
+            cleaned_data = form.cleaned_data
+            if cleaned_data['account_id']:
+                account = Account.objects.get(account_id=cleaned_data['account_id'])
+            elif cleaned_data['email']:
+                account = Account.objects.get(email=cleaned_data['email'])
+            elif cleaned_data['name']:
+                account = Account.objects.get(__str__=cleaned_data['name'])
+            thread.add_member(member.account_id)
+            thread.save()
 
-    context = {"thread_id": thread_id}
+    context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
 
 
@@ -134,7 +144,6 @@ def leave(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
     thread.delete(thread_member)
 
-
     context = {"account": account, "thread_member": thread_member, "thread": thread}
     return ComposeJsonResponse(200, "", context)
 
@@ -142,17 +151,19 @@ def leave(request, thread_id):
 @login_required
 def remove(request, thread_id):
     """Remove a user from the thread."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email)
-    thread_member = ThreadMember.objects.get(thread_id=thread_id)
 
-    if request.method=="POST":
-        form = RemoveMember(data=request.POST)
+    thread = Thread.objects.get(id=thread_id)
+    member = ThreadMember()
+
+    if request.method == "POST":
+        form = RemoveMember(request.POST)
 
         if form.is_valid():
-            form.save()
+            cleaned_data = form.cleaned_data
+            member = ThreadMember.objects.get(account_id=cleaned_data['account_id'])
+            thread.remove(member)
 
-    context = {"account": account, "thread_member": thread_member}
+    context = {"member": member}
     return ComposeJsonResponse(200, "", context)
 
 
