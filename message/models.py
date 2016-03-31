@@ -74,6 +74,7 @@ class ThreadChat(models.Model):
 	text = models.TextField()
 
 
+
 class ThreadInvite(models.Model):
 	actor_id = models.ForeignKey(Account, related_name="threadinvite_actor_id", null=True)
 	thread_id = models.ForeignKey(Thread, related_name="threadinvite_thread_id", on_delete=models.CASCADE, null=False)
