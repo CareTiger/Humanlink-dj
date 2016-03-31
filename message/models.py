@@ -71,10 +71,7 @@ class ThreadChat(models.Model):
 	inviter = models.IntegerField()
 	remover = models.IntegerField()
 	created_on = models.DateTimeField(auto_now_add=True)
-
 	text = models.TextField()
-
-	def convert_times():
 
 
 

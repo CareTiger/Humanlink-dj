@@ -1,5 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-
+import datetime
 from account.models import Account
 from api_helpers import ComposeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory
@@ -85,22 +86,30 @@ def send(request, thread_id):
             threadchat.thread_id = thread.id
             threadchat.save()
 
-    context = {"thread": thread, "threadchat": threadchat}
-    return ComposeJsonResponse(200, "", context)
+            context = {"thread": thread, "threadchat": threadchat}
+            return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def history(request, thread_id):
     """Retrieve messages history for the thread up until `ts`."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email, password=user.password)
-    thread = Thread.objects.get(id=thread_id)
-    threadchat = ThreadChat(text=thread.id)
 
-    threadchat = ThreadChat.objects.filter()
+    messages = None
 
+    if request.method=="POST":
+        form = ThreadHistory(request.post)
 
-    context = {"thread": thread}
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            ts = cleaned_data['ts']
+            ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
+            messages = ThreadChat.objects.filter(created_on__lte=ts_date)
+
+    else:
+        form = ThreadHistory()
+
+    context = {"messages": messages, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 

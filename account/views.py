@@ -1,6 +1,11 @@
 import urllib
 
+import codecs
+import os
+
 from django.contrib.auth.decorators import login_required
+from itsdangerous import URLSafeTimedSerializer
+from django.conf import settings
 from django.core.serializers import json
 from django.shortcuts import render
 from api_helpers import ComposeJsonResponse
@@ -12,8 +17,11 @@ from django.contrib.auth import logout
 
 # Create your views here.
 
+@login_required
 def index(request):
-    """ -Return Account Template...?"""
+    """ -Return Account Template """
+
+    return render('accounts/index.html')
 
 
 def login(request):
@@ -49,7 +57,7 @@ def login(request):
             else:
                 pass
 
-    #   TODO: send out notification to users that new thread member has been added to their thread.
+    #   TO-DO: send out notification to users that new thread member has been added to their thread.
 
     else:
         form = LoginForm()
@@ -76,7 +84,7 @@ def signup(request):
             invitation = OrgInvite.objects.get(token=invite)
 
             if invitation.used == True and invite.reuse == False:
-                raise "invite_invalid"
+                raise Exception("invite_invalid")
 
             account = Account(email=email, password=password)
             account.save()
@@ -89,7 +97,7 @@ def signup(request):
 
             # Send Thank You Email
 
-            #   TODO find out what table view from old website is pulling from:
+            #   TO-DO find out what table view from old website is pulling from:
             """
                 try:
                     invites = Table('invites', connection=self.ddb)
@@ -127,14 +135,14 @@ def accept_invite(request):
             org.add_members(new_account.id, False, False)
 
     else:
-        form = Payload()
+        form = AcceptInvite()
 
 
 def invite(request, token):
     """ -Retrieve an org member invitation information """
     invite = get_invite(token)
     if OrgInvite.used == True:
-        raise "Invitation token has already been used"
+        raise Exception("Invitation token has already been used")
 
     context = {
         "invite": invite
@@ -231,8 +239,8 @@ def caregiver_info(request, account_id):
     context = {
         'caregiver': caregiver
     }
-
     return ComposeJsonResponse(200, "", context)
+
 
 def invite_accept_redirect(token):
     """ -Redirects to the accept invite frontend view with pre-fetched data."""
@@ -240,15 +248,50 @@ def invite_accept_redirect(token):
     invite = get_invite(token)
     url = '{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite)))
 
-    # TODO - Redirect to specified url above. "localhost:8000/home/accept/14634456?data='invite-json-data'
+    # TO-DO - Redirect to specified url above. "localhost:8000/home/accept/14634456?data='invite-json-data'
+    # Look into "dumps" method
 
-def verify(token):
+
+def generate_token(length):
+    """ -Returns randomly generate email token """
+
+    return codecs.encode(os.urandom(length // 2), 'hex')
+
+
+def verify(request, token):
+    """ -If verification token is valid, Account.email_verified = True """
+
+    user = request.user
+    account = Account.objects.get(email=user.email, password=user.password)
+    if not account.email:
+        raise "No email found for account {}".format(account.id)
+
+    email_serializer = URLSafeTimedSerializer(settings.SERIALIZER_SECRET_KEY, salt='email-token')
+
+    rand = generate_token(4)
+    data = (account.id, account.email_hash, rand)
+    email_serializer.dumps(data)
+
     if not token:
-        raise "Invalid verification token"
+        raise Exception("Invalid verification token")
+    else:
+        try:
+            account_id, email_hash, rand = email_serializer.loads(token)
+            if account.email_hash != email_hash:
+                raise Exception("token invalid")
+            if account.email_verified:
+                raise Exception("Email address already verified.")
+            account.email_verified = True
+            account.save()
+        except:
+            raise Exception("Bad signature, token invalid")
+
+#   Return Redirect to Account View
+
 
 def get_invite(token):
     if not token:
-        raise "Invitation token is not specified"
+        raise Exception("Invitation token is not specified")
 
     invitation = OrgInvite.objects.get(token=token)
 
