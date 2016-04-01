@@ -15,7 +15,6 @@ def get_threads(request):
     thread = Thread.objects.get(account_id=account.id)
 
     context = {"thread": thread, }
-
     return ComposeJsonResponse(200, "", context)
 
 
@@ -34,9 +33,10 @@ def new_thread(request):
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.save()
+    else:
+        form = NewThread()
 
-    context = {"thread": thread}
-
+    context = {"thread": thread, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
@@ -63,8 +63,10 @@ def update_thread(request, thread_id):
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.save()
+    else:
+        form = UpdateThread()
 
-    context = {"thread": thread}
+    context = {"thread": thread, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
@@ -85,9 +87,11 @@ def send(request, thread_id):
             threadchat.account_id = account.id
             threadchat.thread_id = thread.id
             threadchat.save()
+    else:
+        form = NewChat()
 
-            context = {"thread": thread, "threadchat": threadchat}
-            return ComposeJsonResponse(200, "", context)
+    context = {"thread": thread, "threadchat": threadchat, "form": form}
+    return ComposeJsonResponse(200, "", context)
 
 
 @login_required
@@ -131,8 +135,10 @@ def add_member(request, thread_id):
                 account = Account.objects.get(__str__=cleaned_data['name'])
             thread.add_member(member.account_id)
             thread.save()
+    else:
+        form = AddMember()
 
-    context = {"thread": thread}
+    context = {"thread": thread, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
@@ -163,24 +169,36 @@ def remove(request, thread_id):
             cleaned_data = form.cleaned_data
             member = ThreadMember.objects.get(account_id=cleaned_data['account_id'])
             thread.remove(member)
+    else:
+        form = RemoveMember()
 
-    context = {"member": member}
+    context = {"member": member, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def archive(thread_id):
     """Archive the thread."""
-    context = {}
+    thread = Thread.objects.get(id=thread_id)
+    thread.is_archived = True
+    thread.save()
+
+    context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def unarchive(thread_id):
     """Un-archive the thread."""
-    context = {}
+    thread = Thread.objects.get(id=thread_id)
+    thread.is_archived = False
+    thread.save()
+
+    context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
 
 
 def get_current_user(request):
     user = request.user
+
+    return user
