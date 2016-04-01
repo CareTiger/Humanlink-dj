@@ -2,20 +2,22 @@ import urllib
 
 import codecs
 import os
+import logging
 
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django_pusher.push import pusher
 from itsdangerous import URLSafeTimedSerializer
 from django.conf import settings
 from django.core.serializers import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from api_helpers import ComposeJsonResponse
 from account.models import Account, CareGiver
-from message.models import Thread
+from message.models import Thread, ThreadChat
 from org.models import Org, OrgInvite, OrgMember
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
-
-# Create your views here.
 
 @login_required
 def index(request):
@@ -23,6 +25,49 @@ def index(request):
 
     return render('accounts/index.html')
 
+
+def new_chat(self, chat_id=None):
+    """ -Triggers a new chat message Pusher event
+
+        former author TODO = Once notifications are introduced, that logic should be performed in here to
+                             exclude user who opted out of notifications.
+    """
+
+
+    def chunks(li, n):
+        """Yields n-sized chunks from the list."""
+        for i in xrange(0, len(li), n):
+            yield li[i:i + n]
+
+    try:
+        chat = ThreadChat.objects.get(id=chat_id)
+        thread = Thread.objects.get(id=chat.thread_id)
+
+        if not chat or thread:
+            raise Exception("thread or chat not found")
+
+        partition = chunks(thread.members, 10)
+        for part in partition:
+            channels = ['private-account-{}'.format(m.account_id) for m in part]
+            pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+
+    except Exception as e:
+        raise self.retry(exc=e)
+
+def add_to_welcome(request, org_id, account_id, inviter_id):
+    """ -Adds account to an org's welcome thread"""
+
+    thread = Thread.objects.get(org_id=org_id, name="welcome")
+    if thread:
+        """ -Add new org member to a welcome new members thread. """
+
+        thread.add_members(account_id=account_id)
+        chat = ThreadChat(thread_id=thread.id, account_id=account_id, text=account_id)
+        # TO-DO chat instantiation above includes kind, which is set by ChatChoices in messages.model
+        chat.save()
+
+        """ -Send out notification to thread members of welcome thread that theres a new chat. """
+        new_chat(chat.id)
 
 def login(request):
     """ -Log in the user if credentials are valid """
@@ -35,29 +80,32 @@ def login(request):
         if form.is_valid():
             cleaned_data = form.cleaned_data
 
+            if not form.email or not form.password:
+                raise Exception("Please enter your email address and password")
+
             if cleaned_data['token']:
+                """ -Get Account by credentials and accept an org member invitation. """
+
                 token = cleaned_data['token']
                 invite = OrgInvite.objects.get(token=token)
                 org = Org.objects.get(id=invite.org_id)
                 if not invite:
-                    raise "Invitation token is invalid."
+                    raise Exception("Invitation token is invalid.")
                 if invite.used == True:
-                    raise "Account is already in team."
+                    raise Exception("Invitation token has already been used.")
 
                 org_member = OrgMember.objects.get(account_id=account.id)
                 if org_member:
-                    raise "Account is already in team."
+                    raise Exception("Account is already in team.")
                 else:
+                    """ -If that organization member doesn't already exist, add him. """
                     org.add_members(account.id, False, invite.is_admin)
                     invite.used = False
-                    welcome_thread = Thread.objects.get(org_id=org.id, name='welcome')
-                    if welcome_thread:
-                        welcome_thread.add_members(account_id=account.id)
+
+                    add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 
             else:
                 pass
-
-    #   TO-DO: send out notification to users that new thread member has been added to their thread.
 
     else:
         form = LoginForm()
@@ -72,6 +120,15 @@ def signup(request):
     if request.method == "POST":
         form = SignUp(request.POST)
 
+        if not form.email or not form.password:
+            raise Exception("Email and Password are required")
+        if form.password != form.password_conf:
+            raise  Exception("Password does not match confirmation")
+        if not form.org_name or not form.org_username:
+            raise Exception('Organization name and username are required')
+        if not form.invite:
+            raise Exception('Invitation code is required')
+
         if form.is_valid():
             cleaned_data = form.cleaned_data
 
@@ -79,12 +136,12 @@ def signup(request):
             password = cleaned_data['password']
             org_name = cleaned_data['org_name']
             org_username = cleaned_data['org_username']
-            invite = cleaned_data['invite']
+            invite_token = cleaned_data['invite']
 
-            invitation = OrgInvite.objects.get(token=invite)
+            invitation = OrgInvite.objects.get(token=invite_token)
 
-            if invitation.used == True and invite.reuse == False:
-                raise Exception("invite_invalid")
+            if invitation.used:
+                raise Exception("invitation code is invalid")
 
             account = Account(email=email, password=password)
             account.save()
@@ -92,23 +149,23 @@ def signup(request):
             org = Org(org_name=org_name, org_username=org_username)
             org.save()
 
-            invite.used = False
-            invite.save()
+            invitation.used = False
+            invitation.save()
 
-            # Send Thank You Email
+            login(request.user.email == email)
 
-            #   TO-DO find out what table view from old website is pulling from:
-            """
-                try:
-                    invites = Table('invites', connection=self.ddb)
-                    item = invites.get_item(key=invite.lower())
-                    if item.get('used', False) and item.get('reuse', False) is False:
-                        raise invite_invalid
-                except boto.dynamodb2.exceptions.ItemNotFound:
-                    raise invite_invalid
-            """
+            PROD_URL = "https://www.humanlink.co"
+            t = invite_token.replace(' ', '+')
+            url = "{}/{}/{}".format(PROD_URL, 'verify', t)
 
-            login(request)
+            email_context = {
+                url
+            }
+
+            html_message = render_to_string("humanlink-welcome.html", email_context)
+
+            send_mail('One last step !', 'Verify your email by clicking the link below.', 'support@humanlink.co',
+            ['tim@millcreeksoftware.biz'], fail_silently=False, html_message=html_message)
 
     else:
         form = SignUp()
@@ -120,6 +177,13 @@ def accept_invite(request):
     if request.method == "POST":
         form = AcceptInvite(request.POST)
 
+        if not form.email or not form.password:
+            raise Exception('Email and password are required.')
+        if form.password != form.password_conf:
+            raise Exception('Password does not match confirmation.')
+        if not token:
+            raise Exception('Invitation code is required.')
+
         if form.is_valid():
             cleaned_data = form.cleaned_data
             clean_token = cleaned_data['token']
@@ -128,11 +192,18 @@ def accept_invite(request):
 
             invite = OrgInvite.objects.get(token=clean_token)
 
+            if not invite:
+                raise Exception('Invitation token is invalid.')
+            if invite.used:
+                raise Exception('Invitation token has already been used.')
+
             new_account = Account(email=clean_email, password=clean_password)
             new_account.save()
 
             org = Org.objects.get(id=invite.org_id)
             org.add_members(new_account.id, False, False)
+
+            add_to_welcome(org_id=org.id, account_id=new_account.id, inviter_id=invite.token)
 
     else:
         form = AcceptInvite()
@@ -241,16 +312,36 @@ def caregiver_info(request, account_id):
     }
     return ComposeJsonResponse(200, "", context)
 
+def get_invite(token):
+    if not token:
+        raise Exception("Invitation token is not specified")
+
+    invitation = OrgInvite.objects.get(token=token)
+    if not invitation:
+        raise Exception("Invitation token is invalid.")
+
+    return invitation
+
 
 def invite_accept_redirect(token):
-    """ -Redirects to the accept invite frontend view with pre-fetched data."""
-    base = "Url for views.home + accept"
-    invite = get_invite(token)
+    """ -Redirects to the accept invite frontend view with pre-fetched data. """
+
+    try:
+        invite = get_invite(token)
+        if not invite:
+            raise Exception("Invitation token is invalid")
+        if invite.used:
+            invite = {'used': True}
+    except:
+        invite = {'invalid': True}
+        raise Exception("Resource not found.")
+
+    base = "home/accept"
+
     url = '{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite)))
+    # local-url = localhost:8000/home/accept/234512?data={'id':'145','token':'234512','account_id':'137'} ......
 
-    # TO-DO - Redirect to specified url above. "localhost:8000/home/accept/14634456?data='invite-json-data'
-    # Look into "dumps" method
-
+    return redirect(url)
 
 def generate_token(length):
     """ -Returns randomly generate email token """
@@ -283,16 +374,11 @@ def verify(request, token):
                 raise Exception("Email address already verified.")
             account.email_verified = True
             account.save()
+            logging.info('Email verified: {}'.format(account.email))
+            login(request)
         except:
-            raise Exception("Bad signature, token invalid")
+            logging.warning('Bad Signature.')
+            raise Exception("Token invalid")
 
-#   Return Redirect to Account View
 
-
-def get_invite(token):
-    if not token:
-        raise Exception("Invitation token is not specified")
-
-    invitation = OrgInvite.objects.get(token=token)
-
-    return invitation
+    return redirect("account")
