@@ -3,7 +3,7 @@ from django.conf.urls import url
 from message.views import *
 
 urlpatterns = [
-	url(r'^threads/?$', get_threads, name="get_threads"),
+	url(r'^$', get_threads, name="get_threads"),
 	url(r'^create/?$', new_thread, name="new_thread"),
 	url(r'^(?P<thread_id>\d+)/?$', get_thread, name="get_thread"),
 	url(r'^(?P<thread_id>\d+)/?$', update_thread, name="update_thread"),

@@ -4,23 +4,28 @@ import datetime
 from account.models import Account
 from api_helpers import ComposeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
-from message.models import Thread, ThreadMember, ThreadChat
+from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
+from account.views import broadcast, generate_token, get_current_user
 
 
 @login_required
 def get_threads(request):
-    """Get list of all the threads for the account."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email, password=user.password)
-    thread = Thread.objects.get(account_id=account.id)
+    # """Get list of all the threads for the account."""
 
-    context = {"thread": thread, }
+    account = get_current_user(request)
+
+    all_threads = Thread.objects.join(Thread.ThreadMember_set).filter(ThreadMember.account_id == account.id)
+
+    context = {"all_threads": all_threads}
     return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def new_thread(request):
-    """Create a new thread."""
+    # """Create a new thread."""
+
+    account = get_current_user(request)
+
     thread = Thread()
 
     if request.method == "POST":
@@ -32,6 +37,7 @@ def new_thread(request):
             thread.name = cleaned_data['name']
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
+            thread .account_id = account.id
             thread.save()
     else:
         form = NewThread()
@@ -41,9 +47,12 @@ def new_thread(request):
 
 
 @login_required
-def get_thread(thread_id):
-    """Retrieve thread information."""
-    thread = Thread.objects.get(id=thread_id)
+def get_thread(request, thread_id):
+    # """Retrieve thread information."""
+
+    account = get_current_user(request)
+
+    thread = Thread.objects.get(id=thread_id, account_id=account.id)
 
     context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
@@ -51,7 +60,8 @@ def get_thread(thread_id):
 
 @login_required
 def update_thread(request, thread_id):
-    """Update thread information."""
+    # """Update thread information."""
+
     thread = Thread.objects.get(id=thread_id)
 
     if request.method == "PUT":
@@ -72,9 +82,9 @@ def update_thread(request, thread_id):
 
 @login_required
 def send(request, thread_id):
-    """Send a message to the thread."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email, password=user.password)
+    # """Send a message to the thread."""
+
+    account = get_current_user(request)
     thread = Thread.objects.get(id=thread_id)
     threadchat = ThreadChat()
 
@@ -87,6 +97,8 @@ def send(request, thread_id):
             threadchat.account_id = account.id
             threadchat.thread_id = thread.id
             threadchat.save()
+
+            broadcast(threadchat.id)
     else:
         form = NewChat()
 
@@ -96,9 +108,11 @@ def send(request, thread_id):
 
 @login_required
 def history(request, thread_id):
-    """Retrieve messages history for the thread up until `ts`."""
+    # """Retrieve messages history for the thread up until `ts`."""
 
     messages = None
+
+    thread = Thread.objects.get(thread_id=thread_id)
 
     if request.method == "POST":
         form = ThreadHistory(request.post)
@@ -108,7 +122,7 @@ def history(request, thread_id):
             ts = cleaned_data['ts']
             ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-            messages = ThreadChat.objects.filter(created_on__lte=ts_date)
+            messages = ThreadChat.objects.filter(thread_id=thread.id, created_on__lte=ts_date)
 
     else:
         form = ThreadHistory()
@@ -118,35 +132,43 @@ def history(request, thread_id):
 
 
 def add_member(request, thread_id):
-    """Add a member to the thread."""
+    # """Add a member to the thread."""
 
     thread = Thread.objects.get(id=thread_id)
-    member = ThreadMember()
+
     if request.method == "POST":
         form = AddMember(request.POST)
+        res = {'message': 'ok'}
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
             if cleaned_data['account_id']:
                 account = Account.objects.get(account_id=cleaned_data['account_id'])
+                thread.add_members(account.id)
             elif cleaned_data['email']:
                 account = Account.objects.get(email=cleaned_data['email'])
-            elif cleaned_data['name']:
-                account = Account.objects.get(__str__=cleaned_data['name'])
-            thread.add_member(member.account_id)
-            thread.save()
+                token = generate_token(8)
+                thread_invite = ThreadInvite(actor_id=account.id, thread_id=thread.id, token=token,
+                                             email=cleaned_data['email'], name=cleaned_data['name'])
+                thread_invite.save()
+
+                # TO-DO = Create email to send, previous author never did it.
+
+            else:
+                res['message'] = 'Provide either account or email address.'
     else:
         form = AddMember()
+        res = {}
 
-    context = {"thread": thread, "form": form}
+    context = {"res": res, "form": form}
     return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def leave(request, thread_id):
-    """Leave the thread."""
-    user = get_current_user(request)
-    account = Account.objects.get(email=user.email)
+    # """Leave the thread."""
+
+    account = get_current_user(request)
     thread_member = ThreadMember.objects.get(account_id=account.id, thread_id=thread_id)
     thread = Thread.objects.get(id=thread_id)
     thread.delete(thread_member)
@@ -157,7 +179,7 @@ def leave(request, thread_id):
 
 @login_required
 def remove(request, thread_id):
-    """Remove a user from the thread."""
+    # """Remove a user from the thread."""
 
     thread = Thread.objects.get(id=thread_id)
     member = ThreadMember()
@@ -167,7 +189,8 @@ def remove(request, thread_id):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            member = ThreadMember.objects.get(account_id=cleaned_data['account_id'])
+
+            member = ThreadMember.objects.get(thread_id=thread_id, account_id=cleaned_data['account_id'])
             thread.remove(member)
     else:
         form = RemoveMember()
@@ -177,11 +200,18 @@ def remove(request, thread_id):
 
 
 @login_required
-def archive(thread_id):
-    """Archive the thread."""
+def archive(request, thread_id):
+    # """Archive the thread."""
+
     thread = Thread.objects.get(id=thread_id)
+    thread_chat = ThreadChat.objects.get(thread_id=thread.id, account_id=thread.actor.id,
+                                         message=thread.actor.id, kind=CHAT_CHOICES(4))
+    thread_chat.save()
+
     thread.is_archived = True
     thread.save()
+
+    broadcast(thread_chat.id)
 
     context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
@@ -189,16 +219,17 @@ def archive(thread_id):
 
 @login_required
 def unarchive(thread_id):
-    """Un-archive the thread."""
+    # """Un-archive the thread."""
+
     thread = Thread.objects.get(id=thread_id)
-    thread.is_archived = False
+    thread_chat = ThreadChat.objects.get(thread_id=thread.id, account_id=thread.actor.id,
+                                         message=thread.actor.id, kind=CHAT_CHOICES(5))
+    thread_chat.save()
+
+    thread.is_archived = True
     thread.save()
+
+    broadcast(thread_chat.id)
 
     context = {"thread": thread}
     return ComposeJsonResponse(200, "", context)
-
-
-def get_current_user(request):
-    user = request.user
-
-    return user

@@ -14,65 +14,52 @@ from django.core.serializers import json
 from django.shortcuts import render, redirect
 from api_helpers import ComposeJsonResponse
 from account.models import Account, CareGiver
-from message.models import Thread, ThreadChat
+from message.models import Thread, ThreadChat, CHAT_CHOICES
 from org.models import Org, OrgInvite, OrgMember
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
 
 @login_required
 def index(request):
-    """ -Return Account Template """
+    # """ -Return Account Template """
 
     return render('accounts/index.html')
 
 
-def new_chat(self, chat_id=None):
-    """ -Triggers a new chat message Pusher event
-
-        former author TODO = Once notifications are introduced, that logic should be performed in here to
-                             exclude user who opted out of notifications.
-    """
-
+def broadcast(self, chat_id=None):
+    # """Sends out push notifications to thread members about chat message. """
 
     def chunks(li, n):
         """Yields n-sized chunks from the list."""
         for i in xrange(0, len(li), n):
             yield li[i:i + n]
 
-    try:
-        chat = ThreadChat.objects.get(id=chat_id)
-        thread = Thread.objects.get(id=chat.thread_id)
+    chat = ThreadChat.objects.get(id=chat_id)
+    thread = Thread.objects.get(id=chat.thread_id)
 
-        if not chat or thread:
-            raise Exception("thread or chat not found")
+    if not chat or thread:
+        raise Exception("thread or chat not found")
 
-        partition = chunks(thread.members, 10)
-        for part in partition:
-            channels = ['private-account-{}'.format(m.account_id) for m in part]
-            pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+    partition = chunks(thread.members, 10)
+    for part in partition:
+        channels = ['private-account-{}'.format(m.account_id) for m in part]
+        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
-    except Exception as e:
-        raise self.retry(exc=e)
 
 def add_to_welcome(request, org_id, account_id, inviter_id):
-    """ -Adds account to an org's welcome thread"""
 
     thread = Thread.objects.get(org_id=org_id, name="welcome")
     if thread:
-        """ -Add new org member to a welcome new members thread. """
 
         thread.add_members(account_id=account_id)
-        chat = ThreadChat(thread_id=thread.id, account_id=account_id, text=account_id)
-        # TO-DO chat instantiation above includes kind, which is set by ChatChoices in messages.model
+        chat = ThreadChat(thread_id=thread.id, account_id=account_id, text=account_id, kind=CHAT_CHOICES(2))
         chat.save()
 
-        """ -Send out notification to thread members of welcome thread that theres a new chat. """
-        new_chat(chat.id)
+        broadcast(chat.id)
 
 def login(request):
-    """ -Log in the user if credentials are valid """
-    user = request.user
-    account = Account.objects.get(email=user.email, password=user.password)
+    # """ -Log in the user if credentials are valid """
+    account = get_current_user(request)
 
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -84,7 +71,6 @@ def login(request):
                 raise Exception("Please enter your email address and password")
 
             if cleaned_data['token']:
-                """ -Get Account by credentials and accept an org member invitation. """
 
                 token = cleaned_data['token']
                 invite = OrgInvite.objects.get(token=token)
@@ -98,7 +84,6 @@ def login(request):
                 if org_member:
                     raise Exception("Account is already in team.")
                 else:
-                    """ -If that organization member doesn't already exist, add him. """
                     org.add_members(account.id, False, invite.is_admin)
                     invite.used = False
 
@@ -111,12 +96,13 @@ def login(request):
         form = LoginForm()
 
 
-def logout(request):
+def logout_user(request):
     logout(request)
 
 
 def signup(request):
-    """ -Register a new account with a new org."""
+    # """Register a new account with a new org."""
+
     if request.method == "POST":
         form = SignUp(request.POST)
 
@@ -152,7 +138,7 @@ def signup(request):
             invitation.used = False
             invitation.save()
 
-            login(request.user.email == email)
+            login(request)
 
             PROD_URL = "https://www.humanlink.co"
             t = invite_token.replace(' ', '+')
@@ -162,7 +148,7 @@ def signup(request):
                 url
             }
 
-            html_message = render_to_string("humanlink-welcome.html", email_context)
+            html_message = render_to_string("", email_context)
 
             send_mail('One last step !', 'Verify your email by clicking the link below.', 'support@humanlink.co',
             ['tim@millcreeksoftware.biz'], fail_silently=False, html_message=html_message)
@@ -172,7 +158,7 @@ def signup(request):
 
 
 def accept_invite(request):
-    """ -Create a new account and accept an org member invitation."""
+    # """ -Create a new account and accept an org member invitation."""
 
     if request.method == "POST":
         form = AcceptInvite(request.POST)
@@ -181,7 +167,7 @@ def accept_invite(request):
             raise Exception('Email and password are required.')
         if form.password != form.password_conf:
             raise Exception('Password does not match confirmation.')
-        if not token:
+        if not form.token:
             raise Exception('Invitation code is required.')
 
         if form.is_valid():
@@ -210,9 +196,9 @@ def accept_invite(request):
 
 
 def invite(request, token):
-    """ -Retrieve an org member invitation information """
+    # """ -Retrieve an org member invitation information """
     invite = get_invite(token)
-    if OrgInvite.used == True:
+    if OrgInvite.used:
         raise Exception("Invitation token has already been used")
 
     context = {
@@ -224,10 +210,9 @@ def invite(request, token):
 
 @login_required
 def me(request):
-    """ - Retrieve Current Account Information in JSON Format """
+    # """ - Retrieve Current Account Information in JSON Format """
 
-    user = request.user
-    account = Account.objects.get(email=user.email, password=user.password)
+    account = get_current_user(request)
 
     context = {
         "account": account
@@ -238,10 +223,9 @@ def me(request):
 
 @login_required
 def update(request):
-    """ - Update Account Information """
+    # """ - Update Account Information """
 
-    user = request.user
-    account = Account.objects.get(email=user.email, password=user.password)
+    account = get_current_user(request)
 
     if request.method == "POST":
         form = BasicInfo(request.POST)
@@ -256,19 +240,18 @@ def update(request):
     else:
         pass
 
-        context = {
-            'account': account
-        }
+    context = {
+        'account': account
+    }
 
     return ComposeJsonResponse(200, "", context)
 
 
 @login_required
 def update_caregiver(request):
-    """ -Updates Account's Caregiver Information. """
+    # """ -Updates Account's Caregiver Information. """
 
-    user = request.user
-    account = Account.objects.get(email=user.email, password=user.password)
+    account = get_current_user(request)
     caregiver = CareGiver.objects.get(account_id=account.id)
 
     if request.method == "POST":
@@ -292,7 +275,7 @@ def update_caregiver(request):
 
 @login_required
 def profile(request, account_id):
-    """ -Retrieve Profile With Account ID """
+    # """ -Retrieve Profile With Account ID """
 
     account = Account.objects.get(id=account_id)
     context = {
@@ -304,7 +287,7 @@ def profile(request, account_id):
 
 @login_required
 def caregiver_info(request, account_id):
-    """ -Retrieve Caregiver Details for an Account """
+    # """ -Retrieve Caregiver Details for an Account """
 
     caregiver = CareGiver.objects.get(account=account_id)
     context = {
@@ -324,7 +307,7 @@ def get_invite(token):
 
 
 def invite_accept_redirect(token):
-    """ -Redirects to the accept invite frontend view with pre-fetched data. """
+    # """ -Redirects to the accept invite frontend view with pre-fetched data. """
 
     try:
         invite = get_invite(token)
@@ -344,16 +327,15 @@ def invite_accept_redirect(token):
     return redirect(url)
 
 def generate_token(length):
-    """ -Returns randomly generate email token """
+    # """ -Returns randomly generate email token """
 
     return codecs.encode(os.urandom(length // 2), 'hex')
 
 
 def verify(request, token):
-    """ -If verification token is valid, Account.email_verified = True """
+    # """ -If verification token is valid, Account.email_verified = True """
 
-    user = request.user
-    account = Account.objects.get(email=user.email, password=user.password)
+    account = get_current_user(request)
     if not account.email:
         raise "No email found for account {}".format(account.id)
 
@@ -382,3 +364,9 @@ def verify(request, token):
 
 
     return redirect("account")
+
+def get_current_user(request):
+    user = request.user
+    account = Account.objects.get(email=user.email, password=user.password)
+
+    return account

@@ -3,8 +3,6 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from . import views
-from django.contrib.sitemaps import GenericSitemap
-from django.contrib.sitemaps.views import sitemap
 
 from . import views as webapp_views
 
@@ -25,10 +23,10 @@ urlpatterns = [
 	url(r'^app/', views.app, name="app"),
 	url(r'^settings/', views.settings, name="settings"),
 	url(r'^terms/', views.terms, name="terms"),
-	url(r'^account/', include("account.views"), name="account"),
+	url(r'^account/', include("account.views"), name="account-views"),
+	url(r'^orgs/', include("org.views"), name="org-views"),
+	url(r'^message/', include("message.views"), name="message-views")
 ]
 
 if settings.DEVELOPMENT:
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# This url pattern must be last since it will match on anything
