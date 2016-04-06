@@ -12,7 +12,7 @@ from itsdangerous import URLSafeTimedSerializer
 from django.conf import settings
 from django.core.serializers import json
 from django.shortcuts import render, redirect
-from api_helpers import ComposeJsonResponse
+from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver
 from message.models import Thread, ThreadChat, CHAT_CHOICES
 from org.models import Org, OrgInvite, OrgMember
@@ -205,7 +205,7 @@ def invite(request, token):
         "invite": invite
     }
 
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -218,7 +218,7 @@ def me(request):
         "account": account
     }
 
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -244,7 +244,7 @@ def update(request):
         'account': account
     }
 
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -270,7 +270,7 @@ def update_caregiver(request):
                 'caregiver': caregiver
             }
 
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -282,7 +282,7 @@ def profile(request, account_id):
         'account': account
     }
 
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -293,7 +293,7 @@ def caregiver_info(request, account_id):
     context = {
         'caregiver': caregiver
     }
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 def get_invite(token):
     if not token:

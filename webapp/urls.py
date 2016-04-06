@@ -4,8 +4,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from . import views
 
-from . import views as webapp_views
-
 admin.autodiscover()
 
 urlpatterns = [

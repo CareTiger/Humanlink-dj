@@ -15,8 +15,8 @@ framework.
 """
 import os, sys
 
-MANAGE_ROOT = os.path.dirname(os.path.realpath(__file__))
-THIRD_PARTY_ROOT = os.path.join(MANAGE_ROOT, '../third_party')
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+THIRD_PARTY_ROOT = os.path.join(THIS_DIR, '../third_party')
 
 sys.path.extend([THIRD_PARTY_ROOT,])
 

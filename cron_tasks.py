@@ -1,9 +1,7 @@
 import gzip
+import logging
 import os
 import sys
-import logging
-
-import datetime
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 logging.basicConfig(format='%(levelname)s:%(asctime)s | %(filename)s.%(funcName)s - %(lineno)d | %(message)s',
@@ -24,21 +22,7 @@ def clear_sessions():
 	call_command('clearsessions')
 
 
-def remove_old_carts():
-	logger.info('Running remove_old_carts')
-	## Example if needed
-	# from django.utils import timezone
-	# from online_order.models import OnlineOrder
-	# # Get rid of anything that is open and not touched for 7 days
-	# now = timezone.now()
-	# last_update_date = now - datetime.timedelta(days=7)
-	# count = OnlineOrder.objects.filter(status='O', updated_on__lte=last_update_date).count()
-	# logger.info('Removing %s expired carts' % count)
-	# OnlineOrder.objects.filter(status='O', updated_on__lte=last_update_date).delete()
-
-
 def full_backup():
-	import zipfile
 	logger.info('Running full_backup')
 	from django.utils import timezone
 	from django.core.management import call_command
@@ -66,10 +50,10 @@ def full_backup():
 	sys.stdout = stdout
 
 	# Now zip the file
-	zip_file_path =  os.path.join(PROJECT_ROOT, 'backups', file_name + '.gz')
+	zip_file_path = os.path.join(PROJECT_ROOT, 'backups', file_name + '.gz')
 	zipfile = gzip.GzipFile(zip_file_path, "wb")
 	try:
-		inputFile = open(file_path,"r")
+		inputFile = open(file_path, "r")
 		zipfile.write(inputFile.read())
 	finally:
 		zipfile.close()
@@ -87,12 +71,6 @@ if __name__ == "__main__":
 	# Clear expired Sessions
 	try:
 		clear_sessions()
-	except Exception as exc:
-		logger.error(exc)
-
-	# Remove Old Carts
-	try:
-		remove_old_carts()
 	except Exception as exc:
 		logger.error(exc)
 
