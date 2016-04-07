@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import datetime
 from account.models import Account
-from api_helpers import ComposeJsonResponse
+from api_helpers import composeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
 from account.views import broadcast, generate_token, get_current_user
@@ -17,7 +17,7 @@ def get_threads(request):
     all_threads = Thread.objects.join(Thread.ThreadMember_set).filter(ThreadMember.account_id == account.id)
 
     context = {"all_threads": all_threads}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -43,7 +43,7 @@ def new_thread(request):
         form = NewThread()
 
     context = {"thread": thread, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -55,7 +55,7 @@ def get_thread(request, thread_id):
     thread = Thread.objects.get(id=thread_id, account_id=account.id)
 
     context = {"thread": thread}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -77,7 +77,7 @@ def update_thread(request, thread_id):
         form = UpdateThread()
 
     context = {"thread": thread, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -103,7 +103,7 @@ def send(request, thread_id):
         form = NewChat()
 
     context = {"thread": thread, "threadchat": threadchat, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -128,7 +128,7 @@ def history(request, thread_id):
         form = ThreadHistory()
 
     context = {"messages": messages, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 def add_member(request, thread_id):
@@ -161,7 +161,7 @@ def add_member(request, thread_id):
         res = {}
 
     context = {"res": res, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -174,7 +174,7 @@ def leave(request, thread_id):
     thread.delete(thread_member)
 
     context = {"account": account, "thread_member": thread_member, "thread": thread}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -196,7 +196,7 @@ def remove(request, thread_id):
         form = RemoveMember()
 
     context = {"member": member, "form": form}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -214,7 +214,7 @@ def archive(request, thread_id):
     broadcast(thread_chat.id)
 
     context = {"thread": thread}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -232,4 +232,4 @@ def unarchive(thread_id):
     broadcast(thread_chat.id)
 
     context = {"thread": thread}
-    return ComposeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)

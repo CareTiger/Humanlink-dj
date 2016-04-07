@@ -38,7 +38,7 @@ class DefaultJSONEncoder(json.JSONEncoder):
 		return str(o)
 
 
-def ComposeJsonResponse(code, message, data):
+def composeJsonResponse(code, message, data):
 	returnStatus = {'code': code, 'message': message}
 	returnMsg = {'status': returnStatus, 'response': data}
 

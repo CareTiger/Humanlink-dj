@@ -1,5 +1,5 @@
 Cron Setup for cron tasks
-30 2 * * * python2.7 $HOME/webapps/djangowebsite/abc-jesus-loves-me/cron_tasks.py 2>&1 >> $HOME/logs/user/cron_tasks.log
+30 2 * * * python2.7 $HOME/webapps/djangowebsite/<appname>/cron_tasks.py 2>&1 >> $HOME/logs/user/cron_tasks.log
 
 
 

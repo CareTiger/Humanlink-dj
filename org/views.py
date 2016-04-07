@@ -5,7 +5,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-from api_helpers import ComposeJsonResponse
+from api_helpers import composeJsonResponse
 from org.forms import NewOrg, OrgInviteEmail
 from org.models import Org, OrgMember, OrgInvite
 from account.views import get_current_user
@@ -28,7 +28,7 @@ def _orgs_get(request):
 	all_orgs = Org.objects.join(Org.OrgMember_set).filter(OrgMember.account_id == account.id)
 
 	context = {"all_orgs": all_orgs}
-	return ComposeJsonResponse(200, "", context)
+	return composeJsonResponse(200, "", context)
 
 
 def _orgs_post(request):
@@ -59,7 +59,7 @@ def _orgs_post(request):
 		logging.info('New org: org_id={}, actor_id={}'.format(org.id, org.actor_id))
 
 	context = {"org": org}
-	return ComposeJsonResponse(200, "", context)
+	return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -132,4 +132,4 @@ def invite_by_email(request, org_id):
 		'message': 'ok'
 	}
 
-	return ComposeJsonResponse(200, "", context)
+	return composeJsonResponse(200, "", context)
