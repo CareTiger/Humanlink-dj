@@ -8,7 +8,6 @@ from django.conf import settings
 from api_helpers import ComposeJsonResponse
 from org.forms import NewOrg, OrgInviteEmail
 from org.models import Org, OrgMember, OrgInvite
-from account.models import Account
 from account.views import get_current_user
 from message.models import Thread, PRIVACY_CHOICES
 import mandrill

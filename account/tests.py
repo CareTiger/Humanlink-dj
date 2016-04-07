@@ -1,15 +1,16 @@
 from django.test import TestCase
-from account.models import *
+from account.models import Account
+from message.models import Thread
 
 # Create your tests here.
 
 class AccountTestCase(TestCase):
     def setUp(self):
-        Account.objects.create(email="timbaney1989@gmail.com", password="Password123@@")
-        Account.objects.create(email="courtney.schuman92@gmail.com", password="Password456@@")
+        Account.objects.create(email="timbaney1989@gmail.com")
 
-    def account_id_type_is_valid(self):
+    def member_add_to_thread(self):
         tim = Account.objects.get(email="timbaney1989@gmail.com")
-        courtney = Account.objects.get(email="courtney.schuman92@gmail.com")
-        self.assertTrue(tim.password == "Password123@@")
-        self.assertTrue(courtney.password == "WrongPassword")
+        thread = Thread.objects.create(account_id=tim.id)
+        Thread.add_members(thread, account_id=tim.id)
+        self.assertTrue(thread.account_id == tim.id)
+
