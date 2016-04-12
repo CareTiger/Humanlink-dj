@@ -14,7 +14,14 @@ def get_threads(request):
 
     account = get_current_user(request)
 
-    all_threads = Thread.objects.join(Thread.ThreadMember_set).filter(ThreadMember.account_id == account.id)
+    # all_threads = Thread.objects.join(Thread.ThreadMember_set).filter(ThreadMember.account_id == account.id)
+    all_threads = []
+    all_members = ThreadMember.objects.all()
+    for member in all_members:
+        if member.account_id == account:
+            all_threads.append(member.Thread_id)
+            return all_threads
+
 
     context = {"all_threads": all_threads}
     return composeJsonResponse(200, "", context)

@@ -62,15 +62,15 @@ class CareGiverInfo(forms.ModelForm):
         fields = ['is_hireable', 'location', 'about', 'certs']
 
 class AcceptInvite(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField()
-    password_conf = forms.CharField()
-    token = forms.CharField()
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required=True)
+    password_conf = forms.CharField(required=True)
+    token = forms.CharField(required=True)
 
 class SignUp(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField()
-    password_conf = forms.CharField()
-    org_name = forms.CharField()
-    org_username = forms.CharField()
-    invite = forms.CharField()
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required=True)
+    password_conf = forms.CharField(required=True)
+    org_name = forms.CharField(required=True)
+    org_username = forms.CharField(required=True)
+    invite = forms.CharField(required=True)

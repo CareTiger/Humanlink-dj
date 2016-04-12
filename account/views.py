@@ -5,17 +5,17 @@ import os
 import logging
 
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django_pusher.push import pusher
+from django.forms.models import model_to_dict
+from django.http import HttpResponse
 from itsdangerous import URLSafeTimedSerializer
 from django.conf import settings
-from django.core.serializers import json
+import json
 from django.shortcuts import render, redirect
 from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver
 from message.models import Thread, ThreadChat, CHAT_CHOICES
 from org.models import Org, OrgInvite, OrgMember
+# from third_party import pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
 import mandrill
@@ -44,15 +44,15 @@ def broadcast(self, chat_id=None):
 	partition = chunks(thread.members, 10)
 	for part in partition:
 		channels = ['private-account-{}'.format(m.account_id) for m in part]
-		pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+		# pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
-def add_to_welcome(request, org_id, account_id, inviter_id):
+def add_to_welcome(org_id, account_id, inviter_id):
 
 	thread = Thread.objects.get(org_id=org_id, name="welcome")
 	if thread:
 
-		thread.add_members(account_id=account_id)
+		thread.add_members(account_id)
 		chat = ThreadChat(thread_id=thread.id, account_id=account_id, text=account_id, kind=CHAT_CHOICES(2))
 		chat.save()
 
@@ -60,16 +60,13 @@ def add_to_welcome(request, org_id, account_id, inviter_id):
 
 def login(request):
 	# """ -Log in the user if credentials are valid """
-	account = get_current_user(request)
-
 	if request.method == "POST":
 		form = LoginForm(request.POST)
 
 		if form.is_valid():
-			cleaned_data = form.cleaned_data
+			cleaned_data = form.clean()
 
-			if not form.email or not form.password:
-				raise Exception("Please enter your email address and password")
+			account = Account.objects.get(email=cleaned_data['email'], password=cleaned_data['password'])
 
 			if cleaned_data['token']:
 
@@ -88,13 +85,17 @@ def login(request):
 					org.add_members(account.id, False, invite.is_admin)
 					invite.used = False
 
-					add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
+					# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 
 			else:
 				pass
 
-	else:
-		form = LoginForm()
+		context = {
+			'message': 'ok',
+			'next': '/app/'
+		}
+
+		return composeJsonResponse(200, "", context)
 
 
 def logout_user(request):
@@ -107,33 +108,28 @@ def signup(request):
 	if request.method == "POST":
 		form = SignUp(request.POST)
 
-		if not form.email or not form.password:
-			raise Exception("Email and Password are required")
-		if form.password != form.password_conf:
-			raise  Exception("Password does not match confirmation")
-		if not form.org_name or not form.org_username:
-			raise Exception('Organization name and username are required')
-		if not form.invite:
-			raise Exception('Invitation code is required')
-
 		if form.is_valid():
 			cleaned_data = form.cleaned_data
 
 			email = cleaned_data['email']
 			password = cleaned_data['password']
+			password_conf = cleaned_data['password_conf']
 			org_name = cleaned_data['org_name']
 			org_username = cleaned_data['org_username']
 			invite_token = cleaned_data['invite']
+
+			if password != password_conf:
+				raise Exception("Password does not match confirmation")
 
 			invitation = OrgInvite.objects.get(token=invite_token)
 
 			if invitation.used:
 				raise Exception("invitation code is invalid")
 
-			account = Account(email=email, password=password)
+			account = Account(email=email)
 			account.save()
 
-			org = Org(org_name=org_name, org_username=org_username)
+			org = Org(name=org_name, username=org_username)
 			org.save()
 
 			invitation.used = False
@@ -162,7 +158,7 @@ def signup(request):
 					template_content=[], async=True)
 			except mandrill.Error as e:
 				logging.exception(e)
-				raise Exception('Unknown service exception')
+				raise Exception(e)
 
 	else:
 		form = SignUp()
@@ -174,42 +170,43 @@ def accept_invite(request):
 	if request.method == "POST":
 		form = AcceptInvite(request.POST)
 
-		if not form.email or not form.password:
-			raise Exception('Email and password are required.')
-		if form.password != form.password_conf:
-			raise Exception('Password does not match confirmation.')
-		if not form.token:
-			raise Exception('Invitation code is required.')
-
 		if form.is_valid():
 			cleaned_data = form.cleaned_data
-			clean_token = cleaned_data['token']
-			clean_email = cleaned_data['email']
-			clean_password = cleaned_data['password']
+			token = cleaned_data['token']
+			email = cleaned_data['email']
+			password = cleaned_data['password']
+			password_conf = cleaned_data['password_conf']
 
-			invite = OrgInvite.objects.get(token=clean_token)
+			if password != password_conf:
+				raise Exception('Password does not match confirmation.')
+
+			invite = OrgInvite.objects.get(token=token)
 
 			if not invite:
 				raise Exception('Invitation token is invalid.')
 			if invite.used:
 				raise Exception('Invitation token has already been used.')
 
-			new_account = Account(email=clean_email, password=clean_password)
-			new_account.save()
+			Account.objects.create(email=email)
+			org = invite.org_id
 
-			org = Org.objects.get(id=invite.org_id)
-			org.add_members(new_account.id, False, False)
+			new_account = Account.objects.get(email=email)
+			OrgMember.objects.create(account_id=new_account, org_id=org)
+			org.add_members(new_account)
 
-			add_to_welcome(org_id=org.id, account_id=new_account.id, inviter_id=invite.token)
+			add_to_welcome(org_id=org.id, account_id=new_account, inviter_id=invite.token)
 
-	else:
-		form = AcceptInvite()
+			context = {
+				'message': 'ok'
+			}
+
+			return composeJsonResponse(200, "", context)
 
 
 def invite(request, token):
 	# """ -Retrieve an org member invitation information """
 	invite = get_invite(token)
-	if OrgInvite.used:
+	if invite.used:
 		raise Exception("Invitation token has already been used")
 
 	context = {
@@ -217,7 +214,6 @@ def invite(request, token):
 	}
 
 	return composeJsonResponse(200, "", context)
-
 @login_required
 def me(request):
 	# """ - Retrieve Current Account Information in JSON Format """
@@ -297,7 +293,7 @@ def profile(request, account_id):
 def caregiver_info(request, account_id):
 	# """ -Retrieve Caregiver Details for an Account """
 
-    caregiver = CareGiver.objects.get(account=account_id)
+	caregiver = CareGiver.objects.get(account=account_id)
 	context = {
         'caregiver': caregiver
     }
@@ -329,7 +325,9 @@ def invite_accept_redirect(token):
 
 	base = "home/accept"
 
-	url = '{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite)))
+	invite_dict = model_to_dict(invite)
+
+	url = '{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 	# local-url = localhost:8000/home/accept/234512?data={'id':'145','token':'234512','account_id':'137'} ......
 
 	return redirect(url)
@@ -339,42 +337,47 @@ def generate_token(length):
 
 	return codecs.encode(os.urandom(length // 2), 'hex')
 
+def verification_token(account_id):
+	"""Get account's email verification token."""
+
+	account = Account.objects.get(id=account_id)
+	if not account.email:
+		raise Exception("No email found for account {}".format(account.id))
+
+	email_serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt='email-token')
+
+	email_hash = account.email_hash()
+	rand = generate_token(4)
+	data = (account.id, email_hash, rand)
+	return email_serializer.dumps(data)
+
 
 def verify(request, token):
 	# """ -If verification token is valid, Account.email_verified = True """
+	email_serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt='email-token')
 
-	account = get_current_user(request)
-	if not account.email:
-		raise "No email found for account {}".format(account.id)
-
-	email_serializer = URLSafeTimedSerializer(settings.SERIALIZER_SECRET_KEY, salt='email-token')
-
-	rand = generate_token(4)
-	data = (account.id, account.email_hash, rand)
-	email_serializer.dumps(data)
-
-	if not token:
-		raise Exception("Invalid verification token")
-	else:
-		try:
-			account_id, email_hash, rand = email_serializer.loads(token)
-			if account.email_hash != email_hash:
-				raise Exception("token invalid")
-			if account.email_verified:
-				raise Exception("Email address already verified.")
-			account.email_verified = True
-			account.save()
-			logging.info('Email verified: {}'.format(account.email))
-			login(request)
-		except:
-			logging.warning('Bad Signature.')
-			raise Exception("Token invalid")
+	try:
+		account_id, email_hash, rand = email_serializer.loads(token)
+		email_hash = email_serializer.loads(token)
+		account = Account.objects.get(id=account_id)
+		if account.email_hash() != email_hash:
+			raise Exception("token invalid")
+		if account.email_verified:
+			raise Exception("Email address already verified.")
+		account.email_verified = True
+		account.save()
+		logging.info('Email verified: {}'.format(account.email))
+		login(request)
+	except:
+		logging.warning('Bad Signature.')
+		raise Exception("Token invalid")
 
 
-	return redirect("account")
+	# return redirect("/account s/")
+	return HttpResponse('This Works')
 
 def get_current_user(request):
 	user = request.user
-	account = Account.objects.get(email=user.email, password=user.password)
+	account = Account.objects.get(username=user.username)
 
 	return account

@@ -15,8 +15,8 @@ class Org(models.Model):
 		return self.OrgMember_set.all()
 
 	def add_members(self, account_id, is_owner=False, is_admin=False):
-		member = OrgMember(account_id=account_id, is_owner=is_owner, is_admin=is_admin)
-		self.OrgMember_set.append(member)
+		member = OrgMember.objects.get(account_id=account_id, is_owner=is_owner, is_admin=is_admin)
+		self.orgmember_set.add(member)
 		return member
 
 

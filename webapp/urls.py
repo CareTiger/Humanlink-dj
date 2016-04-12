@@ -2,18 +2,18 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from account import views as account_views
 from . import views
 
 admin.autodiscover()
 
 urlpatterns = [
+	url(r'^$', views.index),
 	url(r'^admin/filebrowser/', include('filebrowser.urls')),
 	url(r'^admin/', include(admin.site.urls)),
-	url(r'^login/', views.login, name="login"),
-	url(r'^logout/', views.logout, name="logout"),
+	url(r'^logout/', views.logout_user, name="logout"),
 	url(r'^r/', views.r, name="redirect"),
-	url(r'^$/', views.index, name="index"),
-	url(r'^verify/(?P<token>\d+)/?$', views.verify_email, name="verify_email"),
+	url(r'^verify/(?P<token>.*)/?$', views.verify_email, name="verify_email"),
 	url(r'^accept/(?P<token>\d+)/?$', views.invite_accept, name="invite_accept"),
 	url(r'^caregivers/', views.caregivers, name="caregivers"),
 	url(r'^pusher/auth/', views.pusher_auth, name="pusher_auth"),
@@ -21,9 +21,9 @@ urlpatterns = [
 	url(r'^app/', views.app, name="app"),
 	url(r'^settings/', views.settings, name="settings"),
 	url(r'^terms/', views.terms, name="terms"),
-	url(r'^account/', include("account.views"), name="account-views"),
-	url(r'^orgs/', include("org.views"), name="org-views"),
-	url(r'^message/', include("message.views"), name="message-views")
+	url(r'^accounts/', include("account.urls"), name="account-urls"),
+	url(r'^orgs/', include("org.urls"), name="org-urls"),
+	url(r'^message/', include("message.urls"), name="message-urls")
 ]
 
 if settings.DEVELOPMENT:

@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 class Account(models.Model):
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
+    username = models.CharField(max_length=100, null=True)
     is_active = models.BooleanField(default=True)
     email = models.EmailField(max_length=255, null=True, blank=True, unique=True)
     password = models.CharField(max_length=120, null=True)
