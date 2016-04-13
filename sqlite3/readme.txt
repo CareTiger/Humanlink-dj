@@ -1,1 +1,0 @@
-Local sqlite database file is stored here for development purposes only.
