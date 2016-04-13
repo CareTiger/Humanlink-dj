@@ -1,0 +1,66 @@
+<div class="account-login" id="login-view">
+  <div class="card card-half">
+    <h2 class="text-center">Welcome back!</h2>
+    <h4 class="text-center">Sign in to your account.</h4>
+
+    <div class="alert alert-danger" ng-if="vm.errorMessage">
+      {{ vm.errorMessage }}
+    </div>
+
+    <form class="form-horizontal" name="form" ng-submit="vm.login(vm.auth)">
+
+      <div class="form-group">
+        <label for="email" class="col-sm-3 control-label">Email</label>
+
+        <div class="col-sm-9 col-md-7">
+          <input type="email" id="email"
+              class="form-control"
+              placeholder="name@example.com"
+              ng-model="vm.auth.email"
+              required
+              hl-focus>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="col-sm-3 control-label">Password</label>
+
+        <div class="col-sm-9 col-md-7">
+          <input type="password" id="password" name="password"
+              class="form-control"
+              placeholder="******"
+              ng-model="vm.auth.password"
+              required minlength="6">
+
+          <div class="has-warning" ng-if="form.password.$dirty">
+            <div class="help-block" ng-messages="form.password.$error">
+              <div ng-message="minlength">Please enter at least six characters.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9 col-md-7">
+          <button type="submit" class="btn btn-block btn-secondary"
+              ng-disabled="!form.$valid || vm.submitBusy">
+            Sign in
+            <span ng-if="vm.submitBusy"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<div class="col-sm-6 col-sm-offset-3">
+  <p>Forgot your password? Reset it
+      <a ui-sref="auth.reset">here</a>.</p>
+  <p>Trying to create a team?
+      <a ui-sref="auth.join.personal">Sign up</a> to get started.</p>
+</div>

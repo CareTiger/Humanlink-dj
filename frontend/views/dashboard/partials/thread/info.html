@@ -1,0 +1,91 @@
+<div class="info">
+
+  <div class="info-title-div">
+    <h4>About <strong>{{ ::vm.thread.name }}</strong>
+      <a class="actionable-icon" href ng-click="thread.closeSidepanel()">
+        <i class="material-icons pull-right">clear</i>
+      </a>
+    </h4>
+  </div>
+
+  <div class="info-item-div" ng-click="showChannelInfo = !showChannelInfo">
+    <h5>
+      <div class="fill-div">
+        <i class="material-icons md-24">info_outline</i>&nbsp;Channel Information
+        <i class="material-icons md-24 pull-right"
+           ng-show="!showChannelInfo">chevron_right</i>
+        <i class="material-icons md-24 pull-right"
+           ng-show="showChannelInfo">expand_more</i>
+      </div>
+    </h5>
+  </div>
+
+  <div ng-show="showChannelInfo">
+    <div ng-if="vm.thread.purpose">
+      <p>Purpose: {{ vm.thread.purpose }}</p>
+
+      <p>Update channel information
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.update"><strong>here.</strong></a>
+      </p>
+    </div>
+
+    <div ng-if="!vm.thread.purpose">
+      <div class="vmargin10">
+        No purpose exists for channel <strong>{{ ::vm.thread.name }}</strong>.
+        Creating a channel purpose helps current and future team members.
+        Get started <a ui-sref-active-eq="active" ui-sref="dashboard.messages.update">
+          here.</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-item-div" ng-click="showChannelMembers = !showChannelMembers">
+    <h5>
+      <div class="fill-div">
+        <i class="material-icons md-24">group_add</i>&nbsp;Members
+        <i class="material-icons md-24 pull-right" ng-show="!showChannelMembers">chevron_right</i>
+        <i class="material-icons md-24 pull-right"
+           ng-show="showChannelMembers">expand_more</i>
+      </div>
+    </h5>
+  </div>
+
+  <div ng-show="showChannelMembers">
+    <div class="vmargin10">
+      Channel <strong>{{ ::vm.thread.name }}</strong> has
+      {{ ::vm.thread.members.length }} members.
+      We have made it easy for you to add/remove members from your channel.
+      Add channel members <a href>here.</a>
+    </div>
+
+    <div class="media" ng-repeat="member in vm.thread.members">
+      <div class="media-left media-middle">
+        <a href>
+          <img class="avatar"
+               ng-src="{{ ::member.profile.gravatar_url }}">
+        </a>
+      </div>
+
+      <div class="media-body">
+        <div class="name">
+          <div class="pull-right">
+            <span><a href title="Remove Member" ng-click="vm.removeMember()">
+              <i class="material-icons">clear</i></a></span>
+          </div>
+          <div ng-if="vm.accountName(member.account_id)">
+            {{ vm.accountName(member.account_id) }}
+          </div>
+          <div><a href>{{ ::member.profile.email }}</a></div>
+        </div>
+        <div ng-show="member.status">
+          <i class="material-icons">access_time</i>
+          {{ ::member.status }} this is a status
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,82 @@
+.dashboard .sidebar {
+  position: fixed;
+  background-color: @primary;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: @sidebar-width;
+  overflow-y: scroll;
+
+  a.item {
+    display: block;
+    text-decoration: none;
+    color: @gray-lighter;
+    padding: 5px 10px;
+    .text-overflow();
+
+    &:hover, &:focus {
+      background-color: lighten(@primary, 5%);
+    }
+    &.active {
+      color: @background;
+      background-color: @secondary;
+    }
+
+    .archived {
+      color: darken(@gray-lighter, 25%);
+    }
+  }
+
+  .account {
+    // Height needs to be 1px less than .header.
+    height: (@header-height - 1px);
+    line-height: (@header-height - 1px);
+    vertical-align: middle;
+    font-weight: 700;
+
+    .item {
+      padding: 0 10px;
+    }
+
+    .name {
+      display: inline-block;
+      width: 155px;
+      vertical-align: middle;
+      .text-overflow();
+    }
+
+    .dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+
+    img {
+      vertical-align: middle;
+      .square(30px);
+    }
+  }
+
+  .teams {
+    .name {
+      text-align: center;
+      font-size: @font-size-h4;
+      color: @background;
+      margin-top: 15px;
+      span {
+        color: @background;
+      }
+      .title {
+        padding-left: 25px;
+        text-align: left;
+        .text-overflow();
+      }
+    }
+  }
+
+  .blurred {
+    .item {
+      color: transparent;
+      text-shadow: 0 0 10px @gray-lighter;
+    }
+  }
+}

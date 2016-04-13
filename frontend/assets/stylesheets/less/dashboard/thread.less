@@ -1,0 +1,80 @@
+.dashboard .thread {
+
+  .messages-container {
+    padding: 0;
+  }
+
+  .sidepanel {
+    background-color: @background;
+    padding: 0;
+    height: 100vh;
+    border-left: 3px solid @border;
+  }
+
+  .messages {
+    min-height: 200px;
+    overflow-y: scroll;
+    background-color: @background;
+    padding: 10px;
+
+    .message {
+      padding: 7px 0;
+
+      .avatar {
+        .square(30px);
+      }
+      .name {
+        font-weight: 700;
+      }
+    }
+
+    .notification {
+      color: @gray-light;
+      font-style: italic;
+    }
+
+    .thread-welcome {
+      padding: 20px 0;
+    }
+
+    .date-divider {
+      color: @gray;
+      text-transform: uppercase;
+      text-align: center;
+
+      h6 {
+        border-bottom: 1px solid @border;
+        line-height: 0.1em;
+      }
+
+      h6 span {
+        background: @background;
+        padding: 0 20px;
+      }
+    }
+  }
+
+  .reply {
+    height: @reply-height;
+    border-top: 1px solid @border;
+    padding-top: @reply-height/4;
+
+    .block {
+      position: relative;
+      margin: 0 auto;
+      width: 90%;
+
+      textarea {
+        max-width: 100%;
+        border: 2px solid @type;
+        border-radius: 5px;
+      }
+
+      .spinner {
+        position: absolute;
+        left: -20px;
+      }
+    }
+  }
+
+}

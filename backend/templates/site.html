@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %} HumanLink {% endblock %}</title>
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/images/favicons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196"
+        href="/images/favicons/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160"
+        href="/images/favicons/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/images/favicons/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16.png">
+  <link rel="apple-touch-icon" href="/images/favicons/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/favicon-180.png">
+  <link rel="stylesheet/less" href="../webapp/static/less/accounts/all.less">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/images/favicons/favicon-144.png">
+  <meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
+
+  <!--[% assets "css_all" -%]-->
+    <!--<link rel="stylesheet" href="[= ASSET_URL =]" />-->
+  <!--[%- endassets %]-->
+
+  {% block head %} {% endblock %}
+  {% block styles %} {% endblock %}
+  <script type="text/javascript">
+    window.HL = {};
+//    window.HL.userdata = {= userdata | tojson | safe =};
+  </script>
+</head>
+
+<body class="[% block layout %][% endblock %]"
+[% if ng_app %] ng-app="[= ng_app =]" [% endif %]>
+
+{% block nav %}
+{% include "nav.html" %}
+{% endblock %}
+
+{% include "site-alert.html" %}
+
+<div class="{% block container %}container container-main{% endblock %}">
+  {% block content_wrapper %}
+  {% block content %}
+  {% endblock %}
+  {% endblock %}
+</div>
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}
+
+<!--[% assets "js_vendor" -%]-->
+<!--<script src="[= ASSET_URL =]"></script>-->
+<!--[%- endassets  %]-->
+
+<!--[% assets "js_templates" -%]-->
+<!--<script src="[= ASSET_URL =]"></script>-->
+<!--[%- endassets %]-->
+
+<!--[% assets "js_app" -%]-->
+<!--<script src="[= ASSET_URL =]"></script>-->
+<!--[%- endassets %]-->
+
+{% block scripts %} {% endblock %}
+</body>
+</html>

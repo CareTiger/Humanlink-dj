@@ -1,0 +1,51 @@
+# Continuous integration and deployment with CircleCi.
+# More info: https://circleci.com/docs/configuration
+
+machine:
+  python:
+    version: 2.7.9
+
+dependencies:
+  cache_directories:
+    - "~/google_appengine/"
+    - "bower_components/"
+    - "node_modules/"
+    - "lib/pip/"
+  pre:
+    - ./bin/circleci.bash dep_pre
+  post:
+    - ./bin/circleci.bash dep_post
+
+test:
+  override:
+    - ./bin/circleci tests
+
+test:
+  override:
+   - ./bin/circleci.bash tests
+
+deployment:
+  prod:
+    branch: master
+    commands:
+      - ./bin/circleci.bash deploy humanlink-frontend
+
+  kanat-dev:
+    branch: kanat-dev
+    commands:
+      - ./bin/circleci.bash deploy kanat-dev
+
+  ven-dev:
+    branch: ven-dev
+    commands:
+      - ./bin/circleci.bash deploy deep-chimera-732
+
+  tyler-dev:
+   branch: tyler-dev
+   commands:
+     - ./bin/circleci.bash deploy hl-tyler-test
+
+  lee-dev:
+    branch: lee-dev
+    commands:
+      - ./bin/circleci.bash deploy lee-dev

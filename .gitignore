@@ -1,0 +1,32 @@
+.DS_Store
+design_docs/
+
+# Ignore Python Compiled/Object files.
+*.pyc
+*.pyo
+
+# Ignore any sqlite databases, as those will be development, and will change on each local system.
+sqlite/
+
+# Ignore media files, as these will change locally.
+media/
+!webapp/media/
+!webapp_admin/**/media/
+!third_party/**/media/
+
+# Ignore static files, except those in third party apps.
+static/
+!third_party/**/static
+!webapp/static/
+!webapp_admin/static/
+
+# Ignore Pycharm folder
+.idea/
+
+# Sublime Text Related
+*.sublime-project
+*.sublime-workspace
+
+
+# Get rid of any clutter.
+*.jso

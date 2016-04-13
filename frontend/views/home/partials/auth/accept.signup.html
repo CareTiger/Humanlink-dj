@@ -1,0 +1,86 @@
+<div>
+  <form name="form" class="card">
+
+    <div class="form-group">
+      <h3 class="no-top-margin">New to Humanlink?</h3>
+      <p>
+        Humanlink is an online and mobile messaging platform that enables in-home
+        healthcare providers to communicate with their care teams in a safe,
+        secure and productive manner.
+        No more waiting for email responses or playing phone tag.
+      </p>
+
+      <p class="visible-xs">Already have an account?
+        <a href ng-click="vm.gotoLogin()">Sign in</a>.
+      </p>
+
+      <div class="alert alert-danger" ng-if="vm.messages.signup">
+        {{ vm.messages.signup }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email"
+          class="form-control input-lg"
+          placeholder="name@example.com"ng-model="vm.signupModel.email"
+          required>
+
+      <div class="has-warning" ng-if="form.email.$dirty">
+        <div class="help-block" ng-messages="form.email.$error">
+          <div ng-message="email">You forgot to enter your email address.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"
+          class="form-control input-lg"
+          placeholder="******"
+          ng-model="vm.signupModel.password"
+          required minlength="6">
+
+      <div class="has-warning" ng-if="form.password.$dirty">
+        <div class="help-block" ng-messages="form.password.$error">
+          <div ng-message="minlength">Please enter at least six characters.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password_confirm">Confirm</label>
+      <input type="password" id="password_confirm" name="password_confirm"
+          class="form-control input-lg"
+          placeholder="Confirm password"
+          ng-model="vm.signupModel.password_confirm"
+          required minlength="6"
+          hl-compare-to="vm.signupModel.password">
+
+      <div class="has-warning" ng-if="form.password.$valid && form.password_confirm.$dirty">
+        <div class="help-block" ng-messages="form.password_confirm.$error">
+          <div ng-message="compareTo">
+            Oops, this does not match the password you entered above.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <p>By clicking on &ldquo;Join&rdquo; below, you are agreeing to our
+        <a href="/terms" target="_blank">Terms and Conditions</a>.</p>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-md-6 vmargin10">
+        <button type="button" class="btn btn-block btn-lg btn-secondary"
+            ng-click="vm.signup(vm.signupModel)"
+            ng-disabled="!form.$valid || vm.spinners.signup">
+          Join
+          <span ng-if="vm.spinners.signup"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>

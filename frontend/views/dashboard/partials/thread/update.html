@@ -1,0 +1,200 @@
+<div class="card card-half">
+
+  <h2 class="text-center">Update channel information</h2>
+
+  <div class="alert alert-danger" ng-if="vm.errorMessage">
+    {{ vm.errorMessage }}
+  </div>
+
+  <form class="form-horizontal" name="form">
+    <div class="form-group">
+      <label for="type" class="col-sm-3 control-label">Channel type</label>
+
+      <div class="col-sm-9 col-md-7">
+        <div class="radio">
+          <label>
+            <input type="radio" name="type" id="type" value="option1" checked
+                   ng-model="vm.type">General channel
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="type" id="type" value="option2" ng-model="vm.type">
+            Care channel
+          </label>
+        </div>
+        <div class="help-block">
+          Select a channel type. Care channels provide options to get patient specific
+          details.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name" class="col-sm-3 control-label">Name</label>
+
+      <div class="col-sm-9 col-md-7">
+        <input type="text" id="name" name="name" class="form-control"
+               minlength="3" maxlength="30" ng-model="vm.thread.name"
+               hl-alphanum hl-focus required/>
+
+        <div class="has-warning" ng-if="form.name.$dirty">
+          <div class="help-block" ng-messages="form.name.$error">
+            <div ng-message="alphanum">
+              Letters, numbers, and dashes only. Blank spaces are not allowed.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-block">
+          Give your channel a name. This is typically the name of the person receiving
+          care.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="purpose" class="col-sm-3 control-label">Purpose</label>
+
+      <div class="col-sm-9 col-md-7">
+        <textarea type="text" id="purpose" name="purpose" class="form-control"
+                  ng-model="vm.thread.purpose" rows="3"
+                  placeholder="Optional"></textarea>
+
+        <div class="help-block">
+          Give your channel a purpose. Providing a purpose helps members understand what
+          this channel is used for.
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="vm.type == 'option2'">
+
+      <div class="form-group">
+        <label for="hours" class="col-sm-3 control-label">Hours of care</label>
+
+        <div class="col-sm-9 col-md-7">
+          <input type="text" id="hours" name="hours" class="form-control"
+                 maxlength="5" ng-model="vm.thread.hours"
+                 hl-alphanum hl-focus/>
+
+          <div class="has-warning" ng-if="form.hours.$dirty">
+            <div class="help-block" ng-messages="form.hours.$error">
+              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
+                spaces are not allowed.
+              </div>
+            </div>
+          </div>
+
+          <div class="help-block">
+            Estimated number of care hours per week.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="gender" class="col-sm-3 control-label">Gender of recipient</label>
+
+        <div class="col-sm-9 col-md-7">
+          <select id="gender" class="form-control"
+                  ng-model="vm.thread.gender">
+            <option value="Male" ng-selected="!vm.thread.gender">Male</option>
+            <option value="Female">Female</option>
+            <option value="Male">Don't disclose</option>
+          </select>
+
+          <div class="help-block">
+            Some care professionals have gender preferences. While this is an optional
+            field, disclosing gender of care recipient expedites care delivery.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="care_needs" class="col-sm-3 control-label">Care Needs</label>
+
+        <div class="col-sm-9 col-md-7">
+          <div class="checkbox" ng-repeat="care in ::vm.careServices">
+            <label>
+              <input type="checkbox"
+                     checklist-model="vm.thread.basic.care_needs"
+                     checklist-value="care.name"> {{ care.description }}
+              <small>({{ care.skills }})</small>
+            </label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="hobbies" class="col-sm-3 control-label">
+          Hobbies/Interests/Past Profession</label>
+
+        <div class="col-sm-9 col-md-7">
+      <textarea type="text" id="hobbies" name="hobbies" class="form-control"
+                rows="2" ng-model="vm.thread.hobbies"
+                hl-alphanum>
+      </textarea>
+
+          <div class="has-warning" ng-if="form.hobbies.$dirty">
+            <div class="help-block" ng-messages="form.hobbies.$error">
+              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
+                spaces are not allowed.
+              </div>
+            </div>
+          </div>
+
+          <div class="help-block">General information that might help care providers</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes" class="col-sm-3 control-label">Extra Notes</label>
+
+        <div class="col-sm-9 col-md-7">
+              <textarea type="text" id="notes" name="notes" class="form-control"
+                        rows="2" ng-model="vm.thread.notes"
+                        hl-alphanum>
+
+              </textarea>
+
+          <div class="has-warning" ng-if="form.notes.$dirty">
+            <div class="help-block" ng-messages="form.notes.$error">
+              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
+                spaces are not allowed.
+              </div>
+            </div>
+          </div>
+
+          <div class="help-block">
+            Any additional information that you think will help your careproviders.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-offset-3 col-sm-9 col-md-7">
+        <div class="row">
+          <div class="col-xs-6">
+            <button type="button"
+                    class="btn btn-block btn-default"
+                    ng-click="vm.cancel()">Cancel
+            </button>
+          </div>
+          <div class="col-xs-6">
+            <button type="submit" class="btn btn-block btn-secondary"
+                    ng-click="vm.UpdateInfo(vm.thread)"
+                    ng-disabled="!form.$valid || vm.submitBusy">Update Information
+                      <span ng-if="vm.submitBusy">
+                          <i class="fa fa-circle-o-notch fa-spin"></i>
+                      </span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>

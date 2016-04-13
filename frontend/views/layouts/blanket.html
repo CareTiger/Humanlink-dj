@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>[% block title %] HumanLink [% endblock %]</title>
+    [% assets "css_all" -%]
+      <link rel="stylesheet" href="[= ASSET_URL =]" />
+    [%- endassets %]
+
+    [% block meta %]
+    <meta name="description" content="Our mission is to ensure that all elderly adults have access to affordable, high-quality caregivers. Our caregivers are trained to provide Companion Care, Personal Care and Alzheimers and Dementia care.">
+
+    <meta property="og:title" content="HumanLink | Affordable, high-quality caregivers.">
+    <meta property="og:description" content="Our mission is to ensure that all elderly adults have access to affordable, high-quality caregivers. Our caregivers are trained to provide Companion Care, Personal Care and Alzheimers and Dementia care.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.humanlink.co">
+    <meta property="og:image" content="https://www.humanlink.co/images/hl.logo.vert.blue.png">
+    [% endblock %]
+
+    [% block styles %]
+    [% endblock %]
+</head>
+<body class="blanket">
+
+    [% block body %]
+    [% endblock %]
+
+    [% assets "js_vendor" -%]
+      <script src="[= ASSET_URL =]"></script>
+    [%- endassets %]
+
+    [% assets "js_app" -%]
+      <script src="[= ASSET_URL =]"></script>
+    [%- endassets %]
+
+    [% block scripts %]
+    [% endblock %]
+
+    [% include "shared/ganalytics.html" %]
+    [% include "shared/olark.html" %]
+
+</body>
+</html>

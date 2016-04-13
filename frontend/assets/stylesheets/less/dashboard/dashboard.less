@@ -1,0 +1,46 @@
+// These values need to be in sync with `hlResizeMessages` directive.
+@header-height: 45px;
+@reply-height: 70px;
+
+.dashboard {
+  min-height: 200px;
+
+  .header {
+    height: @header-height;
+    line-height: @header-height;
+    padding: 0 10px;
+    vertical-align: middle;
+    background-color: @background;
+    border-bottom: 1px solid @border;
+
+    .title {
+      font-size: @font-size-h4;
+      margin: 0;
+    }
+
+    a.title, title a {
+      text-decoration: none;
+    }
+
+    .dropdown {
+      display: inline-block;
+    }
+
+    .header-icons {
+      button {
+        padding: 0;
+      }
+
+      button:focus {
+        outline: 0;
+      }
+
+      i {
+        font-size: 32px;
+        color: @type;
+      }
+    }
+
+  }
+
+}

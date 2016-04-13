@@ -1,0 +1,27 @@
+{% extends "site.html" %}
+{% load staticfiles %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script type="text/javascript" src="{% static "js/humanlink.js" %}"></script>
+{% endblock %}
+
+{% block title %} Humanlink Home {% endblock %}
+
+[% set ng_app = 'app.guest' %]
+
+{% block head %}
+<base href="/home/">
+{% endblock %}
+
+{% block content %}
+THIS IS WHERE THE CONTENT IS MEANT TO GO
+<br>
+<br>
+
+<div>
+   <div ui-view></div>
+</div>
+<br>
+END CONTENT BLOCK
+{% endblock %}

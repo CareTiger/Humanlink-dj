@@ -1,0 +1,29 @@
+<div class="card card-half">
+
+  <h4 class="text-center">Are you sure you want to archive channel
+    <strong>{{ ::vm.thread.name }}</strong></h4>
+
+  <div class="alert alert-danger" ng-if="vm.errorMessage">
+    {{ vm.errorMessage }}
+  </div>
+
+  <form name="form">
+    <div class="form-group row vmargin10">
+      <div class="col-md-8 col-md-offset-2 row">
+        <div class="col-xs-6">
+          <button type="button" class="btn btn-block btn-default"
+                  ng-click="vm.cancel()">Cancel
+          </button>
+        </div>
+        <div class="col-xs-6">
+          <button type="submit" class="btn btn-block btn-secondary"
+                  ng-click="vm.archive()"
+                  ng-disabled="!form.$valid || vm.submitBusy">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>

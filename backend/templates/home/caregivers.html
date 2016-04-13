@@ -1,0 +1,134 @@
+{% extends "layouts/blanket.html" %}
+
+{% block title %} Become a HumanLink Caregiver.  {% endblock %}
+
+{% block meta %}
+<meta name="description" content="Become a HumanLink caregiver and earn great money. Be your own boss and get paid for providing care on your own schedule.">
+
+<meta property="og:title" content="Become a HumanLink Caregiver">
+<meta property="og:description" content="Become a HumanLink caregiver and earn great money. Be your own boss and get paid for providing care on your own schedule.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.humanlink.co/caregivers">
+<meta property="og:image" content="https://www.humanlink.co/images/hl.logo.vert.blue.png">
+{% endblock %}
+
+{% block body %}
+<div class="caregivers" ng-app="Home" ng-controller="LandingCtrl">
+
+<nav class="navigation-bar" role="navigation">
+  <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target="#navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <img class="nav-logo" src="/images/hl.logo.horiz.blue.png" alt="HumanLink Logo"/>
+            </a>
+        </div>
+        <div id="navbar-toggle" class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+                <li><a href="/"
+                        title="HumanLink for care seekers and agencies.">I am a care seeker</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="section section-welcome">
+    <div class="container ">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Welcome home, caregivers.</h1>
+                <p class="lead">HumanLink is currently by invitation only.</p>
+                <p>
+                    <button class="btn btn-lg btn-default" ng-click="gotoInvite()">
+                        Request Invite <i class="fa fa-angle-right"></i>
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Non-intrusive Communication</h1>
+                <p>No more unexpected phone calls.
+                Our platform provides a seamless way for care seekers to reach you.</p>
+            </div>
+             <div class="col-sm-6">
+                <img src="/images/landing/care_request.jpg" class="img-responsive img-thumbnail"
+                 alt="Human link care request email.">
+            </div>
+       </div>
+    </div>
+</div>
+
+<div class="section section-benefits">
+    <div class="container">
+        <h1 class="text-center">Take Charge of Your Career</h1>
+        <div class="row">
+            <div class="col-sm-6 benefits">
+                <h3>Build Your Brand</h3>
+                <p>
+                HumanLink is for amazing caregivers.
+                By creating your online profile and building your work history,
+                you will significantly improve your chances of finding your
+                dream job at a doctor's office or a clinic.</p>
+
+                <h3>Earn Better Pay</h3>
+                <p>We use technology to reduce high overhead costs.
+                This way we can pass on the savings to you.</p>
+
+                <h3>Manage Your Commute</h3>
+                <p>We get it. You don't want to spend too much time commuting to work.
+                You can set how far you are willing to travel to provide care and
+                our algorithms will match you appropriately.</p>
+
+                <h3>HumanLink Scholarships</h3>
+                <p>We have several career development opportunities.
+                Our top caregivers are eligible to apply for paid training opportunities
+                in areas like Alzheimer's disease, end-of-life care, nursing, and more.</p>
+            </div>
+            <div class="col-sm-6">
+                <img src="/images/landing/humanlink_solutions.png" class="img-responsive"
+                    alt="HumanLink for caregivers"/>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-offset-4 col-sm-4">
+            <p><button type="button" class="btn btn-lg btn-block btn-default btn-transparent"
+                    ng-click="gotoInvite()">
+                Request Invite</button></p>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+             <div class="col-sm-6">
+                <img src="/images/landing/sample_invoice.jpg" class="img-responsive img-thumbnail"
+                 alt="HumanLink care request invoice.">
+            </div>
+            <div class="col-sm-6">
+                <h1>Pay and Taxes</h1>
+                <p>We make it easy for you to track your time, invoice customers, and
+                get paid in a timely fashion. We want to make sure you have a pleasant
+                experience providing care on our platform. We can also help you with taxes. Just ask!</p>
+            </div>
+       </div>
+    </div>
+</div>
+
+{% include "home/_interest-form.html" %}
+
+</div>
+{% endblock %} <!-- block -->

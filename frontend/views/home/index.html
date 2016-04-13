@@ -1,0 +1,17 @@
+[% extends "site.html" %]
+
+[% block title %] Humanlink Home [% endblock %]
+
+[% set ng_app = 'app.guest' %]
+
+[% block head %]
+<base href="/home/">
+[% endblock %]
+
+[% block content %]
+
+<div>
+  <div ui-view></div>
+</div>
+
+[% endblock %]

@@ -1,0 +1,93 @@
+<div>
+  <h2 class="text-center">Join Humanlink.</h2>
+
+  <div class="alert alert-danger" ng-if="vm.errorMessage">
+    {{ vm.errorMessage }}
+  </div>
+
+  <form name="form">
+
+    <div class="form-group">
+      <label for="invite">Invitation code</label>
+      <input type="text" id="invite" class="form-control input-lg"
+         name="invite" placeholder="abcd"
+         required maxlength="5"
+         ng-model="vm.signup.invite"
+         hl-focus>
+
+      <div class="has-warning" ng-if="form.invite.$dirty">
+        <div class="help-block" ng-messages="form.invite.$error">
+          <div ng-message="required">You forgot to enter your enter this.</div>
+        </div>
+      </div>
+
+      <div class="help-block">
+        Humanlink is currently by invitation only. Please reach out
+        to us if you would like to try out our platform.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" class="form-control input-lg"
+         name="email" placeholder="name@example.com"
+         required
+         ng-model="vm.signup.email">
+
+      <div class="has-warning" ng-if="form.email.$dirty">
+        <div class="help-block" ng-messages="form.email.$error">
+          <div ng-message="email">You forgot to enter your email address.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" class="form-control input-lg"
+         name="password" placeholder="******"
+         required minlength="6"
+         ng-model="vm.signup.password">
+
+      <div class="has-warning" ng-if="form.password.$dirty">
+        <div class="help-block" ng-messages="form.password.$error">
+          <div ng-message="minlength">Please enter at least six characters.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password_confirm">Confirm</label>
+      <input type="password" id="password_confirm" class="form-control input-lg"
+         name="password_confirm" placeholder="Confirm password"
+         required minlength="6"
+         ng-model="vm.signup.password_confirm"
+         hl-compare-to="vm.signup.password">
+
+      <div class="has-warning" ng-if="form.password.$valid && form.password_confirm.$dirty">
+        <div class="help-block" ng-messages="form.password_confirm.$error">
+          <div ng-message="compareTo">
+              Oops, this does not match the password you entered above.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <p>On the next screen, you will set up your team.</p>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-block btn-lg btn-default" ng-click="vm.cancel()">
+        Cancel</button>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-block btn-lg btn-secondary"
+          ng-click="vm.next(vm.signup)" ng-disabled="!form.$valid">
+          Continue</button>
+      </div>
+    </div>
+
+  </form>
+  </div>
+</div>

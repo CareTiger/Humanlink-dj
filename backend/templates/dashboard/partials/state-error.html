@@ -1,0 +1,9 @@
+<div class="card card-half">
+  <h3 class="no-top-margin">Uh-oh, something went wrong. We apologize!</h3>
+  <button type="button" class="btn btn-default" ng-click="vm.showError = !vm.showError">
+    <span ng-if="!vm.showError">Show</span>
+    <span ng-if="vm.showError">Hide</span>
+    details
+  </button>
+  <div ng-if="vm.showError"><pre>{{ vm.error }}</pre></div>
+</div>

@@ -1,0 +1,53 @@
+<div class="card card-half">
+  <h2 class="text-center">Welcome to your dashboard.</h2>
+
+  <p>
+    <i class="fa fa-arrow-left"></i>
+    Select a channel from the menu on the left to start talking.
+  </p>
+
+  <div ng-if="vm.nagDesktopNotifications">
+
+    <div class="alert alert-success" ng-show="vm.view === 'granted'">
+      <h4>Browser notifications are now enabled!</h4>
+      <p>You&rsquo;re all set for now. Keep Humanlink open in a background tab or window,
+        and we will let you know when a new message arrives.</p>
+    </div>
+
+    <div class="alert alert-warning" ng-show="vm.view !== 'granted'">
+      <h4><i class="fa fa-bell-o"></i> Browser notifications are disabled.</h4>
+
+      <div ng-show="vm.view === 'hints'">
+        <p>Your browser should now ask for your permission.</p>
+        Click <strong>Allow</strong>, <strong>Always Show</strong>, <strong>Yes</strong>
+        or whatever the right one is!
+      </div>
+
+      <div ng-show="vm.view !== 'hints'">
+        <p>When browser notifications are enabled, you will see a popup notification
+          when new messages arrive. That way, won&rsquo;t miss important ones
+          even when you&rsquo;re away from Humanlink. Note that you still need
+          to keep Humanlink open in a background tab or window.
+
+        <div ng-show="vm.view !== 'denied'">
+          <p>We need your permission to enable browser notifications.</p>
+          <div class="row">
+          <div class="col-xs-12 col-sm-6 col-md-5">
+            <button class="btn btn-block btn-primary" ng-click="vm.enableNotifications()">
+              Enable!
+            </button>
+          </div>
+          </div>
+        </div>
+
+        <div ng-show="vm.view === 'denied'">
+          <p class="text-danger">You have blocked browser notifications.
+            Please go to your browser settings and manually enable them.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

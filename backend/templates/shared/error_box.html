@@ -1,0 +1,6 @@
+<div class="alert alert-danger" ng-if="!!ctrlHelper.errors.length" ng-cloak>
+    <h3>Dang</h3>
+    <ul ng-repeat="error in ctrlHelper.errors">
+        <li>{{ error }}</li>
+    </ul>
+</div>
