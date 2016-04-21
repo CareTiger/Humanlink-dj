@@ -37,8 +37,7 @@ class Account(models.Model):
         salted = self.email + settings.SECRET_KEY
         return hashlib.md5(salted.encode('utf-8')).hexdigest()
 
-
-    def __str__(self):
+    def __unicode__(self):
         return ((self.first or '') + ' ' + (self.last or '')).strip()
 
     def gravatar_url(self):
