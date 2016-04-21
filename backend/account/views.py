@@ -39,30 +39,28 @@ def broadcast(chat_id=None):
 			yield li[i:i + n]
 
 	chat = ThreadChat.objects.get(id=chat_id)
-	thread = Thread.objects.get(id=chat.thread_id.id)
+	thread = Thread.objects.get(id=chat.thread.id)
 
 	if not chat or not thread:
 		raise Exception("thread or chat not found")
 
-	all_members = ThreadMember.objects.filter(thread_id=thread)
+	all_members = ThreadMember.objects.filter(thread=thread)
 
 	partition = chunks(all_members, 10)
 	for part in partition:
-		channels = ['private-account-{}'.format(m.account_id) for m in part]
+		channels = ['private-account-{}'.format(m.account.id) for m in part]
 		# pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
 def add_to_welcome(org_id, account_id, inviter_id):
 
-	thread = Thread.objects.get(org_id=org_id, name="welcome")
+	thread = Thread.objects.get(org=org_id, name="welcome")
 	if thread:
 
-		thread_member = ThreadMember.objects.create(account_id=account_id, thread_id=thread)
-		thread_member.save()
-
+		thread_member = ThreadMember.objects.create(account=account_id, thread=thread)
 		thread.add_members(account_id)
 
-		chat = ThreadChat.objects.create(thread_id=thread, account_id=account_id, text=account_id.id, kind=2, inviter=2, remover=3)
+		chat = ThreadChat.objects.create(thread=thread, account=account_id, text=account_id, kind=2, inviter=2, remover=3)
 		chat.save()
 
 		broadcast(chat_id=chat.id)
@@ -119,13 +117,13 @@ def login(request):
 
 					token = cleaned_data['token']
 					invite = OrgInvite.objects.get(token=token)
-					org = Org.objects.get(id=invite.org_id)
+					org = Org.objects.get(id=invite.org.id)
 					if not invite:
 						raise Exception("Invitation token is invalid.")
 					if invite.used == True:
 						raise Exception("Invitation token has already been used.")
 
-					org_member = OrgMember.objects.get(account_id=account.id)
+					org_member = OrgMember.objects.get(account=account)
 					if org_member:
 						raise Exception("Account is already in team.")
 					else:
@@ -243,13 +241,13 @@ def accept_invite(request):
 				raise Exception('Invitation token has already been used.')
 
 			Account.objects.create(email=email)
-			org = invite.org_id
+			org = invite.org
 
 			new_account = Account.objects.get(email=email)
-			OrgMember.objects.create(account_id=new_account, org_id=org)
+			OrgMember.objects.create(account=new_account, org=org)
 			org.add_members(new_account)
 
-			add_to_welcome(org_id=org.id, account_id=new_account, inviter_id=invite.token)
+			add_to_welcome(org=org, account=new_account, inviter_id=invite.token)
 
 			context = {
 				'message': 'ok'
@@ -313,7 +311,7 @@ def update_caregiver(request):
 	# """ -Updates Account's Caregiver Information. """
 
 	account = get_current_user(request)
-	caregiver = CareGiver.objects.get(account_id=account.id)
+	caregiver = CareGiver.objects.get(account=account)
 
 	if request.method == "POST":
 		form = CareGiverInfo
