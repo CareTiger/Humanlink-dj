@@ -48,3 +48,7 @@ class CareGiver(models.Model):
     location = models.CharField(max_length=255)
     about = models.TextField()
     certs = models.TextField()
+
+    def __str__(self):
+        return self.account.email
+
