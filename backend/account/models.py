@@ -19,11 +19,11 @@ class Account(models.Model):
     first = models.CharField(max_length=35, null=True, blank=True)
     last = models.CharField(max_length=35, null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
-    stripe_customer_id = models.CharField(max_length=20)
+    stripe_customer_id = models.CharField(max_length=20, null=True, blank=True)
 
 
-    def password(self):
-        return self.password
+    # def password(self):
+    #     return self.password
 
     def _set_password(self, raw):
         salted = raw + settings.SECRET_KEY

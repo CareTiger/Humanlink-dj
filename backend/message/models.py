@@ -70,7 +70,6 @@ class ThreadChat(models.Model):
 	kind = models.IntegerField(null=False, choices=CHAT_CHOICES, default=0)
 	inviter = models.IntegerField()
 	remover = models.IntegerField()
-	created_on = models.DateTimeField(auto_now_add=True)
 	text = models.TextField()
 
 

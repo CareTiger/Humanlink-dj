@@ -146,7 +146,7 @@ class Pusher(object):
         if isinstance(data, six.string_types):
             data = ensure_text(data, "data")
         else:
-            data = json.dumps(data, cls=self._json_encoder)
+            data = json_filter.dumps(data, cls=self._json_encoder)
 
         if len(data) > 10240:
             raise ValueError("Too much data")
@@ -215,7 +215,7 @@ class Pusher(object):
         socket_id = validate_socket_id(socket_id)
 
         if custom_data:
-            custom_data = json.dumps(custom_data, cls=self._json_encoder)
+            custom_data = json_filter.dumps(custom_data, cls=self._json_encoder)
 
         string_to_sign = "%s:%s" % (socket_id, channel)
 
@@ -251,7 +251,7 @@ class Pusher(object):
             return None
 
         try:
-            body_data = json.loads(body, cls=self._json_decoder)
+            body_data = json_filter.loads(body, cls=self._json_decoder)
         except ValueError:
             return None
 

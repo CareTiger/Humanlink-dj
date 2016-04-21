@@ -1,13 +1,22 @@
 {% extends "site.html" %}
+{% load staticfiles %}
 
 {% block title %} Account {% endblock %}
 
-[% set ng_app = 'app.account' %]
+{% block ngapp %}
+    ng-app="app.account"
+{% endblock %}
+
+{% block head %}
+    <base href="/accounts/">
+{% endblock %}
 
 {% block content %}
-
-<div>
-  <div ui-view></div>
-</div>
-
+    <div>
+      <div ui-view>
+          <br>
+          <i>Some Content Will Load Here.</i>
+          <br>
+      </div>
+    </div>
 {% endblock %}

@@ -695,7 +695,7 @@ class JSONWebSignatureSerializer(Serializer):
                 'an exception', original_error=e)
         try:
             header = Serializer.load_payload(self, json_header,
-                serializer=json)
+                                             serializer=json)
         except BadData as e:
             raise BadHeader('Could not unserialize header because it was '
                 'malformed', original_error=e)

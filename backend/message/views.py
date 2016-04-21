@@ -12,7 +12,7 @@ from account.views import broadcast, generate_token, get_current_user
 def get_threads(request):
     # """Get list of all the threads for the account."""
 
-    account = get_current_user(request)
+    account = request.user
 
     # all_threads = Thread.objects.join(Thread.ThreadMember_set).filter(ThreadMember.account_id == account.id)
     all_threads = []

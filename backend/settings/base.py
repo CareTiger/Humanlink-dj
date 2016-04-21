@@ -18,6 +18,11 @@ SECRET_KEY = 't8%+b87azv!0)#)bc^x!1h*m(ar#z7flxls!r6mu*+pj6n_q!4'
 # Mandril API Key
 MANDRILL_API_KEY = '<mandril-key>'
 
+# Pusher Keys
+PUSHER_KEY = '1019dcd6d219db50d37e'
+PUSHER_SECRET = '9550fb09aacce399eeb6'
+APP_ID = '199731'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = ['*', ]
 

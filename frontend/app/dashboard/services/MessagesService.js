@@ -37,6 +37,9 @@
         function getThreads(forceRemote) {
             if (cache.threads && !forceRemote) {
                 return $q.when(cache.threads);
+                console.log("ARIZONA")
+            } else {
+                console.log("SEATTLE")
             }
             return MessagesRepo.fetchThreads().then(function (threads) {
 

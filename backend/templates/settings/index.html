@@ -1,12 +1,14 @@
-[% extends "site.html" %]
+{% extends "site.html" %}
 
-[% block title %] Settings [% endblock %]
+{% block title %} Settings {% endblock %}
 
-[% set ng_app = 'app.settings' %]
+{% block ngapp %}
+    ng-app="app.settings"
+{% endblock %}
 
-[% block head %]
+{% block head %}
 <base href="/settings/">
-[% endblock %]
+{% endblock %}
 
 [% block content %]
 

@@ -1,4 +1,5 @@
 {% extends "layouts/blanket.html" %}
+{% load staticfiles %}
 
 {% block title %} Become a HumanLink Caregiver.  {% endblock %}
 
@@ -9,7 +10,7 @@
 <meta property="og:description" content="Become a HumanLink caregiver and earn great money. Be your own boss and get paid for providing care on your own schedule.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.humanlink.co/caregivers">
-<meta property="og:image" content="https://www.humanlink.co/images/hl.logo.vert.blue.png">
+<meta property="og:image" content="static/images/hl.logo.vert.blue.png">
 {% endblock %}
 
 {% block body %}
@@ -26,7 +27,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">
-                <img class="nav-logo" src="/images/hl.logo.horiz.blue.png" alt="HumanLink Logo"/>
+                <img class="nav-logo" src="{% static "images/hl.logo.horiz.blue.png" %}" alt="HumanLink Logo"/>
             </a>
         </div>
         <div id="navbar-toggle" class="collapse navbar-collapse navbar-right">
@@ -63,7 +64,7 @@
                 Our platform provides a seamless way for care seekers to reach you.</p>
             </div>
              <div class="col-sm-6">
-                <img src="/images/landing/care_request.jpg" class="img-responsive img-thumbnail"
+                <img src="{% static "images/landing/care_request.jpg" %}" class="img-responsive img-thumbnail"
                  alt="Human link care request email.">
             </div>
        </div>
@@ -97,7 +98,7 @@
                 in areas like Alzheimer's disease, end-of-life care, nursing, and more.</p>
             </div>
             <div class="col-sm-6">
-                <img src="/images/landing/humanlink_solutions.png" class="img-responsive"
+                <img src="{% static "images/landing/humanlink_solutions.png" %}" class="img-responsive"
                     alt="HumanLink for caregivers"/>
             </div>
         </div>
@@ -115,7 +116,7 @@
     <div class="container">
         <div class="row">
              <div class="col-sm-6">
-                <img src="/images/landing/sample_invoice.jpg" class="img-responsive img-thumbnail"
+                <img src="{% static "images/landing/sample_invoice.jpg" %}" class="img-responsive img-thumbnail"
                  alt="HumanLink care request invoice.">
             </div>
             <div class="col-sm-6">

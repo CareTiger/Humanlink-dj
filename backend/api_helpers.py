@@ -45,6 +45,7 @@ def composeJsonResponse(code, message, data):
 	returnDataType = 'application/json'
 	try:
 		returnDataString = json.dumps(returnMsg, cls=DefaultJSONEncoder)
+		x = type(returnDataString)
 	except Exception as exc:
 		logger.error(exc)
 

@@ -65,7 +65,9 @@
 
                     <div class="col-sm-7">
                         <p class="form-control-static">
+                            {% verbatim %}
                             <strong> {{ ::vm.profile.email }} </strong>
+                            {% endverbatim %}
                             <span uib-tooltip="Email cannot be modified at this time"
                                   tooltip-placement="top" class="glyphicon glyphicon-question-sign"></span>
                             <span ng-show="vm.profile.email_verified === true">

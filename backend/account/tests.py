@@ -166,7 +166,7 @@ class AccountViewTestCase(TestCase):
     def test_login(self):
         response = self.c.post('/accounts/login/', {'email': 'timbaney1989@gmail.com', 'password': 'Whopper123@@'})
         code = response.status_code
-        self.assertTrue(code != 404 and code != 500)
+        self.assertTrue(code != 404 and code != 500 and code != 403)
     #  SUCCESS, CODE 200
 
     #@login_required

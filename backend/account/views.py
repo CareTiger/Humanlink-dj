@@ -5,6 +5,7 @@ import os
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from itsdangerous import URLSafeTimedSerializer
@@ -18,14 +19,16 @@ from org.models import Org, OrgInvite, OrgMember
 # from third_party import pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
+from django.http import QueryDict
+import ast
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib import messages
 import mandrill
 
 def index(request):
 	# """ -Return Account Template """
 
-	# return render(request, 'accounts/index.html')
-	return HttpResponse("account/index.html")
-
+	return render(request, 'accounts/index.html')
 
 def broadcast(chat_id=None):
 	# """Sends out push notifications to thread members about chat message. """
@@ -64,44 +67,82 @@ def add_to_welcome(org_id, account_id, inviter_id):
 
 		broadcast(chat_id=chat.id)
 
+# Converts AJAX JSON into query dictionary for the view to process.
+def requestPost(request):
+	querystring = urllib.urlencode(ast.literal_eval(request.body))
+	postdata = QueryDict(query_string=querystring)
+
+	return postdata
+
+
 def login(request):
-	# """ -Log in the user if credentials are valid """
-	if request.method == "POST":
-		form = LoginForm(request.POST)
+	if request.is_ajax():
+		if request.method == "POST":
+			form = LoginForm(requestPost(request))
 
-		if form.is_valid():
-			cleaned_data = form.clean()
+			if form.is_valid():
+				cleaned_data = form.cleaned_data
 
-			account = Account.objects.get(email=cleaned_data['email'], password=cleaned_data['password'])
-
-			if cleaned_data['token']:
-
-				token = cleaned_data['token']
-				invite = OrgInvite.objects.get(token=token)
-				org = Org.objects.get(id=invite.org_id)
-				if not invite:
-					raise Exception("Invitation token is invalid.")
-				if invite.used == True:
-					raise Exception("Invitation token has already been used.")
-
-				org_member = OrgMember.objects.get(account_id=account.id)
-				if org_member:
-					raise Exception("Account is already in team.")
+				if len(form.errors) > 0:
+					return cleaned_data
 				else:
-					org.add_members(account.id, False, invite.is_admin)
-					invite.used = False
+					email = requestPost(request)['email']
+					password = requestPost(request)['password']
 
-					# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
+					if email is None or password is None:
+						messages.error(form.request, 'Please enter an email and password.')
+						return form.ValidationError("Error")
+					else:
+						form.cached_user = authenticate(username=email, password=password)
 
-			else:
-				pass
+						if not form.cached_user:
+							x = True
+						else:
+							x = False
 
-		context = {
-			'message': 'ok',
-			'next': '/app/'
-		}
+						auth_login(request, form.cached_user)
 
-		return composeJsonResponse(200, "", context)
+						if form.cached_user is None:
+							form.errors["password"] = form.error_class(["Password incorrect. Passwords are case sensitive."])
+						elif not form.cached_user.is_active:
+							messages.error(form.request,
+										   'This account is inactive. Please check your inbox for our confirmation email, and '
+										   'click the link within to activate your account.')
+							raise form.ValidationError("Error")
+
+				clean_email = cleaned_data['email']
+				clean_password = cleaned_data['password']
+
+				account = Account.objects.get(email=clean_email, password=clean_password)
+
+				if cleaned_data['token']:
+
+					token = cleaned_data['token']
+					invite = OrgInvite.objects.get(token=token)
+					org = Org.objects.get(id=invite.org_id)
+					if not invite:
+						raise Exception("Invitation token is invalid.")
+					if invite.used == True:
+						raise Exception("Invitation token has already been used.")
+
+					org_member = OrgMember.objects.get(account_id=account.id)
+					if org_member:
+						raise Exception("Account is already in team.")
+					else:
+						org.add_members(account.id, False, invite.is_admin)
+						invite.used = False
+
+						# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
+
+				else:
+					pass
+
+			context = {
+				'message': form.errors,
+				'next': '/app/'
+			}
+
+			return composeJsonResponse(200, "", context)
 
 
 def logout_user(request):
@@ -110,61 +151,69 @@ def logout_user(request):
 
 def signup(request):
 	# """Register a new account with a new org."""
+	if request.is_ajax():
+		if request.method == "POST":
+			form = SignUp(requestPost(request))
 
-	if request.method == "POST":
-		form = SignUp(request.POST)
+			if form.is_valid():
+				cleaned_data = form.cleaned_data
 
-		if form.is_valid():
-			cleaned_data = form.cleaned_data
+				email = cleaned_data['email']
+				password = cleaned_data['password']
+				password_conf = cleaned_data['password_confirm']
+				org_name = cleaned_data['org_name']
+				org_username = cleaned_data['org_username']
+				invite_token = cleaned_data['invite']
 
-			email = cleaned_data['email']
-			password = cleaned_data['password']
-			password_conf = cleaned_data['password_conf']
-			org_name = cleaned_data['org_name']
-			org_username = cleaned_data['org_username']
-			invite_token = cleaned_data['invite']
+				if password != password_conf:
+					raise Exception("Password does not match confirmation")
 
-			if password != password_conf:
-				raise Exception("Password does not match confirmation")
+				invitation = OrgInvite.objects.get(token=invite_token)
 
-			invitation = OrgInvite.objects.get(token=invite_token)
+				if invitation.used:
+					raise Exception("invitation code is invalid")
 
-			if invitation.used:
-				raise Exception("invitation code is invalid")
+				account = Account(email=email, password=password)
+				account.save()
 
-			account = Account(email=email)
-			account.save()
+				User.objects.create_user(email, email, password)
 
-			org = Org(name=org_name, username=org_username)
-			org.save()
+				org = Org(name=org_name, username=org_username)
+				org.save()
 
-			invitation.used = False
-			invitation.save()
+				invitation.used = False
+				invitation.save()
 
-			login(request)
+				login(request)
 
-			# Send Email
+				# Send Email
 
-			md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-			t = invite_token.replace(' ', '+')
-			url = "https://www.humanlink.co/verify/{}".format(t)
-			message = {
-				'global_merge_vars': [
-					{'name': 'VERIFICATION_URL', 'content': url},
-				],
-				'to': [
-					{'email': account.email},
-				],
-			}
-			message['from_name'] = message.get('from_name', 'Humanlink')
-			message['from_email'] = message.get('from_email', 'support@humanlink.co')
-			try:
-				md.messages.send_template(
-					template_name='humanlink-welcome', message=message,
-					template_content=[], async=True)
-			except mandrill.Error as e:
-				logging.exception(e)
-				raise Exception(e)
+				# md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+				# t = invite_token.replace(' ', '+')
+				# url = "https://www.humanlink.co/verify/{}".format(t)
+				# message = {
+				# 	'global_merge_vars': [
+				# 		{'name': 'VERIFICATION_URL', 'content': url},
+				# 	],
+				# 	'to': [
+				# 		{'email': account.email},
+				# 	],
+				# }
+				# message['from_name'] = message.get('from_name', 'Humanlink')
+				# message['from_email'] = message.get('from_email', 'support@humanlink.co')
+				# try:
+				# 	md.messages.send_template(
+				# 		template_name='humanlink-welcome', message=message,
+				# 		template_content=[], async=True)
+				# except mandrill.Error as e:
+				# 	logging.exception(e)
+				# 	raise Exception(e)
+
+				context = {
+					'message': 'ok'
+				}
+
+				return composeJsonResponse(200, "", context)
 
 	else:
 		form = SignUp()
