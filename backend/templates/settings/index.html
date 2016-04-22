@@ -10,10 +10,12 @@
 <base href="/settings/">
 {% endblock %}
 
-[% block content %]
+{% block content %}
 
 <div>
-  <div ui-view></div>
+  <div ui-view>
+      <i>Content Goes Here</i>
+  </div>
 </div>
 
-[% endblock %]
+{% endblock %}

@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import datetime
@@ -5,10 +7,10 @@ from account.models import Account
 from api_helpers import composeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
-from account.views import broadcast, generate_token, get_current_user
+from account.views import broadcast, generate_token, get_current_user, requestPost
 
 
-@login_required
+# @login_required
 def get_threads(request):
     # """Get list of all the threads for the account."""
 
@@ -17,14 +19,25 @@ def get_threads(request):
     all_threads = []
     all_members = ThreadMember.objects.all()
     for member in all_members:
-        if member.account == account:
-            all_threads.append(member.Thread)
+        if member.account.email == account.email:
+            thread = Thread.objects.get(id=member.thread.id)
+            threadObject = {
+                "id": thread.id,
+                "owner": {
+                    "id": thread.owner.id
+                },
+                "name": thread.name,
+                "is_archived": thread.is_archived
+            }
+            all_threads.append(threadObject)
 
-    threads = {"all_threads": all_threads}
+
+
+    threads = {"threads": all_threads}
     return composeJsonResponse(200, "", threads)
 
 
-@login_required
+# @login_required
 def new_thread(request):
     # """Create a new thread."""
 
@@ -33,20 +46,25 @@ def new_thread(request):
     thread = Thread()
 
     if request.method == "POST":
-        form = NewThread(request.POST)
+        form = NewThread(requestPost(request))
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
             thread.org = cleaned_data['org_id']
             thread.name = cleaned_data['name']
-            thread.purpose = cleaned_data['purpose']
+            # thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
-            thread .account = account
+            thread.account = account
+            thread.owner = account
             thread.save()
     else:
         form = NewThread()
 
-    context = {"thread": thread, "form": form}
+    context = {"name": thread.name,
+               "owner": {
+                   "id": thread.owner.id
+                }
+               }
     return composeJsonResponse(200, "", context)
 
 
@@ -110,16 +128,16 @@ def send(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+# @login_required
 def history(request, thread_id):
     # """Retrieve messages history for the thread up until `ts`."""
 
     messages = None
 
-    thread = Thread.objects.get(thread=thread_id)
+    thread = Thread.objects.get(id=thread_id)
 
     if request.method == "POST":
-        form = ThreadHistory(request.post)
+        form = ThreadHistory(requestPost(request))
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
@@ -127,6 +145,17 @@ def history(request, thread_id):
             ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
             messages = ThreadChat.objects.filter(thread=thread.id, created_on__lte=ts_date)
+        else:
+            all_chats = []
+            all_chats_list = ThreadChat.objects.all()
+            for chat in all_chats_list:
+                all_chats.append(chat)
+
+            context = {
+                'all_chats': all_chats
+            }
+            return composeJsonResponse(200, "", context)
+
 
     else:
         form = ThreadHistory()

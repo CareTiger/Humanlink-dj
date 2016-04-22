@@ -23,13 +23,18 @@ def home(request):
 	return render(request, "home/index.html", context_instance=RequestContext(request))
 
 
-@login_required
+# @login_required
 def app(request):
 	account = Account.objects.get(email=request.user.email)
 	context = {
 		'userdata': {
 			'id': account.id
-		}
+		},
+        'user_data': {
+            'gravatar_url': account.gravatar_url(),
+            'name': account.username,
+            'email': account.email
+        }
 	}
 	return render(request, "dashboard/index.html", context)
 

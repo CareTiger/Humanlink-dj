@@ -20,7 +20,7 @@ class Org(models.Model):
 		return member
 
 	def __str__(self):
-		return Org.name
+		return self.name
 
 
 class OrgMember(models.Model):

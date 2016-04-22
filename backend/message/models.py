@@ -32,14 +32,14 @@ CHAT_CHOICES = (
 
 
 class Thread(models.Model):
-	kind = models.IntegerField(choices=OWNER_CHOICES, null=False)
-	privacy = models.IntegerField(choices=PRIVACY_CHOICES, default=1)
+	kind = models.IntegerField(choices=OWNER_CHOICES, default=0, null=False)
+	privacy = models.IntegerField(choices=PRIVACY_CHOICES, null=True, default=1)
 	account = models.ForeignKey(Account, related_name="thread_account_id", null=True)
 	owner = models.ForeignKey(Account, related_name="thread_owner_id")
-	org = models.ForeignKey(Org, related_name="thread_org_id")
+	org = models.ForeignKey(Org, related_name="thread_org_id", null=True)
 	name = models.CharField(max_length=30, null=False)
 	is_archived = models.BooleanField(default=False)
-	purpose = models.TextField(max_length=500)
+	purpose = models.TextField(max_length=500, null=True, default="New Thread")
 
 	@property
 	def owner_kind(self):
@@ -50,7 +50,7 @@ class Thread(models.Model):
 
 	def add_members(self, account_id):
 		member = ThreadMember.objects.get(account_id=account_id)
-		self.threadmember_thread_id.add(member)
+		self.threadmembers.add(member)
 		return member
 
 	def __str__(self):
@@ -58,7 +58,7 @@ class Thread(models.Model):
 
 
 class ThreadMember(models.Model):
-	thread = models.ForeignKey(Thread, related_name="threadmember_thread_id", on_delete=models.CASCADE, null=False)
+	thread = models.ForeignKey(Thread, related_name="threadmembers", on_delete=models.CASCADE, null=False)
 	account = models.ForeignKey(Account, related_name="threadmember_account_id", null=True)
 	last_seen = models.DateTimeField(auto_now=True)
 
@@ -67,20 +67,20 @@ class ThreadMember(models.Model):
 		self.last_seen = ts
 
 	def __str__(self):
-		return self.account_id.email + ' ( ' + self.thread_id.name + " )"
+		return self.account.email + ' ( ' + self.thread.name + " )"
 
 
 class ThreadChat(models.Model):
 	thread = models.ForeignKey(Thread, related_name="threadchat_thread_id", on_delete=models.CASCADE, null=False)
 	account = models.ForeignKey(Account, related_name="threadchat_account_id", null=True)
 	kind = models.IntegerField(null=False, choices=CHAT_CHOICES, default=0)
-	inviter = models.IntegerField()
-	remover = models.IntegerField()
+	inviter = models.IntegerField(null=True, blank=True)
+	remover = models.IntegerField(null=True, blank=True)
 	text = models.TextField()
 	created_on = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return self.account_id.email + "'s chat for " + self.thread_id.name
+		return self.account.email + "'s chat for " + self.thread.name
 
 
 
