@@ -21,10 +21,6 @@ class Account(models.Model):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     stripe_customer_id = models.CharField(max_length=20, null=True, blank=True)
 
-
-    # def password(self):
-    #     return self.password
-
     def _set_password(self, raw):
         salted = raw + settings.SECRET_KEY
         self._password = generate_password_hash(salted)
@@ -51,3 +47,7 @@ class CareGiver(models.Model):
     location = models.CharField(max_length=255)
     about = models.TextField()
     certs = models.TextField()
+
+    def __str__(self):
+        return self.account.email
+

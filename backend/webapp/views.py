@@ -1,15 +1,13 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from account.models import Account
 from account.views import logout, verify, invite_accept_redirect, requestPost
 from api_helpers import composeJsonResponse
 from django.template import RequestContext
-from settings import base as settings
-import ast
+import settings
 from pusher.pusher import Pusher
 
 def index(request):
@@ -22,7 +20,6 @@ def caregivers(request):
 
 def home(request):
 
-	# return render(request, "home/index.html")
 	return render(request, "home/index.html", context_instance=RequestContext(request))
 
 
@@ -32,12 +29,17 @@ def app(request):
 	context = {
 		'userdata': {
 			'id': account.id
-		}
+		},
+        'user_data': {
+            'gravatar_url': account.gravatar_url(),
+            'name': account.username,
+            'email': account.email
+        }
 	}
 	return render(request, "dashboard/index.html", context)
 
 
-# @login_required
+@login_required
 def settings(request):
 	return render(request, 'settings/index.html')
 
@@ -66,18 +68,6 @@ def invite_accept(request, token):
 	""" -Redirects user after successful invite """
 
 	return invite_accept_redirect(token)
-
-def handleString(request):
-	rawString = request.body
-	requestData = rawString.replace('=', '": "')
-	requestData = requestData.replace('&', '", "')
-	requestData = requestData[:0] + '{"' + requestData[0:]
-	requestData = requestData[0:] + '"}'
-	requestData = json.loads(requestData)
-
-	return requestData
-
-
 
 def pusher_auth(request):
 	# """ -Pusher private channel authentication
