@@ -2,6 +2,18 @@ from .base import *
 
 logging.log(logging.INFO, 'loading settings for ' + __name__)
 
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'template_project',
+        'USER': 'millcreek',
+        'PASSWORD': 'jupit999',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
