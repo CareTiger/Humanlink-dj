@@ -1,0 +1,23 @@
+<div class="header">
+
+  <div class="pull-right header-icons">
+    <button class="btn btn-link" title="Channel info" ng-click="thread.toggleSidepanel()">
+      <i class="material-icons" ng-if="!thread.sidepanel.isOpen">info_outline</i>
+      <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
+    </button>
+  </div>
+
+  <div uib-dropdown uib-keyboard-nav>
+    <a href class="title" uib-dropdown-toggle data-toggle="dropdown">
+      {{ vm.thread.name }}
+      <span class="caret"></span>
+    </a>
+
+    <ul class="uib-dropdown-menu">
+      <li ng-repeat="item in ['Channel info', 'Invite others']">
+        <a href>{{ item }}</a>
+      </li>
+    </ul>
+  </div>
+
+</div>

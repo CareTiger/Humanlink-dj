@@ -1,0 +1,59 @@
+<div class="messages" hl-resize-messages scroll-glue>
+
+  <div class="thread-welcome" ng-if="vm.messages.length < 30">
+    <p class="lead">Yay! <strong>{{ ::vm.thread.name }}</strong> is now available.</p>
+
+    <p class="lead">You can set a purpose and add other care details in the
+      <a href>channel management</a> section.</p>
+
+    <p class="lead">This is the start of the conversation.</p>
+  </div>
+
+  <div class="messages-box">
+    <div ng-repeat="msg in vm.messages">
+      <div class="date-divider"
+           ng-if="::$first || !vm.isSameDay(msg.created, vm.messages[$index-1].created)">
+        <h6><span>{{ ::vm.localTime(msg.created) | date : 'EEEE, MMMM d' }}</span></h6>
+      </div>
+
+      <div class="media message">
+        <div class="media-left">
+          <a href>
+            <img class="avatar"
+                 ng-src="{{ ::vm.members[msg.account_id].profile.gravatar_url }}"/>
+          </a>
+        </div>
+        <div class="media-body">
+          <div>
+            <h5 class="media-heading name">
+              {{ ::vm.accountName(msg.account_id) }}
+              <small class="text-muted">
+                - {{ ::vm.localTime(msg.created) | date : 'h:mm a' }}
+              </small>
+            </h5>
+          </div>
+          <div ng-bind-html="::vm.body(msg)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="reply">
+  <div class="block">
+
+    <span class="spinner" ng-show="vm.submitBusy">
+      <i class="fa fa-circle-o-notch fa-spin"></i>
+    </span>
+
+    <textarea rows="1" class="form-control"
+              placeholder="Enter a message&hellip;"
+              ng-model="vm.message"
+              ng-keypress="vm.onKeypress($event, vm.message)"
+              ng-disabled="vm.submitBusy"
+              hl-focus>
+    </textarea>
+
+  </div>
+</div>
