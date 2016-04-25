@@ -15,7 +15,6 @@ media/
 !third_party/**/media/
 
 # Ignore static files, except those in third party apps.
-static/
 !third_party/**/static
 !webapp/static/
 !webapp_admin/static/

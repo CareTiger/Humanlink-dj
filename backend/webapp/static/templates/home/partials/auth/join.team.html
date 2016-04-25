@@ -1,0 +1,70 @@
+<div>
+  <h2 class="text-center">Tell Us About Your Team</h2>
+
+  <div class="alert alert-danger" ng-if="vm.errorMessage">
+      {{ vm.errorMessage }}
+  </div>
+
+  <form name="form">
+
+    <div class="form-group">
+      <label for="org_name">Organization or Team Name</label>
+      <input type="text" id="org_name" class="form-control input-lg"
+         name="org_name" placeholder="Jones Agency"
+         required maxlength="35"
+         ng-model="vm.signup.org_name"
+         hl-focus hl-capitalize>
+
+      <div class="help-block">
+        You can always change this later.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="org_username">Humanlink URL</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+            http://humanlink.co/
+        </div>
+        <input type="text" id="org_username" class="form-control input-lg"
+           name="org_username" placeholder="jones-agency"
+           required minlength="2" maxlength="30"
+           ng-model="vm.signup.org_username"
+           hl-alphanum>
+      </div>
+
+      <div class="has-warning" ng-if="form.org_username.$dirty">
+        <div class="help-block" ng-messages="form.org_username.$error">
+          <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+        </div>
+      </div>
+
+      <div class="help-block">
+        <p>This is the URL that will uniquely identify your team.
+           At least two characters.</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <p>By clicking on &ldquo;Join for free&rdquo; below, you are agreeing to our
+          <a href="/terms" target="_blank">Terms and Conditions</a>.</p>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-block btn-lg btn-default" ng-click="vm.previous()">
+            Previous</button>
+      </div>
+      <div class="col-xs-6">
+        <button type="submit" class="btn btn-block btn-lg btn-secondary"
+            ng-click="vm.join(vm.signup)" ng-disabled="!form.$valid || vm.submitBusy">
+            Join for free
+            <span ng-if="vm.submitBusy"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+        </button>
+      </div>
+    </div>
+
+    </form>
+
+  </div>
+</div>

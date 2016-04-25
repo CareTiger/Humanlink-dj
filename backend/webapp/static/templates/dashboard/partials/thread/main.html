@@ -1,0 +1,15 @@
+<div class="thread">
+  <div ui-view="header"></div>
+
+  <div>
+    <div ui-view="messages" class="messages-container"
+          ng-class="{'hidden-xs col-sm-7': thread.sidepanel.isOpen}">
+    </div>
+
+    <div class="sidepanel col-xs-12 col-sm-5" ng-show="thread.sidepanel.isOpen">
+      <div ui-view>
+      </div>
+    </div>
+  </div>
+
+</div>

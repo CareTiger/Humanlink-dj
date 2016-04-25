@@ -1,0 +1,115 @@
+<div class="settings-profile">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Account Information</h2>
+        </div>
+        <form class="form-horizontal" name="form" ng-submit="vm.update(vm.profile)">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="profile-username" class="col-sm-3 control-label">
+                        Username</label>
+
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input id="profile-username" class="form-control" name="username"
+                                       ng-model="vm.profile.username" placeholder="JaneDoe"
+                                       ng-minlength="2" ng-maxlength="35" hl-alphanum/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="has-warning" ng-if="form.username.$dirty">
+                                <div class="help-block" ng-messages="form.username.$error">
+                                    <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+                                </div>
+                            </div>
+                            <div class="help-block">
+                                This will be your username. Enter at least 2 characters.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="profile-name" class="col-sm-3 control-label">
+                        Name</label>
+
+                    <div class="col-sm-3">
+                        <input id="profile-name" class="form-control" name="firstName"
+                               ng-model="vm.profile.first" ng-minlength="2" ng-maxlength="35"
+                               placeholder="Jane" required/>
+
+                        <div class="has-warning" ng-if="form.firstName.$dirty">
+                            <div class="help-block" ng-messages="form.firstName.$error">
+                                <div ng-message="minlength">Enter at least 2 characters.</div>
+                            </div>
+                        </div>
+                        <span class="help-block">First name</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" ng-model="vm.profile.last" name="lastName"
+                               placeholder="Doe" ng-minlength="2" ng-maxlength="35"
+                               required/>
+
+                        <div class="has-warning" ng-if="form.lastName.$dirty">
+                            <div class="help-block" ng-messages="form.lastName.$error">
+                                <div ng-message="minlength">Enter at least 2 characters.</div>
+                            </div>
+                        </div>
+                        <span class="help-block">Last name</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                        Email Address</label>
+
+                    <div class="col-sm-7">
+                        <p class="form-control-static">
+                            <strong> {{ ::vm.profile.email }} </strong>
+                            <span uib-tooltip="Email cannot be modified at this time"
+                                  tooltip-placement="top" class="glyphicon glyphicon-question-sign"></span>
+                            <span ng-show="vm.profile.email_verified === true">
+                                (Verified)
+                            </span>
+                            <span ng-show="vm.profile.email_verified === false">
+                                (Not verified)
+                            </span>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="profile-phone" class="col-sm-3 control-label">
+                        Phone Number</label>
+
+                    <div class="col-sm-3">
+                        <input type="tel" id="profile-phone" class="form-control"
+                               ng-model="vm.profile.phone_number" placeholder="555-555-5555"
+                               name="phoneNumber" maxlength="12"
+                               hl-phone-number/>
+
+                        <div class="has-warning" ng-if="form.phoneNumber.$dirty">
+                            <div class="help-block" ng-messages="form.phoneNumber.$error">
+                                <div ng-message="phoneNumber">Invalid phone number.</div>
+                            </div>
+                        </div>
+                        <span class="help-block">Valid 10 digit phone number</span>
+                    </div>
+                    <div class="col-sm-5">
+                        <label class="checkbox-inline">
+                            <input type="checkbox"/> I want to receive text message updates.
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-footer text-center">
+                <button type="submit" class="btn btn-secondary"
+                        ng-disabled="!form.firstName.$valid || !form.lastName.$valid
+                        || vm.submitBusy">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

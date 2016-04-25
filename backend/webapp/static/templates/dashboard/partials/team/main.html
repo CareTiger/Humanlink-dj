@@ -1,0 +1,27 @@
+<div class="team">
+
+  <div class="card card-half" ng-if="!vm.org">
+    You have selected an invalid team. Please select a valid team.
+  </div>
+
+  <div ng-if="vm.org">
+    <div class="header" dropdown>
+
+      <a href class="title" dropdown-toggle>
+        Team {{ ::vm.org.name }}
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a ui-sref-active-eq="active"
+             ui-sref="dashboard.team.invite({org: vm.org.username})">
+            Invite New Members</a>
+        </li>
+        <li><a href>Pending Invitations</a></li>
+      </ul>
+    </div>
+
+    <div ui-view></div>
+  </div>
+
+</div>

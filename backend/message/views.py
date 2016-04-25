@@ -41,7 +41,7 @@ def get_threads(request):
 def new_thread(request):
     # """Create a new thread."""
 
-    account = get_current_user(request)
+    account = Account.objects.get(email=request.user.username)
 
     thread = Thread()
 
@@ -57,6 +57,8 @@ def new_thread(request):
             thread.account = account
             thread.owner = account
             thread.save()
+
+            ThreadMember.objects.create(thread=thread, account=account)
     else:
         form = NewThread()
 
