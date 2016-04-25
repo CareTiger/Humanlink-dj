@@ -531,7 +531,7 @@
             })
             .state('dashboard.messages.default.sidepanel.default', {
                 url: 'info',
-                templateUrl: '/views/dashboard/partials/thread/info.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/info.html',
                 controller: 'Info',
                 controllerAs: 'vm'
             })
@@ -556,6 +556,7 @@
             function thread(threads){
                 var threadsList = threads[0]
                 for(var thread in threadsList){
+                    console.log(threadsList[thread].owner.id + " equals " + ownerId + " and " + threadsList[thread].name.toLowerCase() + " equals " + threadName)
                     if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName){
                         return threadsList[thread]
                     }
@@ -2167,7 +2168,7 @@
          */
         function getThreadInfo(threadId) {
             threadId = parseInt(threadId);
-            return cache.threadsIndexed[threadId];
+            return cache.threadsIndexed.undefined[threadId];
         }
 
         /**

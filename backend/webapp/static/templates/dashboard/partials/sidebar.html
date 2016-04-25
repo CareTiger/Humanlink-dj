@@ -17,15 +17,17 @@
   </div>
 
   <ul class="list-unstyled">
-    <li ng-repeat="thread in ::sidebar.threads">
-      <a class="item" ui-sref-active="active"
-         ui-sref="dashboard.messages(
-            {owner: 4, thread: 'TestThreadOne', threadId: thread.id})">
-        <span class="archived" title="Archived" ng-if="thread.is_archived">[A]</span>
-        {{ thread[0].name }}
-          <small> (sinbad@hotmail.com) </small>
-      </a>
-    </li>
+    <div ng-repeat="thread in sidebar.threads">
+        <li ng-repeat="thread in thread">
+            <a class="item" ui-sref-active="active"
+             ui-sref="dashboard.messages(
+                {owner: thread.owner.id, thread: thread.name, threadId: thread.id})">
+            <span class="archived" title="Archived" ng-if="thread.is_archived">[A]</span>
+            {{ thread.name }}
+              <small> (sinbad@hotmail.com) </small>
+            </a>
+        </li>
+    </div>
   </ul>
 
 </div>
