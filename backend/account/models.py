@@ -48,6 +48,7 @@ class CareGiver(models.Model):
     about = models.TextField()
     certs = models.TextField()
 
+
     def __str__(self):
         return self.account.email
 
