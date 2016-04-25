@@ -64,7 +64,8 @@ def new_thread(request):
 
     context = {"name": thread.name,
                "owner": {
-                   "id": thread.owner.id
+                   "id": thread.owner.id,
+                   "email": thread.owner.email
                 }
                }
     return composeJsonResponse(200, "", context)

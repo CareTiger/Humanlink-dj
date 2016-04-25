@@ -24,6 +24,7 @@ import ast
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
 	# """ -Return Account Template """
@@ -72,7 +73,7 @@ def requestPost(request):
 
 	return postdata
 
-
+@csrf_exempt
 def login(request):
 	if request.is_ajax():
 		if request.method == "POST":

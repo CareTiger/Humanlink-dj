@@ -553,12 +553,8 @@
             var ownerId = parseInt($stateParams.owner);
             var threadName = $stateParams.thread.toLowerCase();
 
-            // var thread = underscore.find(threads, function (th) {
-            //     return th.thread.owner.id === ownerId && th.thread.name.toLowerCase() === threadName;
-            // });
-
             function thread(threads){
-                var threadsList = threads.threads
+                var threadsList = threads[0]
                 for(var thread in threadsList){
                     if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName){
                         return threadsList[thread]
@@ -906,7 +902,7 @@
          * TODO: only fetch recent 3-5 threads.
          */
         function fetchThreads(threads) {
-            threads.threads.forEach(function (thread) {
+            threads[0].forEach(function (thread) {
                 if (thread.is_archived) {
                     return;
                 }
@@ -1097,7 +1093,6 @@
                 method: method,
                 url: (isApi ? Config.api_path : '/') + uri,
                 data: data || {},
-                header: X-CSRFToken,
                 timeout: deferred.promise
             }).catch(function (response) {
                 $log.error(response);
@@ -2094,18 +2089,17 @@
             if (cache.threads && !forceRemote) {
                 return $q.when(cache.threads);
             }
-            return MessagesRepo.fetchThreads();
-            //     .then(function (threads) {
-            //     threads.threads.forEach(function (thread) {
-            //         thread.membersIndexed = underscore.indexBy(thread.members, 'account_id');
-            //     });
-            //
-            //     cache.threads = underscore.sortBy(threads, 'name');
-            //     cache.threadsIndexed = underscore.indexBy(threads, 'id');
-            //
-            //
-            //     return cache.threads;
-            // });
+            return MessagesRepo.fetchThreads()
+                .then(function (threads) {
+                threads.threads.forEach(function (thread) {
+                    thread.membersIndexed = underscore.indexBy(thread.members, 'account_id');
+                });
+
+                cache.threads = underscore.sortBy(threads, 'name');
+                cache.threadsIndexed = underscore.indexBy(threads, 'id');
+
+                return cache.threads;
+            });
         }
 
         /**
@@ -2823,6 +2817,7 @@
 
         function init() {
             $log.debug('messages init');
+            console.log('MESSAGES CONTROLLER')
 
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;

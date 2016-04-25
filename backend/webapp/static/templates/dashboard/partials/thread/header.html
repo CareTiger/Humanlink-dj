@@ -1,14 +1,14 @@
 <div class="header">
 
-  <div class="pull-right header-icons">
-    <button class="btn btn-link" title="Channel info" ng-click="thread.toggleSidepanel()">
+  <div class="pull-right header-icons col-sm-5">
+    <button class="btn btn-link" title="Channel info" ng-click="thread.toggleSidepanel()" style="height: 30px; width: 30px; color: red;">
       <i class="material-icons" ng-if="!thread.sidepanel.isOpen">info_outline</i>
       <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
     </button>
   </div>
 
-  <div uib-dropdown uib-keyboard-nav>
-    <a href class="title" uib-dropdown-toggle data-toggle="dropdown">
+  <div uib-dropdown uib-keyboard-nav class="col-sm-4">
+    <a href class="title" uib-dropdown-toggle="dropdown">
       {{ vm.thread.name }}
       <span class="caret"></span>
     </a>

@@ -9,6 +9,7 @@ from api_helpers import composeJsonResponse
 from django.template import RequestContext
 import settings
 from pusher.pusher import Pusher
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
 
@@ -69,6 +70,7 @@ def invite_accept(request, token):
 
 	return invite_accept_redirect(token)
 
+@csrf_exempt
 def pusher_auth(request):
 	# """ -Pusher private channel authentication
 	# Docs: https//pusher.com/docs/authenticating_users
