@@ -33,8 +33,7 @@ class Account(models.Model):
         salted = self.email + settings.SECRET_KEY
         return hashlib.md5(salted.encode('utf-8')).hexdigest()
 
-
-    def __str__(self):
+    def __unicode__(self):
         return ((self.first or '') + ' ' + (self.last or '')).strip()
 
     def gravatar_url(self):
@@ -48,6 +47,7 @@ class CareGiver(models.Model):
     location = models.CharField(max_length=255)
     about = models.TextField()
     certs = models.TextField()
+
 
     def __str__(self):
         return self.account.email
