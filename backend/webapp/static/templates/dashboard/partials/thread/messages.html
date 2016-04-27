@@ -26,9 +26,9 @@
         <div class="media-body">
           <div>
             <h5 class="media-heading name">
-              {{ ::vm.accountName(msg.account_id) }}
+              {{ vm.accountName(msg.account_id) }}
               <small class="text-muted">
-                - {{ ::vm.localTime(msg.created) | date : 'h:mm a' }}
+                - {{ vm.localTime(msg.created) | date : 'h:mm a' }}
               </small>
             </h5>
           </div>

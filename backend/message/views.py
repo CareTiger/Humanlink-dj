@@ -23,9 +23,9 @@ def get_threads(request):
     threadCount = 0
     for member in all_members:
         if member.account.email == account.email:
-            threads_members = []
             thread = Thread.objects.get(id=member.thread.id)
 
+            threads_members = []
             all_thread_members = ThreadMember.objects.filter(thread=thread)
             count = 0
             for threadMember in all_thread_members:

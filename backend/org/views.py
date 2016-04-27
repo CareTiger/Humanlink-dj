@@ -25,9 +25,39 @@ def orgs(request):
 
 def _orgs_get(request):
 	# """ Get the list of orgs the account is part of."""
-	account = get_current_user(request)
+	account = Account.objects.get(email=request.user.username)
 
-	all_orgs = Org.objects.join(Org.OrgMember_set).filter(OrgMember.account_id == account.id)
+	# all_orgs = Org.objects.join(Org.OrgMember_set).filter(OrgMember.account_id == account.id)
+
+	all_orgs = []
+	all_members = OrgMember.objects.all()
+	for member in all_members:
+		if member.account.email == account.email:
+			org = Org.objects.get(id=member.org.id)
+
+			all_members = []
+			all_org_members = OrgMember.objects.filter(org=org)
+
+			for org_member in all_org_members:
+				memberObject = {
+					'id': org_member.id,
+					'name': org_member.account.username,
+					'status': org_member.status,
+					'profile': {
+						'gravatar_url': org_member.account.gravatar_url(),
+						'email': org_member.account.email
+					}
+				}
+				all_members.append(memberObject)
+
+			orgObject = {
+				'id': org.id,
+				'actor': account,
+				'name': org.name,
+				'username': org.username,
+				'members': all_members
+			}
+			all_orgs.append(orgObject)
 
 	context = {"all_orgs": all_orgs}
 	return composeJsonResponse(200, "", context)

@@ -20,7 +20,7 @@ class ThreadAdmin(admin.ModelAdmin):
 	list_filter = ('org','privacy')
 	search_fields = ('name', 'owner__email')
 	raw_id_fields = ('account', 'owner', 'org')
-	inlines = [ThreadMemberInline, ]
+	inlines = [ThreadMemberInline]
 
 
 class ThreadMemberAdmin(admin.ModelAdmin):

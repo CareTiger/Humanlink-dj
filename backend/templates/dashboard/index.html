@@ -49,7 +49,6 @@
     </div>
 
   </div>
-
   <div class="content" ui-view>
     <div class="card card-half text-center">
       <img src="{% static "images/spinner.logo100.gif" %}" alt="Please wait"/>
@@ -64,24 +63,5 @@
 
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/humanlink2.js" %}"></script>
-<script type="text/javascript">
-{#(function () {#}
-{#    var messages = [#}
-{#      "<p>How much does a polar bear weigh?</p>"#}
-{#      + "<p>Just enough to break the ice!</p>",#}
-{##}
-{#      "<p>What is not heavy and blue?</p>"#}
-{#      + "<p>Lightblue!</p>",#}
-{##}
-{#      "Hang in there.",#}
-{##}
-{#      "Can you talk to the clouds?",#}
-{##}
-{#      "I hope you're ready for what's next."#}
-{#    ];#}
-{#    var ind = window._.random(0, messages.length-1);#}
-{#    document.getElementById('loading-message').innerHTML = messages[ind];#}
-{#})();#}
-</script>
 
 {% endblock %}

@@ -406,7 +406,7 @@
             .state('dashboard.team', {
                 abstract: true,
                 url: 'manage/{org}',
-                templateUrl: '/views/dashboard/partials/team/main.html',
+                templateUrl: '/static/templates/dashboard/partials/team/main.html',
                 controller: 'Team',
                 controllerAs: 'vm',
                 resolve: {
@@ -415,7 +415,7 @@
             })
             .state('dashboard.team.directory', {
                 url: '',
-                templateUrl: '/views/dashboard/partials/team/directory.html',
+                templateUrl: '/static/templates/dashboard/partials/team/directory.html',
                 controller: 'Directory',
                 controllerAs: 'vm'
             })
@@ -437,6 +437,7 @@
         if (!$stateParams.org) {
             return $q.reject('Invalid team.');
         }
+        console.log($stateParams.org)
         return OrgService.getOrgByUsername($stateParams.org);
     }
 
@@ -546,7 +547,6 @@
     function threadInfoResolve(ready, $stateParams, $q, underscore, MessagesService) {
         if ($stateParams.threadId) {
             var thread = MessagesService.getThreadInfo($stateParams.threadId);
-            console.log($stateParams.threadId)
             return populate(thread);
         }
 
@@ -571,7 +571,7 @@
             if (!thread || !thread.owner) {
                 return $q.reject('Channel not found.');
             }
-            $stateParams.threadId = thread.listId;
+            $stateParams.threadId = thread.id;
             return {
                 thread: thread,
                 members: thread.membersIndexed,
@@ -1385,7 +1385,7 @@
         function fetchSummary() {
             return AbstractRepo.get('/orgs').then(
                 function (response) {
-                    return response.data.data;
+                    return response.data.response;
                 },
                 AbstractRepo.genericError
             );
@@ -2359,12 +2359,15 @@
                 return $q.when(cache.orgs);
             }
             return OrgsRepo.fetchSummary().then(function (orgs) {
-                orgs.forEach(butter);
-                cache.orgs = orgs;
+                console.log(orgs.all_orgs)
+                orgs.all_orgs.forEach(butter);
+                cache.orgs = orgs.all_orgs;
+                console.log(cache.orgs)
                 return cache.orgs;
             });
 
             function butter(org) {
+                console.log(org)
                 if (org.members) {
                     org.membersIndexed = underscore.indexBy(org.members, 'id');
                     angular.extend(cache.allMembers, org.membersIndexed);
@@ -2374,6 +2377,7 @@
                     org.threadsIndexed = underscore.indexBy(org.threads, 'id');
                     angular.extend(cache.allThreads, org.threadsIndexed);
                 }
+                console.log(org)
                 return org;
             }
         }
@@ -2385,6 +2389,7 @@
          */
         function getOrgByUsername(username) {
             return getSummary().then(function (orgs) {
+                console.log(orgs)
                 return underscore.findWhere(orgs, {username: username});
             });
         }
@@ -2820,7 +2825,6 @@
 
         function init() {
             $log.debug('messages init');
-            console.log('MESSAGES CONTROLLER')
 
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
@@ -3064,11 +3068,13 @@
         }
 
         function openSidepanel() {
+            console.log('open')
             var st = SidepanelState.state;
             return $state.go(st || 'dashboard.messages.default.sidepanel.default');
         }
 
         function closeSidepanel() {
+            console.log('closed')
             SidepanelState.close();
             return $state.go('dashboard.messages.default');
         }
