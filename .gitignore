@@ -6,7 +6,7 @@ design_docs/
 *.pyo
 
 # Ignore any sqlite databases, as those will be development, and will change on each local system.
-sqlite/
+sqlite3/
 
 # Ignore media files, as these will change locally.
 media/

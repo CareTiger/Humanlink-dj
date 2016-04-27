@@ -8,6 +8,8 @@ from api_helpers import composeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
 from account.views import broadcast, generate_token, get_current_user, requestPost
+from django.views.decorators.csrf import csrf_exempt
+import time
 
 
 # @login_required
@@ -18,19 +20,37 @@ def get_threads(request):
 
     all_threads = []
     all_members = ThreadMember.objects.all()
+    threadCount = 0
     for member in all_members:
         if member.account.email == account.email:
+            threads_members = []
             thread = Thread.objects.get(id=member.thread.id)
+
+            all_thread_members = ThreadMember.objects.filter(thread=thread)
+            count = 0
+            for threadMember in all_thread_members:
+                memberObject = {
+                    'id': count,
+                    'account': threadMember.account,
+                    'profile': {
+                        'gravatar_url': threadMember.account.gravatar_url(),
+                        'email': threadMember.account.email
+                    }
+                }
+                threads_members.append(memberObject)
+                count += 1
+
             threadObject = {
                 "id": thread.id,
                 "owner": {
                     "id": thread.owner.id
                 },
                 "name": thread.name,
-                "is_archived": thread.is_archived
+                "is_archived": thread.is_archived,
+                "members": threads_members
             }
             all_threads.append(threadObject)
-
+            threadCount += 1
 
 
     threads = {"threads": all_threads}
@@ -71,38 +91,31 @@ def new_thread(request):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
-def get_thread(request, thread_id):
-    # """Retrieve thread information."""
-
-    account = get_current_user(request)
-
-    thread = Thread.objects.get(id=thread_id, account=account)
-
-    context = {"thread": thread}
-    return composeJsonResponse(200, "", context)
-
-
-@login_required
-def update_thread(request, thread_id):
-    # """Update thread information."""
+# @login_required
+# @csrf_exempt
+def handle_thread(request, thread_id):
+    # """Retrieve and update thread information."""
 
     thread = Thread.objects.get(id=thread_id)
 
     if request.method == "PUT":
-        form = UpdateThread(request.POST)
+        form = UpdateThread(requestPost(request))
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
             thread.name = cleaned_data['name']
-            thread.purpose = cleaned_data['purpose']
+            # thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.save()
-    else:
-        form = UpdateThread()
 
-    context = {"thread": thread, "form": form}
-    return composeJsonResponse(200, "", context)
+            context = {"thread": thread}
+            return composeJsonResponse(200, "", context)
+        else:
+            context = {"message": form.errors}
+            return composeJsonResponse(200, "", context)
+    else:
+        context = {"thread": thread}
+        return composeJsonResponse(200, "", context)
 
 
 @login_required
@@ -140,7 +153,9 @@ def history(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
 
     if request.method == "POST":
+
         form = ThreadHistory(requestPost(request))
+
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
@@ -148,6 +163,9 @@ def history(request, thread_id):
             ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
             messages = ThreadChat.objects.filter(thread=thread.id, created_on__lte=ts_date)
+
+            context = {"messages": messages}
+            return composeJsonResponse(200, "", context)
         else:
             all_chats = []
             all_chats_list = ThreadChat.objects.all()
@@ -158,13 +176,6 @@ def history(request, thread_id):
                 'all_chats': all_chats
             }
             return composeJsonResponse(200, "", context)
-
-
-    else:
-        form = ThreadHistory()
-
-    context = {"messages": messages, "form": form}
-    return composeJsonResponse(200, "", context)
 
 
 def add_member(request, thread_id):

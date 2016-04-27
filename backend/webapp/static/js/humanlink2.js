@@ -486,7 +486,7 @@
             })
             .state('dashboard.messages.default', {
                 url: '/',
-                templateUrl: '/views/dashboard/partials/thread/messages.html',
+                templateUrl: 'static/templates/dashboard/partials/thread/messages.html',
                 controller: 'Messages',
                 controllerAs: 'vm',
                 resolve: {
@@ -495,37 +495,37 @@
             })
             .state('dashboard.messages.invite', {
                 url: '/invite',
-                templateUrl: '/views/dashboard/partials/thread/invite.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/invite.html',
                 controller: 'Invite',
                 controllerAs: 'vm'
             })
             .state('dashboard.messages.update', {
                 url: '/update',
-                templateUrl: '/views/dashboard/partials/thread/update.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/update.html',
                 controller: 'Update',
                 controllerAs: 'vm'
             })
             .state('dashboard.messages.leave', {
                 url: '/leave',
-                templateUrl: '/views/dashboard/partials/thread/leave.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
                 controller: 'Leave',
                 controllerAs: 'vm'
             })
             .state('dashboard.messages.archive', {
                 url: '/archive',
-                templateUrl: '/views/dashboard/partials/thread/archive.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/archive.html',
                 controller: 'Archive',
                 controllerAs: 'vm'
             })
             .state('dashboard.messages.search', {
                 url: '/search',
-                templateUrl: '/views/dashboard/partials/thread/search.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/search.html',
                 controller: 'Search',
                 controllerAs: 'vm'
             })
             .state('dashboard.messages.default.sidepanel', {
                 abstract: true,
-                templateUrl: '/views/dashboard/partials/thread/sidepanel.html',
+                templateUrl: '/static/templates/dashboard/partials/thread/sidepanel.html',
                 controller: 'Sidepanel',
                 controllerAs: 'sp'
             })
@@ -546,6 +546,7 @@
     function threadInfoResolve(ready, $stateParams, $q, underscore, MessagesService) {
         if ($stateParams.threadId) {
             var thread = MessagesService.getThreadInfo($stateParams.threadId);
+            console.log($stateParams.threadId)
             return populate(thread);
         }
 
@@ -556,7 +557,6 @@
             function thread(threads){
                 var threadsList = threads[0]
                 for(var thread in threadsList){
-                    console.log(threadsList[thread].owner.id + " equals " + ownerId + " and " + threadsList[thread].name.toLowerCase() + " equals " + threadName)
                     if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName){
                         return threadsList[thread]
                     }
@@ -571,7 +571,7 @@
             if (!thread || !thread.owner) {
                 return $q.reject('Channel not found.');
             }
-            $stateParams.threadId = thread.id;
+            $stateParams.threadId = thread.listId;
             return {
                 thread: thread,
                 members: thread.membersIndexed,
@@ -1321,7 +1321,7 @@
          * @param model: {thread name, purpose}
          */
         function update(threadId, model) {
-            return AbstractRepo.put('/message/' + threadId, model)
+            return AbstractRepo.put('/message/' + threadId + '/', model)
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }
 
@@ -2093,11 +2093,13 @@
             return MessagesRepo.fetchThreads()
                 .then(function (threads) {
                 threads.threads.forEach(function (thread) {
-                    thread.membersIndexed = underscore.indexBy(thread.members, 'account_id');
+                    thread.membersIndexed = underscore.indexBy(thread.members, 'account');
                 });
 
                 cache.threads = underscore.sortBy(threads, 'name');
-                cache.threadsIndexed = underscore.indexBy(threads, 'id');
+                cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
+
+                console.log(cache.threadsIndexed)
 
                 return cache.threads;
             });
@@ -2168,7 +2170,8 @@
          */
         function getThreadInfo(threadId) {
             threadId = parseInt(threadId);
-            return cache.threadsIndexed.undefined[threadId];
+            console.log(threadId)
+            return cache.threadsIndexed[threadId];
         }
 
         /**
@@ -2638,7 +2641,6 @@
         vm.thread = null;
         vm.removeMember = removeMember;
 
-
         init();
 
         function init() {
@@ -2823,7 +2825,7 @@
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
 
-            load($stateParams.threadId);
+            load(30);
         }
 
         function load(threadId) {
@@ -3127,7 +3129,8 @@
                 function (data) {
                     vm.submitBusy = false;
                     vm.errorMessage = data;
-                });
+                }
+            );
 
         }
 
