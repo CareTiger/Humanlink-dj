@@ -347,25 +347,25 @@
             .state('settings', {
                 abstract: true,
                 views: {
-                    '/': {
-                        templateUrl: 'static/templates/settings/partials/main.html',
+                    '': {
+                        templateUrl: '/static/templates/settings/partials/main.html',
                         controller: 'Base',
                         controllerAs: 'base'
                     },
                     'loader@settings': {
-                        templateUrl: 'static/templates/settings/partials/loader.html'
+                        templateUrl: '/static/templates/settings/partials/loader.html'
                     }
                 }
             })
             .state('settings.notifications', {
                 url: '/notifications',
-                templateUrl: 'static/templates/settings/partials/notifications.html',
+                templateUrl: '/static/templates/settings/partials/notifications.html',
                 controller: 'Notifications',
                 controllerAs: 'vm'
             })
             .state('settings.payments', {
                 url: '/payments',
-                templateUrl: 'static/templates/settings/partials/payments.html',
+                templateUrl: '/static/templates/settings/partials/payments.html',
                 controller: 'Payments',
                 controllerAs: 'vm'
             })
@@ -375,7 +375,7 @@
             })
             .state('settings.security', {
                 url: '/security',
-                templateUrl: 'static/templates/settings/partials/security.html',
+                templateUrl: '/static/templates/accounts/partials/security.html',
                 controller: 'Security',
                 controllerAs: 'vm'
             })
@@ -483,6 +483,7 @@
                         }],
                         controllerAs: 'vm'
                     },
+
                 }
             })
             .state('dashboard.messages.default', {
@@ -536,9 +537,13 @@
             })
             .state('dashboard.messages.default.sidepanel.default', {
                 url: 'info',
-                templateUrl: '/static/templates/dashboard/partials/thread/info.html',
-                controller: 'Info',
-                controllerAs: 'vm'
+                views: {
+                    'sidepanel': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/info.html',
+                        controller: 'Info',
+                        controllerAs: 'vm'
+                    }
+                }
             })
     }
 
@@ -572,7 +577,7 @@
         });
 
         function populate(thread) {
-            if (!thread || !thread.owner) {
+            if (!thread || !thread.membersIndexed || !thread.owner) {
                 return $q.reject('Channel not found.');
             }
             $stateParams.threadId = thread.id;
@@ -1120,7 +1125,7 @@
 
         function genericError(response) {
             var reason = "Oops, something went wrong. That's our bad.";
-            if (response.status < 500 && response.data.message) {
+            if (response.status < 500 && response.data.response.message) {
                 reason = response.data.message;
             }
             return $q.reject(reason);
@@ -1507,6 +1512,7 @@
         init();
 
         function init() {
+            console.log('Base Init')
             CommonService.on('$stateChangeStart', function () {
                 vm.viewReady = false;
             });
@@ -2102,8 +2108,6 @@
 
                 cache.threads = underscore.sortBy(threads, 'name');
                 cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
-
-                console.log(cache.threadsIndexed)
 
                 return cache.threads;
             });
@@ -2841,7 +2845,6 @@
         function load(threadId) {
             MessagesService.getHistory(threadId).then(function (chats) {
                 vm.messages = chats;
-                console.log(vm.messages)
                 CommonService.broadcast(CommonEvents.viewReady);
             });
         }
@@ -2899,8 +2902,6 @@
             this.ML = this.ML || /\n/gm;
             var ml = this.ML;
             var text = chat.text;
-
-            console.log(chat.kind)
 
             switch (chat.kind) {
                 case 0:
@@ -3073,12 +3074,13 @@
         }
 
         function toggleSidepanel() {
+            console.log(SidepanelState.isOpen)
             return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
         }
 
         function openSidepanel() {
+            console.log('open')
             var st = SidepanelState.state;
-            console.log('hit')
             return $state.go(st || 'dashboard.messages.default.sidepanel.default');
         }
 
@@ -3192,7 +3194,7 @@
                 var origHeight = elem[0].scrollHeight;
                 var origPos = elem[0].scrollTop + elem[0].offsetHeight;
 
-                var height = w.height() - (headerHeight + textareaHeight);
+                var height = w.height - (headerHeight + textareaHeight);
                 if (height < minHeight) {
                     height = minHeight;
                 }
@@ -3201,7 +3203,7 @@
 
                 // Scroll to bottom if it was at the bottom before.
                 if (origHeight <= (origPos + 20)) {
-                    elem.scrollTop(elem[0].scrollHeight);
+                    $(elem).scrollTop(elem[0].scrollHeight);
                 }
             }
         }
@@ -3548,6 +3550,7 @@
 
         init();
         function init() {
+            console.log('Notifications Init')
             load();
         }
 
@@ -3607,6 +3610,7 @@
 
         init();
         function init() {
+            console.log('Payments Init')
             load();
         }
 

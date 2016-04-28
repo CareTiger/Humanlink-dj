@@ -118,30 +118,25 @@ def handle_thread(request, thread_id):
         return composeJsonResponse(200, "", context)
 
 
-@login_required
+# @login_required
 def send(request, thread_id):
     # """Send a message to the thread."""
 
-    account = get_current_user(request)
+    account = Account.objects.get(email=request.user.username)
     thread = Thread.objects.get(id=thread_id)
-    threadchat = ThreadChat()
 
     if request.method == "POST":
-        form = NewChat(request.POST)
+        x = requestPost(request)
+        form = NewChat(requestPost(request))
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            threadchat.text = cleaned_data['message']
-            threadchat.account = account
-            threadchat.thread = thread
-            threadchat.save()
+            threadchat = ThreadChat.objects.create(text=cleaned_data['message'], account=account, thread=thread)
 
             broadcast(threadchat.id)
-    else:
-        form = NewChat()
 
-    context = {"thread": thread, "threadchat": threadchat, "form": form}
-    return composeJsonResponse(200, "", context)
+            context = {"threadchat": threadchat}
+            return composeJsonResponse(200, "", context)
 
 
 # @login_required
