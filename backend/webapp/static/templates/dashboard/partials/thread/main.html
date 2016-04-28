@@ -1,16 +1,18 @@
 <div class="thread">
   <div ui-view="header"></div>
 
-  <div>
-    <div ui-view="messages" class="messages-container"
-          ng-class="{'hidden-xs col-sm-7': thread.sidepanel.isOpen}">
-    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div ui-view="messages" class="messages-container" ng-class="{'hidden-xs col-sm-7': thread.sidepanel.isOpen}" style="height: 500px; background-color: lightblue">
+                MESSAGES HERE
+            </div>
 
-    <div class="sidepanel col-xs-12 col-sm-5" ng-show="thread.sidepanel.isOpen">
-      <div ui-view>
-          <i>CONTENT HERE.</i>
-      </div>
+            <div class="sidepanel col-xs-12 col-sm-5" ng-show="thread.sidepanel.isOpen">
+              <div ui-view>
+                  <i>CONTENT HERE.</i>
+              </div>
+            </div>
+        </div>
     </div>
-  </div>
 
 </div>

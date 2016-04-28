@@ -421,7 +421,7 @@
             })
             .state('dashboard.team.invite', {
                 url: '/invite',
-                templateUrl: '/views/dashboard/partials/team/invite.html',
+                templateUrl: '/static/templates/dashboard/partials/team/invite.html',
                 controller: 'Invite',
                 controllerAs: 'vm'
             });
@@ -482,14 +482,18 @@
                             this.thread = threadInfo.thread;
                         }],
                         controllerAs: 'vm'
-                    }
+                    },
                 }
             })
             .state('dashboard.messages.default', {
                 url: '/',
-                templateUrl: 'static/templates/dashboard/partials/thread/messages.html',
-                controller: 'Messages',
-                controllerAs: 'vm',
+                views: {
+                    'messages': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/messages.html',
+                        controller: 'Messages',
+                        controllerAs: 'vm'
+                    }
+                },
                 resolve: {
                     threadInfo: threadInfoResolve,
                 },
@@ -2829,12 +2833,15 @@
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
 
-            load(30);
+            var threadId = $stateParams.threadId
+
+            load(threadId);
         }
 
         function load(threadId) {
             MessagesService.getHistory(threadId).then(function (chats) {
                 vm.messages = chats;
+                console.log(vm.messages)
                 CommonService.broadcast(CommonEvents.viewReady);
             });
         }
@@ -2892,6 +2899,8 @@
             this.ML = this.ML || /\n/gm;
             var ml = this.ML;
             var text = chat.text;
+
+            console.log(chat.kind)
 
             switch (chat.kind) {
                 case 0:
@@ -3068,8 +3077,8 @@
         }
 
         function openSidepanel() {
-            console.log('open')
             var st = SidepanelState.state;
+            console.log('hit')
             return $state.go(st || 'dashboard.messages.default.sidepanel.default');
         }
 

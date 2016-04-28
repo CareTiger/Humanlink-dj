@@ -20,19 +20,19 @@
         <div class="media-left">
           <a href>
             <img class="avatar"
-                 ng-src="{{ vm.members[msg.account_id].profile.gravatar_url }}"/>
+                 ng-src="{{ msg.account.gravatar_url }}"/>
           </a>
         </div>
         <div class="media-body">
           <div>
             <h5 class="media-heading name">
-              {{ vm.accountName(msg.account_id) }}
+                {{ msg.account.name }}
               <small class="text-muted">
-                - {{ vm.localTime(msg.created) | date : 'h:mm a' }}
+                - {{ msg.created | date : 'h:mm a' }}
               </small>
             </h5>
           </div>
-          <div ng-bind-html="::vm.body(msg)"></div>
+          <div ng-bind-html="vm.body(msg)"></div>
         </div>
       </div>
     </div>

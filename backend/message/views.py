@@ -168,9 +168,22 @@ def history(request, thread_id):
             return composeJsonResponse(200, "", context)
         else:
             all_chats = []
-            all_chats_list = ThreadChat.objects.all()
+
+
+            all_chats_list = ThreadChat.objects.filter(thread=thread)
+
             for chat in all_chats_list:
-                all_chats.append(chat)
+                chatObject = {
+                    'account': {
+                        'name': chat.account,
+                        'gravatar_url': chat.account.gravatar_url()
+                    },
+                    'created': chat.created_on,
+                    'kind': chat.kind,
+                    'text': chat.text,
+                    'remover': chat.remover
+                }
+                all_chats.append(chatObject)
 
             context = {
                 'all_chats': all_chats
