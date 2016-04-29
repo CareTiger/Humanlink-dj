@@ -12,7 +12,7 @@ class NewThread(UpdateThread):
 
 
 class NewChat(forms.Form):
-	message = forms.Textarea()
+    message = forms.CharField(widget=forms.Textarea())
 
 
 class ThreadHistory(forms.Form):

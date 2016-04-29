@@ -489,10 +489,10 @@
             .state('dashboard.messages.default', {
                 url: '/',
                 views: {
-                    'messages': {
+                    'messages@dashboard.messages': {
                         templateUrl: '/static/templates/dashboard/partials/thread/messages.html',
                         controller: 'Messages',
-                        controllerAs: 'vm'
+                        controllerAs: 'vm',
                     }
                 },
                 resolve: {
@@ -538,7 +538,7 @@
             .state('dashboard.messages.default.sidepanel.default', {
                 url: 'info',
                 views: {
-                    'sidepanel': {
+                    'sidepanel@dashboard.messages': {
                         templateUrl: '/static/templates/dashboard/partials/thread/info.html',
                         controller: 'Info',
                         controllerAs: 'vm'
@@ -3070,22 +3070,23 @@
 
             if (SidepanelState.isOpen) {
                 return openSidepanel();
+            } else {
+                return closeSidepanel()
             }
         }
 
         function toggleSidepanel() {
-            console.log(SidepanelState.isOpen)
             return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
         }
 
         function openSidepanel() {
-            console.log('open')
+            vm.sidepanel.open()
             var st = SidepanelState.state;
             return $state.go(st || 'dashboard.messages.default.sidepanel.default');
         }
 
         function closeSidepanel() {
-            console.log('closed')
+            vm.sidepanel.close()
             SidepanelState.close();
             return $state.go('dashboard.messages.default');
         }

@@ -1,5 +1,5 @@
 <div class="thread">
-  <div ui-view="header"></div>
+    <div ui-view="header"></div>
 
     <div class="row">
         <div class="col-sm-12">
@@ -8,8 +8,8 @@
             </div>
 
             <div class="sidepanel col-xs-12 col-sm-5" ng-show="thread.sidepanel.isOpen">
-              <div ui-view>
-                  <i>CONTENT HERE.</i>
+              <div ui-view="sidepanel">
+                  <i>{{ thread.sidepanel.isOpen }}</i>
               </div>
             </div>
         </div>
