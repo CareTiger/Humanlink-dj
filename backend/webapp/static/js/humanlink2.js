@@ -507,9 +507,13 @@
             })
             .state('dashboard.messages.update', {
                 url: '/update',
-                templateUrl: '/static/templates/dashboard/partials/thread/update.html',
-                controller: 'Update',
-                controllerAs: 'vm'
+                views: {
+                    '@dashboard.messages': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/update.html',
+                        controller: 'Update',
+                        controllerAs: 'vm'
+                    }
+                }
             })
             .state('dashboard.messages.leave', {
                 url: '/leave',
@@ -538,7 +542,7 @@
             .state('dashboard.messages.default.sidepanel.default', {
                 url: 'info',
                 views: {
-                    'sidepanel@dashboard.messages': {
+                    '@dashboard.messages': {
                         templateUrl: '/static/templates/dashboard/partials/thread/info.html',
                         controller: 'Info',
                         controllerAs: 'vm'
@@ -1190,7 +1194,7 @@
          * @returns {Promise}
          */
         function save(model) {
-            return AbstractRepo.post('/account/update', model)
+            return AbstractRepo.post('/accounts/update/', model)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -1226,8 +1230,8 @@
 
         function genericError(response) {
             var reason = "Oops, something went wrong. That's our bad.";
-            if (response.status < 500 && response.data.message) {
-                reason = response.data.message;
+            if (response.status < 500 && response.data.response.message) {
+                reason = response.data.response.message;
             }
             return $q.reject(reason);
         }
@@ -1446,6 +1450,7 @@
         }
 
         function changePassword(model) {
+            console.log(model)
             $log.debug('Fake change password.');
             return $q.when({'message': 'ok'});
         }
@@ -1552,6 +1557,7 @@
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
+                    console.log(data)
                     if (userData.first !== data.first || userData.last !== data.last) {
                         CommonService.hardRedirect($window.location.pathname);
                         return;
@@ -1607,6 +1613,8 @@
         }
 
         function changePassword(oldpwd, newpwd) {
+            console.log(oldpwd)
+            console.log(newpwd)
             vm.submitBusy = true;
             vm.errorMessagePasswordChange = null;
             var model = {oldvalue: oldpwd, newValue: newpwd};

@@ -281,33 +281,32 @@ def me(request):
 	return composeJsonResponse(200, "", context)
 
 
-@login_required
+# @login_required
+@csrf_exempt
 def update(request):
 	# """ - Update Account Information """
 
-	account = get_current_user(request)
+	account = Account.objects.get(email=request.user.email)
 
 	if request.method == "POST":
-		form = BasicInfo(request.POST)
+		form = BasicInfo(requestPost(request))
 
-		if form.is_valid:
+		if form.is_valid():
 
 			cleaned_data = form.cleaned_data
-			account.first_name = cleaned_data['first_name']
-			account.last_name = cleaned_data['last_name']
-			account.phone = cleaned_data['phone']
+			account.first = cleaned_data['first']
+			account.last = cleaned_data['last']
+			account.phone = cleaned_data['phone_number']
 			account.save()
-	else:
-		pass
 
-	context = {
-		'account': account
-	}
+			context = {
+				'account': 'test'
+			}
 
-	return composeJsonResponse(200, "", context)
+			return composeJsonResponse(200, "", context)
 
 
-@login_required
+# @login_required
 def update_caregiver(request):
 	# """ -Updates Account's Caregiver Information. """
 

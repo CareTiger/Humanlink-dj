@@ -49,7 +49,7 @@ def logout_user(request):
 	""" -Logs out user, and redirects to home page """
 
 	logout(request)
-	return redirect('home/index.html')
+	return redirect('/home/index.html')
 
 
 def r(request):
