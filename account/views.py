@@ -380,8 +380,7 @@ def invite_accept_redirect(token):
 
 	invite_dict = model_to_dict(invite)
 
-	url = '{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
-	# local-url = localhost:8000/home/accept/234512?data={'id':'145','token':'234512','account_id':'137'} ......
+	url = '/{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 
 	return redirect(url)
 

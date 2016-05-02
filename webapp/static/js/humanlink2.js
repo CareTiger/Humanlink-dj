@@ -3299,7 +3299,7 @@
         function signup(model) {
             vm.spinners.signup = true;
             vm.messages.signup = null;
-            AccountRepo.accept(withToken(model)).then(
+            AccountRepo.withToken(model)).then(
                 function () {
                     return CommonService.hardRedirect('/account#/edit');
                 },
