@@ -11,9 +11,9 @@ MANAGERS = ('kellym@millcreeksoftware.biz',)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'template_project',
-        'USER': 'millcreek',
-        'PASSWORD': 'jupit999',
+        'NAME': 'humanlink',
+        'USER': 'humanlink',
+        'PASSWORD': '8op-231',
         'HOST': '',
         'PORT': '',
     }
