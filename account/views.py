@@ -310,7 +310,7 @@ def update(request):
 def update_caregiver(request):
 	# """ -Updates Account's Caregiver Information. """
 
-	account = get_current_user(request)
+	account = Account.objects.get(email=request.user.username)
 	caregiver = CareGiver.objects.get(account=account)
 
 	if request.method == "POST":
@@ -329,7 +329,7 @@ def update_caregiver(request):
 				'caregiver': caregiver
 			}
 
-	return composeJsonResponse(200, "", context)
+			return composeJsonResponse(200, "", context)
 
 @login_required
 def profile(request, account_id):
@@ -342,7 +342,7 @@ def profile(request, account_id):
 
 	return composeJsonResponse(200, "", context)
 
-@login_required
+# @login_required
 def caregiver_info(request, account_id):
 	# """ -Retrieve Caregiver Details for an Account """
 
@@ -380,7 +380,7 @@ def invite_accept_redirect(token):
 
 	invite_dict = model_to_dict(invite)
 
-	url = '/{}/{}?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
+	url = '/{}/{}?data={}/'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 
 	return redirect(url)
 

@@ -517,15 +517,23 @@
             })
             .state('dashboard.messages.leave', {
                 url: '/leave',
-                templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
-                controller: 'Leave',
-                controllerAs: 'vm'
+                views: {
+                    '@dashboard.messages': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
+                        controller: 'Leave',
+                        controllerAs: 'vm'
+                    }
+                }
             })
             .state('dashboard.messages.archive', {
                 url: '/archive',
-                templateUrl: '/static/templates/dashboard/partials/thread/archive.html',
-                controller: 'Archive',
-                controllerAs: 'vm'
+                views: {
+                    '@dashboard.messages': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/archive.html',
+                        controller: 'Archive',
+                        controllerAs: 'vm'
+                    }
+                }
             })
             .state('dashboard.messages.search', {
                 url: '/search',
@@ -1184,7 +1192,7 @@
          * @returns {Promise}
          */
         function accept(model) {
-            return AbstractRepo.post('accounts/accept', model, false)
+            return AbstractRepo.post('accounts/accept/', model, false)
                 .then(genericSuccess, genericError);
         }
 
@@ -1312,7 +1320,7 @@
          * @param model: {account_id}
          */
         function removeMember(threadId, model) {
-            return AbstractRepo.post('/message/' + threadId + '/remove/', model)
+            return AbstractRepo.post('/message/' + threadId.thread_id + '/' + threadId.member_id + '/remove/', model)
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }
 
@@ -1355,6 +1363,16 @@
          */
         function archive(threadId) {
             return AbstractRepo.post('/message/' + threadId + '/archive/')
+                .then(apiGenericSuccess, AbstractRepo.genericError);
+        }
+
+         /**
+         * Un-Archive the channel
+         *
+         * @param threadID:
+         */
+        function archive(threadId) {
+            return AbstractRepo.post('/message/' + threadId + '/unarchive/')
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }
 
@@ -2681,7 +2699,7 @@
                 vm.submitBusy = true;
                 MessagesRepo.removeMember(model).then(
                     function (data) {
-                        $log.debug("Removed member " + vm.thread.name);
+                        $log.debug("Removed member " + vm.thread.member.name);
                     },
                     function (data) {
                         vm.submitBusy = false;
@@ -3299,7 +3317,7 @@
         function signup(model) {
             vm.spinners.signup = true;
             vm.messages.signup = null;
-            AccountRepo.withToken(model)).then(
+            AccountRepo.withToken(model).then(
                 function () {
                     return CommonService.hardRedirect('/account#/edit');
                 },

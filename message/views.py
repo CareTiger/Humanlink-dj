@@ -30,7 +30,7 @@ def get_threads(request):
             count = 0
             for threadMember in all_thread_members:
                 memberObject = {
-                    'id': count,
+                    'id': threadMember.id,
                     'account': threadMember.account,
                     'profile': {
                         'gravatar_url': threadMember.account.gravatar_url(),
@@ -231,26 +231,18 @@ def leave(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
-def remove(request, thread_id):
+# @login_required
+def remove(request, thread_id, member_id):
     # """Remove a user from the thread."""
 
-    thread = Thread.objects.get(id=thread_id)
-    member = ThreadMember()
-
     if request.method == "POST":
-        form = RemoveMember(request.POST)
+        thread = Thread.objects.get(id=thread_id)
+        member = ThreadMember.objects.filter(thread=thread, id=member_id)
 
-        if form.is_valid():
-            cleaned_data = form.cleaned_data
+        member.delete()
 
-            member = ThreadMember.objects.get(thread=thread_id, account=cleaned_data['account_id'])
-            thread.remove(member)
-    else:
-        form = RemoveMember()
-
-    context = {"member": member, "form": form}
-    return composeJsonResponse(200, "", context)
+        context = {"member": member}
+        return composeJsonResponse(200, "", context)
 
 
 @login_required

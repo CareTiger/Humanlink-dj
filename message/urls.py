@@ -10,7 +10,7 @@ urlpatterns = [
 	url(r'^(?P<thread_id>\d+)/history/?$', history, name="history"),
 	url(r'^(?P<thread_id>\d+)/member/?$', add_member, name="add_member"),
 	url(r'^(?P<thread_id>\d+)/leave/?$', leave, name="leave"),
-	url(r'^(?P<thread_id>\d+)/remove/?$', remove, name="remove"),
+	url(r'^(?P<thread_id>\d+)/(?P<member_id>\d+)/remove/?$', remove, name="remove"),
 	url(r'^(?P<thread_id>\d+)/archive/?$', archive, name="archive"),
 	url(r'^(?P<thread_id>\d+)/unarchive/?$', unarchive, name="unarchive"),
 ]
