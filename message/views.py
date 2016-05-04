@@ -104,7 +104,7 @@ def handle_thread(request, thread_id):
         if form.is_valid():
             cleaned_data = form.cleaned_data
             thread.name = cleaned_data['name']
-            # thread.purpose = cleaned_data['purpose']
+            thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.save()
 
@@ -126,16 +126,26 @@ def send(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
 
     if request.method == "POST":
-        x = requestPost(request)
         form = NewChat(requestPost(request))
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
             threadchat = ThreadChat.objects.create(text=cleaned_data['message'], account=account, thread=thread)
 
+            chatObject = {
+                'account': {
+                    'name': threadchat.account,
+                    'gravatar_url': threadchat.account.gravatar_url()
+                },
+                'created': threadchat.created_on,
+                'kind': threadchat.kind,
+                'text': threadchat.text,
+                'remover': threadchat.remover
+            }
+
             broadcast(threadchat.id)
 
-            context = {"threadchat": threadchat}
+            context = {"threadchat": chatObject}
             return composeJsonResponse(200, "", context)
 
 

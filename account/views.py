@@ -94,11 +94,6 @@ def login(request):
 					else:
 						form.cached_user = authenticate(username=email, password=password)
 
-						if not form.cached_user:
-							x = True
-						else:
-							x = False
-
 						auth_login(request, form.cached_user)
 
 						if form.cached_user is None:
@@ -109,39 +104,37 @@ def login(request):
 										   'click the link within to activate your account.')
 							raise form.ValidationError("Error")
 
-				clean_email = cleaned_data['email']
-				clean_password = cleaned_data['password']
+						clean_email = cleaned_data['email']
+						clean_password = cleaned_data['password']
 
-				account = Account.objects.get(email=clean_email, password=clean_password)
+						account = Account.objects.get(email=clean_email, password=clean_password)
 
-				if cleaned_data['token']:
+						if cleaned_data['token']:
 
-					token = cleaned_data['token']
-					invite = OrgInvite.objects.get(token=token)
-					org = Org.objects.get(id=invite.org.id)
-					if not invite:
-						raise Exception("Invitation token is invalid.")
-					if invite.used == True:
-						raise Exception("Invitation token has already been used.")
+							token = cleaned_data['token']
+							invite = OrgInvite.objects.get(token=token)
+							org = Org.objects.get(id=invite.org.id)
+							if not invite:
+								raise Exception("Invitation token is invalid.")
+							elif invite.used == True:
+								raise Exception("Invitation token has already been used.")
 
-					org_member = OrgMember.objects.get(account=account)
-					if org_member:
-						raise Exception("Account is already in team.")
-					else:
-						org.add_members(account.id, False, invite.is_admin)
-						invite.used = False
+							org_member = OrgMember.objects.filter(account=account, org=org)
 
-						# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
+							if org_member:
+								raise Exception("Account is already in team.")
+							else:
+								OrgMember.objects.create(account=account, org=org)
+								invite.used = False
 
-				else:
-					pass
+								# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 
-			context = {
-				'message': form.errors,
-				'next': '/app/'
-			}
+						context = {
+							'message': form.errors,
+							'next': '/app/'
+						}
 
-			return composeJsonResponse(200, "", context)
+						return composeJsonResponse(200, "", context)
 
 
 def logout_user(request):
@@ -380,7 +373,7 @@ def invite_accept_redirect(token):
 
 	invite_dict = model_to_dict(invite)
 
-	url = '/{}/{}?data={}/'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
+	url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 
 	return redirect(url)
 

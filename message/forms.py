@@ -3,7 +3,7 @@ from django import forms
 
 class UpdateThread(forms.Form):
 	name = forms.CharField(required=True, min_length=3, max_length=30)
-	purpose = forms.Textarea()
+	purpose = forms.CharField(widget=forms.Textarea(), required=False)
 	privacy = forms.IntegerField(min_value=0, max_value=3, required=False)
 
 

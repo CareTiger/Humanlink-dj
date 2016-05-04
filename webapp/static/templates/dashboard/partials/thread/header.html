@@ -6,11 +6,20 @@
       <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
     </button>
   </div>
-  <div uib-dropdown uib-keyboard-nav class="col-sm-4">
-    <a href class="title" uib-dropdown-toggle="dropdown">
-      {{ vm.thread.name }}
-      <span class="caret"></span>
-    </a>
-  </div>
+
+    <div class="dropdown">
+        <a href class="title dropdown-toggle" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          {{ vm.thread.name }}
+          <span class="caret"></span>
+        </a>
+
+        <ul class="dropdown-menu" aria-labelledby="dropdownmenu1">
+          <li ng-repeat="item in ['Channel info', 'Invite others']">
+            <a href>{{ item }}</a>
+          </li>
+        </ul>
+    </div>
+
 
 </div>
+

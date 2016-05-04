@@ -5,7 +5,7 @@
         <div class="row col-sm-offset-1 col-sm-10">
             <form class="form-horizontal" ng-submit="invite(contact)">
 
-                <div ng-hide="showInvite" class="text-center">
+                <div ng-hide="!showInvite" class="text-center">
                     <img src="{% static "images/hl.logo.vert.blue.png" %}">
                     <h3>Thank you for signing up. You will hear from us soon.</h3>
                     <div>
@@ -21,7 +21,7 @@
                     </div>
                 </div>
 
-                <div ng-show="showInvite">
+                <div ng-show="!showInvite">
                     <div class="text-center">
                         <img src="{% static "images/hl.logo.vert.blue.png" %}" alt="HumanLink invite.">
                         <h3>We would be delighted to invite you to our caregiving community.</h3>

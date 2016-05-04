@@ -287,7 +287,7 @@
                 controller: broadcastReady
             })
             .state('auth.accept', {
-                url: '/accept/{token}?data',
+                url: '/accept/{token}/?data',
                 views: {
                     '': {
                         templateUrl: '/static/templates/home/partials/auth/accept.html',
@@ -422,7 +422,7 @@
             .state('dashboard.team.invite', {
                 url: '/invite',
                 templateUrl: '/static/templates/dashboard/partials/team/invite.html',
-                controller: 'Invite',
+                controller: 'OrgInvite',
                 controllerAs: 'vm'
             });
     }
@@ -437,7 +437,6 @@
         if (!$stateParams.org) {
             return $q.reject('Invalid team.');
         }
-        console.log($stateParams.org)
         return OrgService.getOrgByUsername($stateParams.org);
     }
 
@@ -1137,8 +1136,8 @@
 
         function genericError(response) {
             var reason = "Oops, something went wrong. That's our bad.";
-            if (response.status < 500 && response.data.response.message) {
-                reason = response.data.message;
+            if (response.status < 500 && response.data.response) {
+                reason = response.data.response;
             }
             return $q.reject(reason);
         }
@@ -1429,7 +1428,7 @@
          * @param model: name and email of the person receiving the invite.
          */
         function sendInvite(orgId, model) {
-            return AbstractRepo.post('/org/' +orgId+ '/invite-email', model)
+            return AbstractRepo.post('/org/' + orgId + '/invite-email', model)
                 .then(AbstractRepo.genericSuccess, AbstractRepo.genericError);
         }
 
@@ -2393,15 +2392,12 @@
                 return $q.when(cache.orgs);
             }
             return OrgsRepo.fetchSummary().then(function (orgs) {
-                console.log(orgs.all_orgs)
                 orgs.all_orgs.forEach(butter);
                 cache.orgs = orgs.all_orgs;
-                console.log(cache.orgs)
                 return cache.orgs;
             });
 
             function butter(org) {
-                console.log(org)
                 if (org.members) {
                     org.membersIndexed = underscore.indexBy(org.members, 'id');
                     angular.extend(cache.allMembers, org.membersIndexed);
@@ -2411,7 +2407,6 @@
                     org.threadsIndexed = underscore.indexBy(org.threads, 'id');
                     angular.extend(cache.allThreads, org.threadsIndexed);
                 }
-                console.log(org)
                 return org;
             }
         }
@@ -2423,7 +2418,6 @@
          */
         function getOrgByUsername(username) {
             return getSummary().then(function (orgs) {
-                console.log(orgs)
                 return underscore.findWhere(orgs, {username: username});
             });
         }
@@ -2535,7 +2529,7 @@
     Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
     angular
         .module('app.dashboard.team')
-        .controller('Invite', Invite);
+        .controller('OrgInvite', Invite);
 
     /** @ngInject */
     function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
@@ -2559,6 +2553,7 @@
         function sendInvite(model) {
             vm.submitBusy = true;
             vm.errorMessage = null;
+            console.log("GOOD SO FAR")
 
             OrgsRepo.sendInvite(vm.org.id, model).then(
                 function (data) {
@@ -2832,13 +2827,13 @@
 (function () {
     'use strict';
 
-    Messages.$inject = ["$log", "$stateParams", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
+    Messages.$inject = ["$log", "$stateParams", "$state", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
     angular
         .module('app.dashboard')
         .controller('Messages', Messages);
 
     /** @ngInject */
-    function Messages($log, $stateParams, underscore, CommonService, CommonEvents,
+    function Messages($log, $stateParams, $state, underscore, CommonService, CommonEvents,
                       AccountService, MessagesService, MessageFormatter, threadInfo) {
         var vm = this;
         vm.thread = null;
@@ -2871,6 +2866,7 @@
         function load(threadId) {
             MessagesService.getHistory(threadId).then(function (chats) {
                 vm.messages = chats;
+                console.log(chats)
                 CommonService.broadcast(CommonEvents.viewReady);
             });
         }
@@ -2883,15 +2879,21 @@
                 message: message
             };
 
+            var threadId = $stateParams.threadId
+
             MessagesService.send($stateParams.threadId, model).then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.message = '';
+                    vm.messages.unshift(data.threadchat)
+                    console.log(vm.messages)
                 },
                 function (data) {
                     vm.submitBusy = false;
                     vm.errorMessage = data;
-                });
+                })
+
+
         }
 
         function onKeypress(event, message) {
@@ -3281,16 +3283,20 @@
         init();
 
         function init() {
+            console.log('Accept Init')
+            console.log(angular.fromJson($stateParams.data))
             // Pre-fetched data can come as a URL parameter (`data`).
+
             var data = angular.fromJson($stateParams.data);
 
             // Delete `data` parameter from URL.
-            $state.go('.', {data: null}, {location: 'replace'});
+            // $state.go('.', {data: null}, {location: 'replace'});
 
             // Impossible token.
-            if ($stateParams.token.length < 8) {
+            if ($stateParams.token.length > 8) {
                 return ready();
             }
+
             if (data) {
                 return ready(data);
             }
@@ -3490,7 +3496,6 @@
         var defaultAuth = {
             email: '',
             password: '',
-            csrf: ''
         };
 
         vm.errorMessage = null;

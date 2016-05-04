@@ -5,23 +5,31 @@
   </div>
 
   <div ng-if="vm.org">
-    <div class="header" dropdown>
+    <div class="header">
 
-      <a href class="title" dropdown-toggle>
-        Team {{ vm.org.name }}
-        <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu">
-        <li>
-          <a ui-sref-active-eq="active"
-             ui-sref="dashboard.team.invite({org: vm.org.username})">
-            Invite New Members</a>
-        </li>
-        <li><a href>Pending Invitations</a></li>
-      </ul>
+        <div class="dropdown">
+            <a href class="title dropdown-toggle" id="teamdropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Team {{ vm.org.name }}
+            <span class="caret"></span>
+          </a>
+
+
+          <ul class="dropdown-menu" aria-labelledby="teamdropdown">
+            <li>
+              <a ui-sref-active-eq="active"
+                 ui-sref="dashboard.team.invite({org: vm.org.username})">
+                Invite New Members</a>
+            </li>
+            <li><a href>Pending Invitations</a></li>
+          </ul>
+        </div>
+
+
     </div>
 
-    <div ui-view></div>
+    <div ui-view>
+        <i>Content Here</i>
+    </div>
   </div>
 
 </div>
