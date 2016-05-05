@@ -43,6 +43,7 @@ def get_threads(request):
             threadObject = {
                 "id": thread.id,
                 "owner": {
+                    "email": thread.owner.email,
                     "id": thread.owner.id
                 },
                 "name": thread.name,

@@ -24,7 +24,7 @@
                 {owner: thread.owner.id, thread: thread.name, threadId: thread.id})">
             <span class="archived" title="Archived" ng-if="thread.is_archived">[A]</span>
             {{ thread.name }}
-              <small> (sinbad@hotmail.com) </small>
+              <small>({{ thread.owner.email }})</small>
             </a>
         </li>
     </div>
