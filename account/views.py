@@ -92,7 +92,10 @@ def login(request):
 						messages.error(form.request, 'Please enter an email and password.')
 						return form.ValidationError("Error")
 					else:
-						form.cached_user = authenticate(username=email, password=password)
+						try:
+							form.cached_user = authenticate(username=email, password=password)
+						except:
+							raise Exception("")
 
 						auth_login(request, form.cached_user)
 
@@ -179,27 +182,27 @@ def signup(request):
 				login(request)
 
 				# Send Email
-
-				# md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-				# t = invite_token.replace(' ', '+')
-				# url = "https://www.humanlink.co/verify/{}".format(t)
-				# message = {
-				# 	'global_merge_vars': [
-				# 		{'name': 'VERIFICATION_URL', 'content': url},
-				# 	],
-				# 	'to': [
-				# 		{'email': account.email},
-				# 	],
-				# }
-				# message['from_name'] = message.get('from_name', 'Humanlink')
-				# message['from_email'] = message.get('from_email', 'support@humanlink.co')
-				# try:
-				# 	md.messages.send_template(
-				# 		template_name='humanlink-welcome', message=message,
-				# 		template_content=[], async=True)
-				# except mandrill.Error as e:
-				# 	logging.exception(e)
-				# 	raise Exception(e)
+				if account.email == 'tim@millcreeksoftware.biz':
+					md = mandrill.Mandrill('0Ub_zOSRJBIIhpN9bbqpwA')
+					t = invite_token.replace(' ', '+')
+					url = "https://localhost:8000/verify/{}".format(t)
+					message = {
+						'global_merge_vars': [
+							{'name': 'VERIFICATION_URL', 'content': url},
+						],
+						'to': [
+							{'email': account.email},
+						],
+					}
+					message['from_name'] = message.get('from_name', 'Humanlink')
+					message['from_email'] = message.get('from_email', 'support@humanlink.co')
+					try:
+						md.messages.send_template(
+							template_name='humanlink-welcome', message=message,
+							template_content=[], async=True)
+					except mandrill.Error as e:
+						logging.exception(e)
+						raise Exception(e)
 
 				context = {
 					'message': 'ok'

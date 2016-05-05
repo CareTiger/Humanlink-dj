@@ -6,7 +6,7 @@ class Org(models.Model):
 	actor = models.ForeignKey(Account, null=True)
 	name = models.CharField(max_length=35, null=False)
 	username = models.CharField(max_length=30, unique=True)
-	logo_key = models.CharField(max_length=36)
+	logo_key = models.CharField(max_length=36, null=True, blank=True)
 	is_archived = models.BooleanField(default=False)
 	is_public = models.BooleanField(default=False)
 	description = models.TextField()
