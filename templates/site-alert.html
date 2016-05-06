@@ -6,6 +6,8 @@
 <div id="site-alert" ng-if="siteAlert.message" ng-cloak>
     <span id="site-alert-box" ng-class="'alert alert-dismissible alert-' + siteAlert.type">
           <button type="button" class="close" ng-click="siteAlert.message = null">&times;</button>
+        {% verbatim %}
           {{ siteAlert.message }}
+        {% endverbatim %}
     </span>
 </div>

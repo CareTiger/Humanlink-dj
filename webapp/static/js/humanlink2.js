@@ -1763,8 +1763,13 @@
             error: danger,
             danger: danger,
             warning: warning,
-            info: info
+            info: info,
+            check: checkAlert,
         };
+
+        function checkAlert(){
+            console.log(alertBox)
+        }
 
         function clear() {
             addAlert(null, null);
@@ -3157,6 +3162,7 @@
         }
 
         function UpdateInfo(model) {
+
             vm.submitBusy = true;
             vm.errorMessage = null;
 
@@ -3170,6 +3176,7 @@
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your channel information update was successful.");
+                    SiteAlert.check()
                     CommonService.previous();
                 },
                 function (data) {

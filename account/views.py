@@ -92,10 +92,7 @@ def login(request):
 						messages.error(form.request, 'Please enter an email and password.')
 						return form.ValidationError("Error")
 					else:
-						try:
-							form.cached_user = authenticate(username=email, password=password)
-						except:
-							raise Exception("")
+						form.cached_user = authenticate(username=email[:30], password=password)
 
 						auth_login(request, form.cached_user)
 
@@ -168,10 +165,13 @@ def signup(request):
 				if invitation.used:
 					raise Exception("invitation code is invalid")
 
-				account = Account(email=email, password=password)
-				account.save()
+				account = Account.objects.create(email=email, password=password)
 
-				User.objects.create_user(email, email, password)
+				if len(email) > 30:
+					User.objects.create_user(email, email, password)
+				else:
+					email = email[:30]
+					User.objects.create_user(email, email, password)
 
 				org = Org(name=org_name, username=org_username)
 				org.save()
