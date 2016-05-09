@@ -853,6 +853,7 @@
     function $pusher(Config) {
         var self = this;
         self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+        console.log("Hitting this part of code.")
 
         return {
             client: self.client
@@ -860,6 +861,7 @@
     }
 
 })();
+
 /**
  * Underscore.js wrapper as a factory.
  * Docs: http://underscorejs.org/
@@ -975,13 +977,13 @@
                 // TODO: add environment-based configs values.
                 key: 'feea095554f736862bf4',
                 options: {
-                    encrypted: true,
-                    auth: {
-                        headers: {
-                            'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                        //    Token needs to be dynamic
-                        }
-                    }
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
                 }
             }
         };
@@ -3177,7 +3179,8 @@
                     vm.submitBusy = false;
                     SiteAlert.success("Your channel information update was successful.");
                     SiteAlert.check()
-                    CommonService.previous();
+                    // CommonService.previous();
+                    $state.go('dashboard.messages', {thread: vm.thread.name})
                 },
                 function (data) {
                     vm.submitBusy = false;

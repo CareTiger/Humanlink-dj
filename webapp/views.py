@@ -92,8 +92,9 @@ def pusher_auth(request):
 
 		account = Account.objects.get(email=user.email)
 
-		pusher_client = Pusher(app_id='199731', key='1019dcd6d219db50d37e', secret='9550fb09aacce399eeb6',
-							   cluster='ap1', ssl=True)
+		pusher_client = Pusher(app_id='199731', key='feea095554f736862bf4', secret='9550fb09aacce399eeb6',
+							   cluster='mt1', ssl=True)
+
 		auth = pusher_client.authenticate(channel, socket_id)
 
 		try:
