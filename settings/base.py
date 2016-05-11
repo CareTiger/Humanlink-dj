@@ -46,7 +46,6 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'django.contrib.sitemaps',
 	# 3rd Party Applications
-	'filebrowser',
 	'suit',
 	'django.contrib.admin',
 	'reversion',

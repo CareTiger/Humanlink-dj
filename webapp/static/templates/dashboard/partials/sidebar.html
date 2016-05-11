@@ -20,7 +20,7 @@
     <div ng-repeat="thread in sidebar.threads">
         <li ng-repeat="thread in thread track by thread.id">
             <a class="item" ui-sref-active="active"
-             ui-sref="dashboard.messages(
+             ui-sref="dashboard.messages.default(
                 {owner: thread.owner.id, thread: thread.name, threadId: thread.id})">
             <span class="archived" title="Archived" ng-if="thread.is_archived">[A]</span>
             {{ thread.name }}

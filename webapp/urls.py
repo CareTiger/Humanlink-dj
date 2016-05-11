@@ -9,7 +9,6 @@ admin.autodiscover()
 
 urlpatterns = [
 	url(r'^$', views.index),
-	url(r'^admin/filebrowser/', include('filebrowser.urls')),
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^logout/', views.logout_user, name="logout"),
 	url(r'^r/', views.r, name="redirect"),
