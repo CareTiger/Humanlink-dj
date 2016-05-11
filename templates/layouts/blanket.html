@@ -1,42 +1,16 @@
-{% load staticfiles %}
+{% extends "site.html" %}
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>{% block title %} HumanLink {% endblock %}</title>
-    <script src="https://code.jquery.com/jquery-2.2.3.js"   integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4="   crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static "css/humanlink.css" %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+{% block title %} Home {% endblock %}
 
-    {% block meta %}
-    <meta name="description" content="Our mission is to ensure that all elderly adults have access to affordable, high-quality caregivers. Our caregivers are trained to provide Companion Care, Personal Care and Alzheimers and Dementia care.">
+{% block ngapp %}ng-app="Home"{% endblock %}
+{% block ng_controller %}ng-controller="homeBaseCtrl"{% endblock %}
 
-    <meta property="og:title" content="HumanLink | Affordable, high-quality caregivers.">
-    <meta property="og:description" content="Our mission is to ensure that all elderly adults have access to affordable, high-quality caregivers. Our caregivers are trained to provide Companion Care, Personal Care and Alzheimers and Dementia care.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.humanlink.co">
-    <meta property="og:image" content="{% static "images/hl.logo.vert.blue.png" %}">
-    {% endblock %}
+{% block content %}
 
-    {% block styles %}
-    {% endblock %}
-</head>
-<body class="blanket">
+<div>
+    {% include "shared/error_box.html" %}
 
-    {% block body %}
-    {% endblock %}
+    <div ui-view><i>content here</i></div>
+</div>
 
-    {% block scripts %}
-    {% endblock %}
-
-    {% include "shared/ganalytics.html" %}
-    {% include "shared/olark.html" %}
-
-</body>
-</html>
+{% endblock %}

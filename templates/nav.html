@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
@@ -8,19 +10,25 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">
-                <!--<img class="nav-logo" src="/images/hl.logo.horiz.blue.png" alt="HumanLink logo"/>-->
-            </a>
+            {% if userdata %}
+                <a class="navbar-brand" href="/home#/search">
+                  <img class="nav-logo" src="{% static 'images/hl.logo.horiz.blue.png' %}" alt="HumanLink logo"/>
+                </a>
+            {% else %}
+                <a class="navbar-brand" href="/#/">
+                  <img class="nav-logo" src="{% static 'images/hl.logo.horiz.blue.png' %}" alt="HumanLink logo"/>
+                </a>
+            {% endif %}
         </div>
         <div id="navbar-content" class="navbar-collapse collapse">
             {% if userdata %}
             <ul class="nav navbar-nav">
                 <li><a href="/app/">Dashboard</a></li>
-                <li><a href="[= url_for('views.account') =]">Account</a></li>
-                <li><a href="[= url_for('views.settings') =]">Settings</a></li>
+                <li><a href="/accounts">Account</a></li>
+                <li><a href="/settings">Settings</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="">[= userdata.name =]</a></li>
+                <li><a href="">{{ userdata.name }}</a></li>
                 <li><a href="/logout">Logout</a></li>
             </ul>
             {% else %}
