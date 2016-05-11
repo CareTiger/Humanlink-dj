@@ -43,7 +43,18 @@ def app(request):
 
 @login_required
 def settings(request):
-	return render(request, 'settings/index.html')
+	account = Account.objects.get(email=request.user.email)
+	context = {
+		'userdata': {
+			'id': account.id
+		},
+		'user_data': {
+			'gravatar_url': account.gravatar_url(),
+			'name': account.username,
+			'email': account.email
+		}
+	}
+	return render(request, 'settings/index.html', context)
 
 
 def logout_user(request):
