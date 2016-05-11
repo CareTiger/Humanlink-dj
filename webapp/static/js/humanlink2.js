@@ -3803,7 +3803,7 @@ Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
 var home = angular.module('Home', ['ui.router']).config(Config)
 
 function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/wakawaka');
+    $urlRouterProvider.otherwise('/');
 
         $stateProvider
             .state('home', {
