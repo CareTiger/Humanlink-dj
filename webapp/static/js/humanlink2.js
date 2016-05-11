@@ -3803,7 +3803,7 @@ Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
 var home = angular.module('Home', ['ui.router']).config(Config)
 
 function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/wakawaka');
 
         $stateProvider
             .state('home', {
@@ -3876,3 +3876,29 @@ function Config($stateProvider, $urlRouterProvider){
 home.controller('homeBaseCtrl', function($scope){
     console.log("okay this works")
 });
+
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'home#/join';
+        };
+
+    }]);
+
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'home#/join';
+        };
+    }]);
