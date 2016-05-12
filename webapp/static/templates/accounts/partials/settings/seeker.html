@@ -1,0 +1,200 @@
+<div class="row">
+  <div class="col-sm-12">
+    <form role="form">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Team info</h2>
+        </div>
+        <div class="panel-body">
+          <div class="row form-group">
+            <label for="name" class="col-sm-3 control-label">
+              Name
+            </label>
+
+            <div class="col-sm-9">
+              <input ng-model="aboutMe.team_name"
+                     placeholder="Enter name here..."
+                     id="name" class="form-control"/>
+
+              <p class="help-block">Name of your organization or your care team. For
+                example "The ALS Association - Arkansas Chapter" OR "Jane's care team"</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="mission" class="col-sm-3 control-label">Mission (optional)</label>
+
+            <div class="col-sm-9">
+              <textarea ng-model="aboutMe.mission"
+                        placeholder="Your organization or care teams mission"
+                        rows="4" id="mission" class="form-control">
+              </textarea>
+
+              <p class="help-block">Your organization or care team's mission. For example
+                the ALS Association of Arkansas' mission is "Compassionately serving
+                people with ALS in Arkansas since 2005."
+              </p>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="website" class="col-sm-3 control-label">
+              Website (optional)
+            </label>
+
+            <div class="col-sm-9">
+              <input ng-model="aboutMe.website"
+                     placeholder="Enter website link here..."
+                     id="website" class="form-control"/>
+
+              <p class="help-block">Organization or team website</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="video" class="col-sm-3 control-label">
+              Video (optional)
+            </label>
+
+            <div class="col-sm-9">
+              <input ng-model="aboutMe.video"
+                     placeholder="Enter video link here..."
+                     id="video" class="form-control"/>
+
+              <p class="help-block">Youtube or other video link</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="phone" class="col-sm-3 control-label">
+              Phone number (optional)
+            </label>
+
+            <div class="col-sm-9">
+              <input ng-model="aboutMe.main_phone"
+                     placeholder="Enter phone number"
+                     id="phone" class="form-control"/>
+
+              <p class="help-block"></p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="email" class="col-sm-3 control-label">
+              Email address (optional)
+            </label>
+
+            <div class="col-sm-9">
+              <input ng-model="aboutMe.email"
+                     placeholder="Enter email address"
+                     id="email" class="form-control"/>
+
+              <p class="help-block"></p>
+            </div>
+          </div>
+
+          <hr>
+          <div class="row form-group">
+            <div class="col-sm-4">
+              <button class="btn btn-lg btn-secondary btn-block"
+                      ng-click="seekerProfileUpdate(aboutMe)"
+                      ng-disabled="ctrlHelper.isLoading">Save organization info
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Care needs</h2>
+        </div>
+        <div class="panel-body">
+
+          <div class="row form-group">
+            <label for="needs" class="col-sm-3 control-label">Current provider needs
+              (optional)</label>
+
+            <div class="col-sm-9">
+              <textarea ng-model="aboutMe.caregiver_needs"
+                        placeholder="Your organization or care team's provider needs"
+                        rows="4" id="needs" class="form-control">
+              </textarea>
+
+              <p class="help-block">Your organization or care team's current care provider
+                needs. For example -
+              </p>
+
+              <p class="help-block">1) 4 hours respite care coverage Saturday 12-4 pm</p>
+
+              <p class="help-block">2) 2 hours ongoing care Tuesday's 7-9 am</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label for="needs" class="col-sm-3 control-label">
+              Typical care needs (optional)
+            </label>
+
+            <div class="col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="aboutMe.hoyer_lift">
+                  Hoyer lift
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="aboutMe.cough_assist">
+                  Cough assist machine
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="aboutMe.adaptive_utensil">
+                  Adaptive utensils
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="aboutMe.meal_prep">
+                  Light meal prep
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="aboutMe.housekeeping">
+                  Light housekeeping
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+          <div class="row form-group">
+            <div class="col-sm-4">
+              <button class="btn btn-lg btn-secondary btn-block"
+                      ng-click="seekerProfileUpdate(aboutMe)"
+                      ng-disabled="ctrlHelper.isLoading">Save care needs
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+</div>

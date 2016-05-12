@@ -1,0 +1,52 @@
+<div class="connections">
+  <tabset>
+    <tab index="0" heading="My connections">
+      <div class="results-container">
+        <p><strong>You have {{accepted.length}} connections.</strong></p>
+
+        <div ng-repeat="conn in connections | filter: {status: 'Accepted'} as accepted">
+          <div class="result">
+            <p>Name: {{ conn.first }} {{ conn.last }}</p>
+
+            <p>Email: {{ conn.email }}</p>
+
+            <a href="/home#/previewSeekerProfile/{{conn.account_id }}">Seeker
+              profile</a>
+            &nbsp; &nbsp; &nbsp;
+            <a href="/home#/previewProviderProfile/{{conn.account_id }}">Provider
+              profile</a>
+          </div>
+
+        </div>
+      </div>
+    </tab>
+
+
+    <tab index="0" heading="Requests">
+      <div class="results-container">
+        <p><strong>You have {{pending.length}} requests.</strong></p>
+
+        <div ng-repeat="conn in connections | filter: {status: 'Pending'} as pending">
+          <div class="result">
+            <p>Name: {{ conn.first }} {{ conn.last }}<p>
+
+            <p>Email: {{ conn.email }} </p>
+
+            <a href="/home#/previewSeekerProfile/{{conn.account_id }}">Seeker
+              profile</a>
+            &nbsp; &nbsp; &nbsp;
+            <a href="/home#/previewProviderProfile/{{conn.account_id }}">Provider
+              profile</a>
+
+            <p>Message: {{conn.message }}</p>
+            <button class="btn btn-primary" ng-click="accept(conn.account_id)">
+              Accept
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </tab>
+
+  </tabset>
+</div>

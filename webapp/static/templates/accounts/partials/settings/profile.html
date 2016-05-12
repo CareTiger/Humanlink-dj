@@ -1,0 +1,59 @@
+<div class="settings-profile">
+  <form class="form-horizontal">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Basic Information</h2>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">
+              Email Address</label>
+
+            <div class="col-sm-7">
+              <p class="form-control-static">
+                <strong> {{ ::accountForm.email }} </strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profile-name" class="col-sm-3 control-label">
+              Name</label>
+
+            <div class="col-sm-4">
+              <input ng-model="accountForm.first" placeholder="Jane" id="profile-name"
+                     class="form-control" hl-focus required>
+            </div>
+            <div class="col-sm-4">
+              <input class="form-control" ng-model="accountForm.last" placeholder="Doe" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profile-phone" class="col-sm-3 control-label">
+              Phone Number</label>
+
+            <div class="col-sm-4">
+              <input id="profile-phone" class="form-control"
+                     ng-model="accountForm.phone_number" placeholder="555-555-5555"
+                     maxlength="12" required>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-secondary btn-block"
+                    ng-click="update(accountForm)"
+                    ng-disabled="updateReq.isLoading">Save basic information
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
