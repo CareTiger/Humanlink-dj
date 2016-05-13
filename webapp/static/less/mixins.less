@@ -1,0 +1,20 @@
+.btn-trans(@color; @bg) {
+    color: @bg;
+    &:hover, &:focus, &:active, &.active {
+        color: @color;
+    }
+}
+
+.bg-variant2(@color, @bg, @color-href) {
+    background: @bg;
+    color: @color;
+
+    a {
+        color: @color-href;
+
+        &:hover,
+        &:focus {
+            color: darken(@color-href, 10%);
+        }
+    }
+}

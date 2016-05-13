@@ -25,7 +25,7 @@ gulp.task('move-bootstrap', function () {
 gulp.task('move-fonts', function () {
     return gulp.src([
         'bower_components/bootstrap/fonts/*',
-        'bower_components/fontawesome/fonts/*'
+        'bower_components/font-awesome/fonts/*'
     ])
         .pipe(gulp.dest('static/fonts/'));
 });
@@ -57,22 +57,24 @@ gulp.task('cv', function () {
         'bower_components/checklist-model/checklist-model.js',
         'bower_components/underscore/underscore-min.js',
         'bower_components/moment/moment.js',
-        'bower_components/pusher/dist/pusher.min.js'
+        'bower_components/pusher-websocket-iso/dist/web/pusher.js'
     ], 'vendor.js', false);
 });
 
 gulp.task('less', ['move-bootstrap', 'move-fonts'], function () {
-    del.sync(['static/css/humanlink.*.css']);
+    del.sync(['static/css/humanlink.css']);
     return gulp.src([
-        'stylesheets/less/humanlink.less',
-        'bower_components/fontawesome/css/font-awesome.min.css'
+        'static/less/**/*.less',
+        'bower_components/font-awesome/css/font-awesome.min.css'
     ])
         .pipe(less())
         .pipe(concat('humanlink.css'))
-        .pipe(gulp.dest('static/css/'));
+        .pipe(gulp.dest('webapp/static/css/'));
 });
 
 gulp.task('watch', function(){
   gulp.watch('app/**/*.js', ['js']);
   // Other watchers
 })
+
+gulp.task('default', ['js', 'less', 'cv', 'watch']);

@@ -1,0 +1,55 @@
+.landing {
+
+  .section-welcome {
+    .bg-type();
+    background-image: url("/images/landing/cover.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 600px;
+    padding: 80px 0;
+  }
+
+  .section-overview {
+    .steps {
+      @media (min-width: 970px) {
+        padding-top: 50px;
+     }
+   }
+
+    img {
+      float: right;
+      max-height: 600px;
+    }
+  }
+
+  .section-benefits {
+    .bg-secondary();
+
+    .fa, .material-icons {
+      font-size: 140px;
+    }
+  }
+
+  .section-pricing {
+    ul {
+      line-height: 2em;
+    }
+  }
+
+  .section-invite {
+    .bg-secondary();
+
+    form {
+      background: @backgroundFaded;
+      color: @text-color;
+      padding: 20px 10px;
+      border: 10px solid @gray-light;
+
+      img {
+        height: 80px;
+      }
+    }
+  }
+
+}
