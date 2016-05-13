@@ -16,7 +16,7 @@ MANAGERS = ('info@millcreeksoftware.biz',)  # THESE GET 404 ERROR EMAILS
 SECRET_KEY = 't8%+b87azv!0)#)bc^x!1h*m(ar#z7flxls!r6mu*+pj6n_q!4'
 
 # Mandril API Key
-MANDRILL_API_KEY = '<mandril-key>'
+MANDRILL_API_KEY = 'XcoD3bPJZFpJwxUTH9ylNw'
 
 # Pusher Keys
 PUSHER_KEY = '1019dcd6d219db50d37e'
@@ -29,12 +29,13 @@ ALLOWED_HOSTS = ['*', ]
 SITE_ID = 1
 
 # EMAIL SETTINGS
-EMAIL_HOST = 'smtp.webfaction.com'
-EMAIL_HOST_USER = 'millcreek_noreply'
-EMAIL_HOST_PASSWORD = 'jupit99'
-EMAIL_PORT = '25'
-DEFAULT_FROM_EMAIL = "Millcreek Software <noreply@millcreeksoftware.biz>"
-ONLINE_CONTACT_EMAIL = 'kellym@millcreeksoftware.biz'
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+# EMAIL_HOST = 'smtp.webfaction.com'
+# EMAIL_HOST_USER = 'millcreek_noreply'
+# EMAIL_HOST_PASSWORD = 'jupit99'
+# EMAIL_PORT = '25'
+DEFAULT_FROM_EMAIL = "Millcreek Software <tim@millcreeksoftware.biz>"
+ONLINE_CONTACT_EMAIL = 'tim@millcreeksoftware.biz'
 
 # Application definition
 INSTALLED_APPS = (
@@ -51,6 +52,7 @@ INSTALLED_APPS = (
 	'reversion',
 	'classytags',
 	'mptt',
+	'djrill',
 	# My Applications
 	'webapp',
 	'message',

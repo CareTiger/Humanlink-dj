@@ -14,7 +14,8 @@
             invite: invite,
             join: join,
             login: login,
-            save: save
+            save: save,
+            threadInvite: threadInvite,
         };
 
         /**
@@ -81,6 +82,19 @@
                     }
                     return genericError(response);
                 });
+        }
+        
+        function threadInvite(token) {
+            return AbstractRepo.get('messages/invite/' + token, {}, false)
+                .then(genericSuccess, function (response) {
+                    if (response.status === 400) {
+                        return $q.reject({'used': true});
+                    }
+                    if (response.status === 400) {
+                        return $q.reject(null);
+                    }
+                    return genericError(response);
+                })
         }
 
         function genericSuccess(response) {

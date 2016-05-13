@@ -72,7 +72,24 @@
                         templateUrl: '/static/templates/home/partials/auth/accept.login.html'
                     }
                 }
-            });
+            })
+            .state('auth.threadAccept', {
+                    url: '/thread/{token}/?data',
+                    views: {
+                        '': {
+                            templateUrl: '/static/templates/home/partials/thread/thread.accept.html',
+                            controller: 'ThreadAccept',
+                            controllerAs: 'vm',
+                            reloadOnSearch: false
+                        },
+                        'signup@auth.threadAccept': {
+                            templateUrl: '/static/templates/home/partials/thread/thread.accept.signup.html'
+                        },
+                        'login@auth.threadAccept': {
+                            templateUrl: '/static/templates/home/partials/thread/thread.accept.login.html'
+                        }
+                    }
+                });
 
         /** ngInject */
         function broadcastReady(CommonService, CommonEvents) {

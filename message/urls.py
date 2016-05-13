@@ -13,4 +13,6 @@ urlpatterns = [
 	url(r'^(?P<thread_id>\d+)/(?P<member_id>\d+)/remove/?$', remove, name="remove"),
 	url(r'^(?P<thread_id>\d+)/archive/?$', archive, name="archive"),
 	url(r'^(?P<thread_id>\d+)/unarchive/?$', unarchive, name="unarchive"),
+	url(r'^accept/(?P<token>.+)/?$', accept_thread_invite, name="accept_thread_invite"),
+	url(r'^invite/(?P<token>.+)/?$', thread_invite, name="thread_invite")
 ]

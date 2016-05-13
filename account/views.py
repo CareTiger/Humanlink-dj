@@ -14,7 +14,7 @@ import json
 from django.shortcuts import render, redirect
 from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver
-from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember
+from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
 # from third_party import pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
@@ -210,9 +210,6 @@ def signup(request):
 
 				return composeJsonResponse(200, "", context)
 
-	else:
-		form = SignUp()
-
 
 def accept_invite(request):
 	# """ -Create a new account and accept an org member invitation."""
@@ -264,6 +261,7 @@ def invite(request, token):
 	}
 
 	return composeJsonResponse(200, "", context)
+
 @login_required
 def me(request):
 	# """ - Retrieve Current Account Information in JSON Format """

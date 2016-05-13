@@ -49,7 +49,7 @@ class Thread(models.Model):
 		return self.threadmember_set.all()
 
 	def add_members(self, account_id):
-		member = ThreadMember.objects.get(account_id=account_id)
+		member = ThreadMember.objects.get(account=account_id)
 		self.threadmembers.add(member)
 		return member
 
@@ -88,7 +88,7 @@ class ThreadInvite(models.Model):
 	actor = models.ForeignKey(Account, related_name="threadinvite_actor_id", null=True)
 	thread = models.ForeignKey(Thread, related_name="threadinvite_thread_id", on_delete=models.CASCADE, null=False)
 	token = models.CharField(max_length=16, unique=True, null=False)
-	shareable = models.BooleanField()
+	shareable = models.BooleanField(default=False)
 	phone = models.CharField(max_length=10)
 	name = models.CharField(max_length=70)
 	email = models.EmailField(max_length=255)

@@ -56,7 +56,7 @@
       Channel <strong>{{ vm.thread.name }}</strong> has
       {{ vm.thread.members.length }} members.
       We have made it easy for you to add/remove members from your channel.
-      Add channel members <a href>here.</a>
+      Add channel members <a ui-sref="dashboard.messages.invite">here.</a>
     </div>
 
     <div class="media" ng-repeat="member in vm.thread.members track by member.id">

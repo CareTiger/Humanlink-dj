@@ -1,13 +1,22 @@
 import json
+import logging
+import urllib
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.forms.models import model_to_dict
+from django.http import HttpResponse
+from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import render, redirect
 import datetime
+
+import mandrill
 from account.models import Account
 from api_helpers import composeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
 from account.views import broadcast, generate_token, get_current_user, requestPost
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 import time
 
@@ -201,9 +210,10 @@ def add_member(request, thread_id):
     # """Add a member to the thread."""
 
     thread = Thread.objects.get(id=thread_id)
+    account = Account.objects.get(email=request.user.email)
 
     if request.method == "POST":
-        form = AddMember(request.POST)
+        form = AddMember(requestPost(request))
         res = {'message': 'ok'}
 
         if form.is_valid():
@@ -212,12 +222,45 @@ def add_member(request, thread_id):
                 account = Account.objects.get(account=cleaned_data['account_id'])
                 thread.add_members(account)
             elif cleaned_data['email']:
-                account = Account.objects.get(email=cleaned_data['email'])
                 token = generate_token(8)
+
                 thread_invite = ThreadInvite.objects.create(actor=account, thread=thread, token=token,
                                              email=cleaned_data['email'], name=cleaned_data['name'])
 
                 # TO-DO = Create email to send, previous author never did it.
+
+                # Send Email
+                md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+                t = thread_invite.token.replace(' ', '+')
+                url = "http://localhost:8001/message/accept/{}".format(t)
+                message = {
+                    'global_merge_vars': [
+                        {
+                            "name": "inviter",
+                            "content": account.first
+                        },
+                        {
+                            "name": "thread_name",
+                            "content": thread.name
+                        },
+                        {
+                            "name": "invite_url",
+                            "content": url
+                        }
+                    ],
+                    'to': [
+                        {'email': 'tim@millcreeksoftware.biz'},
+                    ],
+                }
+                message['from_name'] = message.get('from_name', 'Humanlink')
+                message['from_email'] = message.get('from_email', 'support@humanlink.co')
+                try:
+                    md.messages.send_template(
+                        template_name='humanlink-thread-invite', message=message,
+                        template_content=[], async=True)
+                except mandrill.Error as e:
+                    logging.exception(e)
+                    raise Exception(e)
 
             else:
                 res['message'] = 'Provide either account or email address.'
@@ -225,8 +268,42 @@ def add_member(request, thread_id):
         form = AddMember()
         res = {}
 
-    context = {"res": res, "form": form}
+    context = {"res": form.errors}
     return composeJsonResponse(200, "", context)
+
+
+def accept_thread_invite(request, token):
+    try:
+        invite = ThreadInvite.objects.get(token=token)
+    except:
+        raise Exception('Resource not  found')
+
+    thread = Thread.objects.get(id=invite.thread.id)
+
+    threadObject = invite;
+
+    base = "home/thread"
+
+    invite_dict = model_to_dict(threadObject)
+
+    invite_dict['thread_name'] = thread.name
+
+    y = urllib.quote_plus((json.dumps(invite_dict)))
+
+    url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
+
+    return redirect(url)
+
+def thread_invite(request, token):
+    # """ Return Thread Invite Information """
+    threadInvite = ThreadInvite.objects.get(token=token)
+    thread = Thread.objects.get(name=threadInvite.thread.name)
+
+    context = {
+        'thread': 'OKIE DOKIE DOKIE'
+    }
+
+    return composeJsonResponse(200, '', context)
 
 
 @login_required

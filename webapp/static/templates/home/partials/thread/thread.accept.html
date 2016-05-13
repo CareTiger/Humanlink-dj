@@ -1,0 +1,31 @@
+<div class="account-accept" ng-switch="vm.view">
+
+  <div ng-switch-default>
+    <h2 class="text-center">
+      Channel {{ vm.invite.thread_name }}
+      has sent you an invitation!
+    </h2>
+
+    <div class="col-sm-6" id="signup-view" ui-view="signup"></div>
+    <div class="col-sm-6" id="login-view" ui-view="login"></div>
+  </div>
+
+  <div ng-switch-when="invalid" class="card card-half">
+    <h2>Uh Oh</h2>
+    <p>
+      It looks like you're trying to accept a team invitation,
+      but we couldn't find that URL.</p>
+    <p>Try copying and pasting the URL from your email.</p>
+  </div>
+
+  <div ng-switch-when="used" class="card card-half">
+    <h2>Invite Already Accepted</h2>
+    <p>
+      It looks like this invitation has already been accepted.
+      Would you like to <a href ui-sref="auth.login">Sign In</a>?</p>
+    <p>
+      If you did not accept this invitation,
+      you should request a new invite from the team that invited you.</p>
+  </div>
+
+</div>

@@ -6,6 +6,7 @@ var del = require('del');
 var gulp   = require('gulp');
 var less = require('gulp-less');
 minifyCss = require('gulp-minify-css');
+var watch = require('gulp-watch');
 
 var bundleJs = function (files, filename, annotate) {
     var g = gulp.src(files);
@@ -70,3 +71,8 @@ gulp.task('less', ['move-bootstrap', 'move-fonts'], function () {
         .pipe(concat('humanlink.css'))
         .pipe(gulp.dest('static/css/'));
 });
+
+gulp.task('watch', function(){
+  gulp.watch('app/**/*.js', ['js']);
+  // Other watchers
+})
