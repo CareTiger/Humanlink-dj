@@ -57,7 +57,7 @@ gulp.task('cv', function () {
         'bower_components/checklist-model/checklist-model.js',
         'bower_components/underscore/underscore-min.js',
         'bower_components/moment/moment.js',
-        'bower_components/pusher-websocket-iso/dist/web/pusher.js'
+        'bower_components/pusher-websocket-iso/dist/web/pusher.js',
     ], 'vendor.js', false);
 });
 

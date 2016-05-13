@@ -3,49 +3,44 @@
 <!doctype html>
 <html lang="en" {% block ngapp %}{% endblock %}>
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %} HumanLink {% endblock %}</title>
-  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
-  <link rel="icon" sizes="16x16 32x32 64x64" href="/images/favicons/favicon.ico">
-  <link rel="icon" type="image/png" sizes="196x196" href="/images/favicons/favicon-192.png">
-  <link rel="icon" type="image/png" sizes="160x160" href="/images/favicons/favicon-160.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="/images/favicons/favicon-64.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16.png">
-  <link rel="apple-touch-icon" href="/images/favicons/favicon-57.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/favicon-114.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/favicon-72.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/favicon-144.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/favicon-60.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/favicon-120.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/favicon-76.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/favicon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/favicon-180.png">
-  <meta name="msapplication-TileColor" content="#FFFFFF">
-  <meta name="msapplication-TileImage" content="/images/favicons/favicon-144.png">
-  <meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} HumanLink {% endblock %}</title>
+    <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="/images/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="/images/favicons/favicon-192.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="/images/favicons/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/images/favicons/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16.png">
+    <link rel="apple-touch-icon" href="/images/favicons/favicon-57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/favicon-72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/favicon-60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/favicon-180.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/favicons/favicon-144.png">
+    <meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
     <link rel="stylesheet" href="{% static "css/humanlink.css" %}">
     <link rel="stylesheet" href="{% static "css/humanlink-home.css" %}">
 
-
-  {% block head %} {% endblock %}
-  {% block styles %} {% endblock %}
-  <script type="text/javascript">
-    window.HL = {};
-    window.HL.userdata = {% if userdata %}{{ userdata|safe }}{% else %}{}{% endif %}
-  </script>
+    {% block head %} {% endblock %}
+    {% block styles %} {% endblock %}
+    <script type="text/javascript">
+        window.HL = {};
+        window.HL.userdata = {% if userdata %}{{ userdata|safe }}{% else %}{}{% endif %}
+    </script>
 </head>
 
-<body class="site {% block layout %}{% endblock %}">
+<body class="{% block layout %}{% endblock %}">
 
 {% block nav %}
-{% include "nav.html" %}
+    {% include "nav.html" %}
 {% endblock %}
 
 {% include "site-alert.html" %}
@@ -58,25 +53,14 @@
 </div>
 
 {% block footer %}
-{% include "footer.html" %}
+    {% include "footer.html" %}
 {% endblock %}
 
 
 {% block scripts %} {% endblock %}
-<script src="https://code.jquery.com/jquery-2.2.3.js"   integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4="   crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<script src="https://code.angularjs.org/1.4.5/angular-animate.js"></script>
-<script src="https://code.angularjs.org/1.4.5/angular-messages.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.3/angular-sanitize.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.2/ui-bootstrap.js"></script>
-{#<script type="text/javascript" src="{% static "js/uib.js" %}"></script>#}
-<script src="//js.pusher.com/3.0/pusher.js"></script>
-<script type="text/javascript" src="{% static "js/moment.js" %}"></script>
-<script src="//cdn.jsdelivr.net/angular.pusher/latest/pusher-angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+<script src="{% static 'js/vendor.js' %}"></script>
 <script type="text/javascript" src="{% static "js/humanlink.js" %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-scroll-glue/2.0.4/scrollglue.min.js"></script>
-{#<script src="{% static 'js/vendor.js' %}"></script>#}
+
 </body>
 </html>
