@@ -19,7 +19,7 @@ var bundleJs = function (files, filename, annotate) {
 
 gulp.task('move-bootstrap', function () {
     return gulp.src('bower_components/bootstrap/less/**/*.less')
-        .pipe(gulp.dest('stylesheets/less/bootstrap/'));
+        .pipe(gulp.dest('webapp/static/less/bootstrap/'));
 });
 
 gulp.task('move-fonts', function () {
@@ -27,7 +27,7 @@ gulp.task('move-fonts', function () {
         'bower_components/bootstrap/fonts/*',
         'bower_components/font-awesome/fonts/*'
     ])
-        .pipe(gulp.dest('static/fonts/'));
+        .pipe(gulp.dest('webapp/static/fonts/'));
 });
 
 gulp.task('js', function(){
@@ -64,7 +64,7 @@ gulp.task('cv', function () {
 gulp.task('less', ['move-bootstrap', 'move-fonts'], function () {
     del.sync(['static/css/humanlink.css']);
     return gulp.src([
-        'static/less/**/*.less',
+        'webapp/static/less/humanlink.less',
         'bower_components/font-awesome/css/font-awesome.min.css'
     ])
         .pipe(less())

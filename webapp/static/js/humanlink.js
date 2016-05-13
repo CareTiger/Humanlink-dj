@@ -85,15 +85,6 @@
         }
 })();
 /**
- * A module that has common directives, services, constants, etc.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.common', []);
-
-})();
-/**
  * Core module that bootstrap most of the dependencies and configuration.
  */
 (function () {
@@ -171,6 +162,15 @@
             });
         }
     }
+
+})();
+/**
+ * A module that has common directives, services, constants, etc.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.common', []);
 
 })();
 /**
@@ -269,84 +269,6 @@
 
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/views/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/views/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/views/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/views/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/views/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
-
-home.controller('homeBaseCtrl', ["$scope", function($scope){
-    console.log("okay this works")
-}]);
 /**
  * Guest module.
  */
@@ -447,6 +369,84 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     }
 
 })();
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
+
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/views/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/views/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/views/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/views/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/views/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
+
+home.controller('homeBaseCtrl', ["$scope", function($scope){
+    console.log("okay this works")
+}]);
 /**
  * Repository module that communicates with the backend APIs.
  */
@@ -517,6 +517,60 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
                 url: '/close',
                 template: 'close account'
             });
+    }
+
+})();
+/**
+ * Team management and settings module.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$stateProvider"];
+    orgInfoResolve.$inject = ["ready", "$stateParams", "$q", "OrgService"];
+    angular
+        .module('app.dashboard.team', [])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider) {
+
+        $stateProvider
+            .state('dashboard.team', {
+                abstract: true,
+                url: 'manage/{org}',
+                templateUrl: '/static/templates/dashboard/partials/team/main.html',
+                controller: 'Team',
+                controllerAs: 'vm',
+                resolve: {
+                    orgInfo: orgInfoResolve
+                }
+            })
+            .state('dashboard.team.directory', {
+                url: '',
+                templateUrl: '/static/templates/dashboard/partials/team/directory.html',
+                controller: 'Directory',
+                controllerAs: 'vm'
+            })
+            .state('dashboard.team.invite', {
+                url: '/invite',
+                templateUrl: '/static/templates/dashboard/partials/team/invite.html',
+                controller: 'OrgInvite',
+                controllerAs: 'vm'
+            });
+    }
+
+    /**
+     * Org info resolved dependency that can be injected into the controllers.
+     * @param ready: (required) wait for the dashboard `ready` to resolve.
+     * @return {Promise}
+     */
+    /** ngInject */
+    function orgInfoResolve(ready, $stateParams, $q, OrgService) {
+        if (!$stateParams.org) {
+            return $q.reject('Invalid team.');
+        }
+        return OrgService.getOrgByUsername($stateParams.org);
     }
 
 })();
@@ -676,60 +730,6 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
                 owner: thread.owner
             };
         }
-    }
-
-})();
-/**
- * Team management and settings module.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$stateProvider"];
-    orgInfoResolve.$inject = ["ready", "$stateParams", "$q", "OrgService"];
-    angular
-        .module('app.dashboard.team', [])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider) {
-
-        $stateProvider
-            .state('dashboard.team', {
-                abstract: true,
-                url: 'manage/{org}',
-                templateUrl: '/static/templates/dashboard/partials/team/main.html',
-                controller: 'Team',
-                controllerAs: 'vm',
-                resolve: {
-                    orgInfo: orgInfoResolve
-                }
-            })
-            .state('dashboard.team.directory', {
-                url: '',
-                templateUrl: '/static/templates/dashboard/partials/team/directory.html',
-                controller: 'Directory',
-                controllerAs: 'vm'
-            })
-            .state('dashboard.team.invite', {
-                url: '/invite',
-                templateUrl: '/static/templates/dashboard/partials/team/invite.html',
-                controller: 'OrgInvite',
-                controllerAs: 'vm'
-            });
-    }
-
-    /**
-     * Org info resolved dependency that can be injected into the controllers.
-     * @param ready: (required) wait for the dashboard `ready` to resolve.
-     * @return {Promise}
-     */
-    /** ngInject */
-    function orgInfoResolve(ready, $stateParams, $q, OrgService) {
-        if (!$stateParams.org) {
-            return $q.reject('Invalid team.');
-        }
-        return OrgService.getOrgByUsername($stateParams.org);
     }
 
 })();
@@ -1023,6 +1023,35 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     'use strict';
 
     angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
         .module('app.common')
         .constant('CommonEvents', getEvents());
 
@@ -1057,35 +1086,6 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
 
         return {
             client: self.client
-        };
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
         };
     }
 
@@ -2797,29 +2797,113 @@ angular
 })();
 
 /**
- * Caregiver controller
+ *  Controller for the team view.
  */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+(function () {
+    'use strict';
 
-        $scope.SignUp = function (){
-            $window.location.href = 'home#/join';
-        };
-    }]);
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
 /**
- * Careseeker controller
+ *  Controller for the invite view.
  */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
+(function () {
+    'use strict';
 
-        $scope.SignUp = function () {
-            $window.location.href = 'home#/join';
-        };
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
 
-    }]);
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
 /**
  *  Controller for the thread Archive.
  */
@@ -3423,114 +3507,6 @@ angular
 
 })();
 /**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
-/**
  * Controller for the accept view.
  */
 (function () {
@@ -3938,6 +3914,30 @@ angular
     }
 
 })();
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'home#/join';
+        };
+    }]);
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'home#/join';
+        };
+
+    }]);
 /**
  * Parent controller of the settings module.
  */
