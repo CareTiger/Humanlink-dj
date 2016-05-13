@@ -85,8 +85,10 @@
         function signup(model) {
             vm.spinners.signup = true;
             vm.messages.signup = null;
-            AccountRepo.signup(withToken(model)).then(
-                function () {
+            console.log(withToken(model))
+            AccountRepo.join(withToken(model)).then(
+                function (data) {
+                    console.log(data)
                     return CommonService.hardRedirect('/accounts#/edit');
                 },
                 function (data) {
@@ -114,7 +116,7 @@
         }
 
         function withToken(model) {
-            return angular.extend(model, {token: vm.invite.token});
+            return angular.extend(model, {invite: vm.invite.token});
         }
 
         function gotoLogin() {

@@ -43,5 +43,5 @@ class SignUp(forms.Form):
     invite = forms.CharField(required=True)
     password = forms.CharField(required=True)
     password_confirm = forms.CharField(required=True)
-    org_name = forms.CharField(required=True)
-    org_username = forms.CharField(required=True)
+    org_name = forms.CharField(required=False)
+    org_username = forms.CharField(required=False)

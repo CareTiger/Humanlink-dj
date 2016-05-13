@@ -152,32 +152,29 @@ def signup(request):
 
 				email = cleaned_data['email']
 				password = cleaned_data['password']
-				password_conf = cleaned_data['password_confirm']
 				org_name = cleaned_data['org_name']
 				org_username = cleaned_data['org_username']
 				invite_token = cleaned_data['invite']
 
-				if password != password_conf:
-					raise Exception("Password does not match confirmation")
-
-				invitation = OrgInvite.objects.get(token=invite_token)
-
-				if invitation.used:
-					raise Exception("invitation code is invalid")
-
 				account = Account.objects.create(email=email, password=password)
-
 				if len(email) > 30:
 					User.objects.create_user(email, email, password)
 				else:
 					email = email[:30]
 					User.objects.create_user(email, email, password)
 
-				org = Org(name=org_name, username=org_username)
-				org.save()
-
-				invitation.used = False
-				invitation.save()
+				if ThreadInvite.objects.filter(token=invite_token):
+					invitation = ThreadInvite.objects.get(token=invite_token)
+					thread = Thread.objects.get(id=invitation.thread.id)
+					ThreadMember.objects.create(thread=thread, account=account)
+				else:
+					invitation = OrgInvite.objects.get(token=invite_token)
+					if invitation.used:
+						raise Exception("invitation code is invalid")
+					if org_username and org_name:
+						Org.objects.create(name=org_name, username=org_username)
+						invitation.used = False
+						invitation.save()
 
 				login(request)
 
@@ -210,6 +207,8 @@ def signup(request):
 
 				return composeJsonResponse(200, "", context)
 
+			else:
+				raise Exception(form.errors)
 
 def accept_invite(request):
 	# """ -Create a new account and accept an org member invitation."""
