@@ -29,7 +29,6 @@ ALLOWED_HOSTS = ['*', ]
 SITE_ID = 1
 
 # EMAIL SETTINGS
-EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 # EMAIL_HOST = 'smtp.webfaction.com'
 # EMAIL_HOST_USER = 'millcreek_noreply'
 # EMAIL_HOST_PASSWORD = 'jupit99'
@@ -52,7 +51,6 @@ INSTALLED_APPS = (
 	'reversion',
 	'classytags',
 	'mptt',
-	'djrill',
 	# My Applications
 	'webapp',
 	'message',

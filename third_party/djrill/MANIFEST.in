@@ -1,3 +1,0 @@
-include README.rst AUTHORS.txt LICENSE
-recursive-include djrill *.py
-prune djrill/tests
