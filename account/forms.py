@@ -8,7 +8,7 @@ from .models import Account, CareGiver
 class LoginForm(forms.Form):
     email = forms.EmailField(max_length=100)
     password = forms.CharField(max_length=20)
-    token = forms.CharField(max_length=20, required=False)
+    invite = forms.CharField(max_length=20, required=False)
 
     def __init__(self, *args, **kwargs):
         self.cached_user = None

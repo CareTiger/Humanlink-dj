@@ -85,8 +85,8 @@ def login(request):
 				if len(form.errors) > 0:
 					return cleaned_data
 				else:
-					email = requestPost(request)['email']
-					password = requestPost(request)['password']
+					email = cleaned_data['email']
+					password = cleaned_data['password']
 
 					if email is None or password is None:
 						messages.error(form.request, 'Please enter an email and password.')
@@ -104,28 +104,31 @@ def login(request):
 										   'click the link within to activate your account.')
 							raise form.ValidationError("Error")
 
-						clean_email = cleaned_data['email']
-						clean_password = cleaned_data['password']
+						account = Account.objects.get(email=email, password=password)
 
-						account = Account.objects.get(email=clean_email, password=clean_password)
+						if cleaned_data['invite']:
 
-						if cleaned_data['token']:
-
-							token = cleaned_data['token']
-							invite = OrgInvite.objects.get(token=token)
-							org = Org.objects.get(id=invite.org.id)
-							if not invite:
-								raise Exception("Invitation token is invalid.")
-							elif invite.used == True:
-								raise Exception("Invitation token has already been used.")
-
-							org_member = OrgMember.objects.filter(account=account, org=org)
-
-							if org_member:
-								raise Exception("Account is already in team.")
+							token = cleaned_data['invite']
+							if ThreadInvite.objects.filter(token=token):
+								threadInvite = ThreadInvite.objects.get(token=token)
+								thread = Thread.objects.get(id=threadInvite.thread.id)
+								ThreadMember.objects.create(account=account, thread=thread)
 							else:
-								OrgMember.objects.create(account=account, org=org)
-								invite.used = False
+								raise Exception("Invitation token is invalid.")
+
+							if OrgInvite.objects.filter(token=token):
+								orgInvite = OrgInvite.objects.get(token=token)
+								if orgInvite.used:
+									raise Exception("Invitation token has already been used.")
+
+								org = Org.objects.get(id=orgInvite.org.id)
+								org_member = OrgMember.objects.filter(account=account, org=org)
+
+								if org_member:
+									raise Exception("Account is already in team.")
+								else:
+									OrgMember.objects.create(account=account, org=org)
+									invite.used = False
 
 								# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 
