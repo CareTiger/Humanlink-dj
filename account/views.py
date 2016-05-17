@@ -28,8 +28,18 @@ from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
 	# """ -Return Account Template """
-
-	return render(request, 'accounts/index.html')
+	account = Account.objects.get(email=request.user.email)
+	context = {
+		'userdata': {
+			'id': account.id
+		},
+		'user_data': {
+			'gravatar_url': account.gravatar_url(),
+			'name': account.username,
+			'email': account.email
+		}
+	}
+	return render(request, 'accounts/index.html', context)
 
 def broadcast(chat_id=None):
 	# """Sends out push notifications to thread members about chat message. """
