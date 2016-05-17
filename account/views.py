@@ -439,3 +439,13 @@ def get_current_user(request):
 	account = Account.objects.get(username=user.username)
 
 	return account
+
+def get_caregivers(request):
+	# Returns all caregivers, based on search or no search
+	if request.method == 'GET':
+		return HttpResponse('good to go')
+
+def get_careseekers(request):
+	# Return all careseekers who are 'public'
+	if request.method == 'GET':
+		return HttpResponse('good to go')

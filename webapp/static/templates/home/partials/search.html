@@ -26,7 +26,7 @@
         <p class="lead">{{ searchSeekerResults.length }} care seekers.</p>
 
         <div ng-show="searchSeekerResults">
-          <div ng-repeat="skr in searchSeekerResults">
+          <div ng-repeat="skr in searchSeekerResults track by $index">
             <div class="result">
               <div class="row col-sm-offset-1">
                 <div class="media">
@@ -59,7 +59,7 @@
         <p class="lead">{{ searchCaregiverResults.length }} care providers.</p>
 
         <div ng-show="searchCaregiverResults">
-          <div ng-repeat="cgvr in searchCaregiverResults">
+          <div ng-repeat="cgvr in searchCaregiverResults track by $index">
             <div class="result">
               <div class="row col-sm-offset-1">
                 <div class="media">

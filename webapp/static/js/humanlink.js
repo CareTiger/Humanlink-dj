@@ -199,86 +199,6 @@
 
 })();
 /**
- * Core module that bootstrap most of the dependencies and configuration.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$compileProvider", "$logProvider"];
-    angular
-        .module('app.core', [
-            'ngAnimate',
-            'ngMessages',
-            'ui.router',
-            'ui.bootstrap',
-            'app.common',
-            'app.router',
-            'templates',
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($compileProvider, $logProvider) {
-        if (hl.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-            $logProvider.debugEnabled(false);
-        }
-    }
-
-    (function () {
-        'use strict';
-
-        angular
-            .module('templates', [])
-    })();
-
-})();
-/**
- * UI Router wrapper and helpers.
- */
-(function () {
-    'use strict';
-
-    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
-    angular
-        .module('app.router', [])
-        .run(Run);
-
-    /** ngInject */
-    function Run($log, $rootScope, $window, $state) {
-        onStateChange();
-
-        /**
-         * Sets the page title on a state transition.
-         * The page is customized to Humanlink.
-         *
-         * Usage:
-         *   Include a `title` property in the state's resolve object.
-         *
-         *   $stateProvider.state('parent', {
-         *       resolve: {title: function () { return 'constant'; }}
-         *   })
-         *   $stateProvider.state('parent.child', {
-         *       resolve: {title: function (SomeService) {
-         *          return SomeService.stuff();
-         *      }}
-         *   })
-         */
-        function onStateChange() {
-            $log.debug('app.router: onStateChange');
-            $rootScope.$on('$stateChangeSuccess', function () {
-                var title = 'Humanlink';
-                var resTitle = $state.$current.locals.globals.title;
-                if (angular.isString(resTitle)) {
-                    title = resTitle + ' | Humanlink';
-                }
-                $window.document.title = title;
-            });
-        }
-    }
-
-})();
-/**
  * Dashboard module.
  */
 (function () {
@@ -372,6 +292,86 @@
         return DashboardHelper.initialize();
     }
 
+
+})();
+/**
+ * Core module that bootstrap most of the dependencies and configuration.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$compileProvider", "$logProvider"];
+    angular
+        .module('app.core', [
+            'ngAnimate',
+            'ngMessages',
+            'ui.router',
+            'ui.bootstrap',
+            'app.common',
+            'app.router',
+            'templates',
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($compileProvider, $logProvider) {
+        if (hl.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+            $logProvider.debugEnabled(false);
+        }
+    }
+
+    (function () {
+        'use strict';
+
+        angular
+            .module('templates', [])
+    })();
+
+})();
+/**
+ * UI Router wrapper and helpers.
+ */
+(function () {
+    'use strict';
+
+    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
+    angular
+        .module('app.router', [])
+        .run(Run);
+
+    /** ngInject */
+    function Run($log, $rootScope, $window, $state) {
+        onStateChange();
+
+        /**
+         * Sets the page title on a state transition.
+         * The page is customized to Humanlink.
+         *
+         * Usage:
+         *   Include a `title` property in the state's resolve object.
+         *
+         *   $stateProvider.state('parent', {
+         *       resolve: {title: function () { return 'constant'; }}
+         *   })
+         *   $stateProvider.state('parent.child', {
+         *       resolve: {title: function (SomeService) {
+         *          return SomeService.stuff();
+         *      }}
+         *   })
+         */
+        function onStateChange() {
+            $log.debug('app.router: onStateChange');
+            $rootScope.$on('$stateChangeSuccess', function () {
+                var title = 'Humanlink';
+                var resTitle = $state.$current.locals.globals.title;
+                if (angular.isString(resTitle)) {
+                    title = resTitle + ' | Humanlink';
+                }
+                $window.document.title = title;
+            });
+        }
+    }
 
 })();
 /**
@@ -1357,77 +1357,6 @@ angular
     }
 
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    $pusher.$inject = ["Config"];
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher(Config) {
-        var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1673,6 +1602,48 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    $pusher.$inject = ["Config"];
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher(Config) {
+        var self = this;
+        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Dashboard helper/bootstraper.
  */
@@ -1748,6 +1719,35 @@ window.HL = window.HL || {};
 
             return defer.promise;
         }
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
     }
 
 })();
@@ -3433,6 +3433,250 @@ angular
 
 })();
 /**
+ * Parent controller of the dashboard module.
+ */
+(function () {
+    'use strict';
+
+    Base.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.dashboard')
+        .controller('Base', Base);
+
+    /** @ngInject */
+    function Base(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewLoading, function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+/**
+ * Create thread controller.
+ */
+(function () {
+    'use strict';
+
+    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
+    angular
+        .module('app.dashboard')
+        .controller('CreateThread', CreateThread);
+
+    /** @ngInject */
+    function CreateThread($log, CommonService, MessagesRepo) {
+        var vm = this;
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.createThread = createThread;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('create_thread init');
+            vm.type = 'option1';
+
+            //has to be move to constants file
+            vm.careServices = [
+                {
+                    "value": 0,
+                    "name": "Companion",
+                    "description": "Companionship",
+                    "skills": "All things companions do"
+                },
+                {
+                    "value": 1,
+                    "name": "Grooming",
+                    "description": "Personal Grooming",
+                    "skills": "Bathing and dressing"
+                },
+                {
+                    "value": 2,
+                    "name": "Meals",
+                    "description": "Meal Preparations",
+                    "skills": "Hot/cold meal preparations"
+                },
+                {
+                    "value": 3,
+                    "name": "Housekeeping",
+                    "description": "Housekeeping",
+                    "skills": "Housekeeping - Laundry and cleaning"
+                },
+                {
+                    "value": 4,
+                    "name": "Medication",
+                    "description": "Medication reminders",
+                    "skills": "Medication reminders"
+                },
+                {
+                    "value": 5,
+                    "name": "Transportation",
+                    "description": "Transportation",
+                    "skills": "Transportation from home to clinic and back"
+                },
+                {
+                    "value": 6,
+                    "name": "Alzheimers",
+                    "description": "Alzheimer's and Dementia",
+                    "skills": "Companionship, Mental simulation, 24-hour care"
+                },
+                {
+                    "value": 7,
+                    "name": "Mobility",
+                    "description": "Mobility assistance",
+                    "skills": "Mobility assistance"
+                }
+            ];
+        }
+
+        function createThread(model) {
+            vm.submitBusy = true;
+            model = {
+                name: model.name,
+                purpose: model.purpose
+            };
+
+            MessagesRepo.create(model).then(
+                function (thread) {
+                    console.log(thread.owner);
+                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+
+    }
+
+})();
+/**
+ * Controller for the sidebar view.
+ */
+(function () {
+    'use strict';
+
+    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidebar', Sidebar);
+
+    /** @ngInject */
+    function Sidebar($scope, $log, MessagesService) {
+        var vm = this;
+        vm.orgs = null;
+
+        init();
+
+        function init() {
+
+            MessagesService.getThreads().then(function (threads) {
+                $log.debug('sidebar init');
+                vm.threads = threads;
+            });
+        }
+    }
+
+})();
+/**
+ * Controller for the sidepanel in the thread view.
+ */
+(function () {
+    'use strict';
+
+    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidepanel', Sidepanel);
+
+    /** @ngInject */
+    function Sidepanel($log, $state, SidepanelState) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('sidepanel init');
+            SidepanelState.setState($state.current.name);
+            SidepanelState.open();
+        }
+    }
+
+})();
+/**
+ * Controller for the dashboard welcome state.
+ */
+(function () {
+    'use strict';
+
+    Welcome.$inject = ["$log", "NotificationManager"];
+    angular
+        .module('app.dashboard')
+        .controller('Welcome', Welcome);
+
+    /** @ngInject */
+    function Welcome($log, NotificationManager) {
+        var vm = this;
+        vm.nagDesktopNotifications = !NotificationManager.isGranted();
+
+        vm.enableNotifications = enableNotifications;
+
+        init();
+
+        function init() {
+            $log.debug('welcome init');
+            if (NotificationManager.permission === 'denied') {
+                vm.view = 'denied';
+            }
+        }
+
+        function enableNotifications() {
+            vm.view = 'hints';
+            NotificationManager.requestPermission().then(function (permission) {
+                vm.view = permission;
+            });
+        }
+    }
+
+})();
+/**
+ * Base controller for the dashboard module.
+ */
+angular
+    .module('app.dashboard')
+    .controller('dashboardBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+    }]);
+/**
  * Service that keeps track of the current logged in user.
  */
 (function () {
@@ -3699,250 +3943,6 @@ angular
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
-/**
- * Parent controller of the dashboard module.
- */
-(function () {
-    'use strict';
-
-    Base.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.dashboard')
-        .controller('Base', Base);
-
-    /** @ngInject */
-    function Base(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewLoading, function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-/**
- * Create thread controller.
- */
-(function () {
-    'use strict';
-
-    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
-    angular
-        .module('app.dashboard')
-        .controller('CreateThread', CreateThread);
-
-    /** @ngInject */
-    function CreateThread($log, CommonService, MessagesRepo) {
-        var vm = this;
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.createThread = createThread;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('create_thread init');
-            vm.type = 'option1';
-
-            //has to be move to constants file
-            vm.careServices = [
-                {
-                    "value": 0,
-                    "name": "Companion",
-                    "description": "Companionship",
-                    "skills": "All things companions do"
-                },
-                {
-                    "value": 1,
-                    "name": "Grooming",
-                    "description": "Personal Grooming",
-                    "skills": "Bathing and dressing"
-                },
-                {
-                    "value": 2,
-                    "name": "Meals",
-                    "description": "Meal Preparations",
-                    "skills": "Hot/cold meal preparations"
-                },
-                {
-                    "value": 3,
-                    "name": "Housekeeping",
-                    "description": "Housekeeping",
-                    "skills": "Housekeeping - Laundry and cleaning"
-                },
-                {
-                    "value": 4,
-                    "name": "Medication",
-                    "description": "Medication reminders",
-                    "skills": "Medication reminders"
-                },
-                {
-                    "value": 5,
-                    "name": "Transportation",
-                    "description": "Transportation",
-                    "skills": "Transportation from home to clinic and back"
-                },
-                {
-                    "value": 6,
-                    "name": "Alzheimers",
-                    "description": "Alzheimer's and Dementia",
-                    "skills": "Companionship, Mental simulation, 24-hour care"
-                },
-                {
-                    "value": 7,
-                    "name": "Mobility",
-                    "description": "Mobility assistance",
-                    "skills": "Mobility assistance"
-                }
-            ];
-        }
-
-        function createThread(model) {
-            vm.submitBusy = true;
-            model = {
-                name: model.name,
-                purpose: model.purpose
-            };
-
-            MessagesRepo.create(model).then(
-                function (thread) {
-                    console.log(thread.owner);
-                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-
-    }
-
-})();
-/**
- * Controller for the sidebar view.
- */
-(function () {
-    'use strict';
-
-    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidebar', Sidebar);
-
-    /** @ngInject */
-    function Sidebar($scope, $log, MessagesService) {
-        var vm = this;
-        vm.orgs = null;
-
-        init();
-
-        function init() {
-
-            MessagesService.getThreads().then(function (threads) {
-                $log.debug('sidebar init');
-                vm.threads = threads;
-            });
-        }
-    }
-
-})();
-/**
- * Controller for the sidepanel in the thread view.
- */
-(function () {
-    'use strict';
-
-    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidepanel', Sidepanel);
-
-    /** @ngInject */
-    function Sidepanel($log, $state, SidepanelState) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('sidepanel init');
-            SidepanelState.setState($state.current.name);
-            SidepanelState.open();
-        }
-    }
-
-})();
-/**
- * Controller for the dashboard welcome state.
- */
-(function () {
-    'use strict';
-
-    Welcome.$inject = ["$log", "NotificationManager"];
-    angular
-        .module('app.dashboard')
-        .controller('Welcome', Welcome);
-
-    /** @ngInject */
-    function Welcome($log, NotificationManager) {
-        var vm = this;
-        vm.nagDesktopNotifications = !NotificationManager.isGranted();
-
-        vm.enableNotifications = enableNotifications;
-
-        init();
-
-        function init() {
-            $log.debug('welcome init');
-            if (NotificationManager.permission === 'denied') {
-                vm.view = 'denied';
-            }
-        }
-
-        function enableNotifications() {
-            vm.view = 'hints';
-            NotificationManager.requestPermission().then(function (permission) {
-                vm.view = permission;
-            });
-        }
-    }
-
-})();
-/**
- * Base controller for the dashboard module.
- */
-angular
-    .module('app.dashboard')
-    .controller('dashboardBaseCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
-
-    }]);
 /**
  *
  */
@@ -5909,7 +5909,7 @@ angular
 
         var init = function () {
             $http({
-                url: '/search_caregivers',
+                url: 'accounts/search_caregivers',
                 method: "GET",
                 params: {search_string: ''}
             }).then(function (response) {
@@ -5921,7 +5921,7 @@ angular
             });
 
             $http({
-                url: '/search_seekers',
+                url: 'accounts/search_seekers',
                 method: "GET",
                 params: {search_string: ''}
             }).then(function (response) {

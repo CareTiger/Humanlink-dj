@@ -21,7 +21,7 @@ angular
 
         var init = function () {
             $http({
-                url: '/search_caregivers',
+                url: 'accounts/search_caregivers',
                 method: "GET",
                 params: {search_string: ''}
             }).then(function (response) {
@@ -33,7 +33,7 @@ angular
             });
 
             $http({
-                url: '/search_seekers',
+                url: 'accounts/search_seekers',
                 method: "GET",
                 params: {search_string: ''}
             }).then(function (response) {
