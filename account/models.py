@@ -45,10 +45,30 @@ class CareGiver(models.Model):
     account = models.ForeignKey(Account)
     is_hireable = models.BooleanField(default=False)
     location = models.CharField(max_length=255)
+    city = models.CharField(max_length=100, null=True)
     about = models.TextField()
     certs = models.TextField()
+    headline = models.CharField(max_length=200, null=True)
+    background_verified = models.BooleanField(default=True)
 
 
     def __str__(self):
         return self.account.email
 
+class CareSeeker(models.Model):
+    account = models.ForeignKey(Account)
+    public = models.BooleanField(default=True)
+    team_name = models.CharField(max_length=100)
+    mission = models.CharField(max_length=200)
+    # Make this into a TextField with a widget
+    main_phone = models.CharField(max_length=20)
+    website = models.CharField(max_length=100)
+    video = models.FileField(max_length=200)
+    email = models.FileField(max_length=200)
+    # Email and video will later have to be made into FileBrowser
+    caregiver_needs = models.CharField(max_length=200)
+    hoyer_lift = models.BooleanField(default=False)
+    cough_assist = models.BooleanField(default=False)
+    adaptive_utensil = models.BooleanField(default=False)
+    meal_prep = models.BooleanField(default=False)
+    housekeeping = models.BooleanField(default=False)

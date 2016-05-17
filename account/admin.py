@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from account.models import Account, CareGiver
+from account.models import Account, CareGiver, CareSeeker
 
 
 # Register your models here.
@@ -13,7 +13,12 @@ class AccountAdmin(admin.ModelAdmin):
 class CareGiverAdmin(admin.ModelAdmin):
 	list_display = ('account', 'is_hireable', 'location')
 
+class CareSeekerAdmin(admin.ModelAdmin):
+	list_display = ('account', 'public', 'team_name')
+
+
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(CareGiver, CareGiverAdmin)
+admin.site.register(CareSeeker, CareSeekerAdmin)
 

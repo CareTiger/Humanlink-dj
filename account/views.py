@@ -442,8 +442,28 @@ def get_current_user(request):
 
 def get_caregivers(request):
 	# Returns all caregivers, based on search or no search
-	if request.method == 'GET':
-		return HttpResponse('good to go')
+	caregiver_list = []
+	if request.method == 'POST':
+		return HttpResponse('POST')
+	else:
+		caregivers = CareGiver.objects.all()
+		if len(caregivers > 0):
+			for caregiver in caregivers:
+				if caregiver.background_verified and caregiver.phone_verified:
+					account = Account.objects.get(id=caregiver.account.id)
+					caregiverMap = {
+						'first_name': account.first,
+						'last_name': account.last,
+						'phone_number': account.phone_number,
+						'account_id': account.id,
+						'headline': caregiver.headline,
+						'bio': caregiver.about,
+						'city': caregiver.city,
+						'phone_verified': account.phone_verified,
+						'background_verified': caregiver.background_verified
+					}
+					caregiver_list.append(caregiverMap)
+		return composeJsonResponse(200, '', caregiver_list)
 
 def get_careseekers(request):
 	# Return all careseekers who are 'public'
