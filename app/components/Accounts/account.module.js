@@ -12,6 +12,8 @@
         ])
         .config(Config);
 
+    // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
+
     /** ngInject */
     function Config($stateProvider, $urlRouterProvider) {
 

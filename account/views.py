@@ -113,10 +113,7 @@ def login(request):
 								threadInvite = ThreadInvite.objects.get(token=token)
 								thread = Thread.objects.get(id=threadInvite.thread.id)
 								ThreadMember.objects.create(account=account, thread=thread)
-							else:
-								raise Exception("Invitation token is invalid.")
-
-							if OrgInvite.objects.filter(token=token):
+							elif OrgInvite.objects.filter(token=token):
 								orgInvite = OrgInvite.objects.get(token=token)
 								if orgInvite.used:
 									raise Exception("Invitation token has already been used.")
@@ -129,6 +126,10 @@ def login(request):
 								else:
 									OrgMember.objects.create(account=account, org=org)
 									invite.used = False
+							else:
+								raise Exception("Invitation token is invalid.")
+
+
 
 								# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 

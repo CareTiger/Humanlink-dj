@@ -12,6 +12,8 @@
         ])
         .config(Config);
 
+    // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
+
     /** ngInject */
     function Config($stateProvider, $urlRouterProvider) {
 
@@ -83,6 +85,118 @@
                 controller: 'settingsVerificationCtrl'
             });
         }
+})();
+/**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
+})();
+/**
+ * A module that has common directives, services, constants, etc.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.common', []);
+
+})();
+
+'use strict';
+
+/**
+ * A module that is common to all other site modules.
+ */
+(function () {
+    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
+    Config.$inject = ["$compileProvider"];
+    Ctrl.$inject = ["$scope"];
+    angular
+        .module('Common', ['ui.router'])
+        .run(Run)
+        .config(Config)
+        .controller('commonCtrl', Ctrl);
+
+    /** @ngInject */
+    function Run($rootScope, $location, $state, userSession) {
+        // Broadcasted when the state of the module changes.
+        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
+
+        // siteAlert is global.
+        $rootScope.siteAlert = {};
+
+        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
+            if (toState.data && angular.isDefined(toState.data.role)) {
+                var accessRole = toState.data.role;
+                var userRole = userSession.getRole();
+                // Guest is redirected account page.
+                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('settings.profile');
+                    return;
+                }
+                // User is redirected to login.
+                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('login',
+                        {next: $location.absUrl()},
+                        {notify: false}
+                    );
+                    return;
+                }
+            }
+            // No need to update userSession on page load.
+            if (!fromState.abstract) {
+                userSession.update();
+            }
+        }
+    }
+
+    /** @ngInject */
+    function Config($compileProvider) {
+        if (HL.helpers.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+        }
+    }
+
+    /** @ngInject */
+    function Ctrl($scope) {
+        // Empty.
+    }
+
 })();
 /**
  * Core module that bootstrap most of the dependencies and configuration.
@@ -162,15 +276,6 @@
             });
         }
     }
-
-})();
-/**
- * A module that has common directives, services, constants, etc.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.common', []);
 
 })();
 /**
@@ -269,84 +374,6 @@
 
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/views/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/views/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/views/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/views/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/views/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
-
-home.controller('homeBaseCtrl', ["$scope", function($scope){
-    console.log("okay this works")
-}]);
 /**
  * Guest module.
  */
@@ -447,6 +474,80 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     }
 
 })();
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
+
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/views/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/views/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/views/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/views/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/views/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
 /**
  * Repository module that communicates with the backend APIs.
  */
@@ -520,6 +621,51 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     }
 
 })();
+
+// 'use strict';
+//
+// /**
+//  * Settings module.
+//  */
+// (function () {
+//     Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+//     angular
+//         .module('Settings', [
+//             'ui.bootstrap',
+//             'checklist-model',
+//             'Common',
+//             'stripe'
+//         ])
+//         .config(Config);
+//
+//     /** ngInject */
+//     function Config($stateProvider, $urlRouterProvider) {
+//
+//         $urlRouterProvider.otherwise('/');
+//
+//         $stateProvider
+//             .state('settings', {
+//                 abstract: true,
+//                 templateUrl: '/views/settings/partials/base_settings.html',
+//             })
+//             .state('settings.security', {
+//                 url: '/',
+//                 templateUrl: '/views/settings/partials/security.html',
+//                 controller: 'securityCtrl'
+//             })
+//             .state('settings.payments', {
+//                 url: '/payments',
+//                 templateUrl: '/views/settings/partials/payments.html',
+//                 controller: 'paymentsCtrl'
+//             })
+//             .state('settings.notifications', {
+//                 url: '/notifications',
+//                 templateUrl: '/views/settings/partials/notifications.html',
+//                 controller: 'notificationsCtrl'
+//             });
+//     }
+//
+// })();
 /**
  * Team management and settings module.
  */
@@ -894,6 +1040,192 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     }
 
 })();
+
+/**
+ * Set focus on the element.
+ * Example:
+ *   <input type="text" hl-focus />
+ */
+angular
+    .module('Common')
+    .directive('hlFocus', function () {
+        return {
+            link: function (scope, element) {
+                element[0].focus();
+            }
+        };
+    });
+
+/**
+ * Attaches some data to the current scope.
+ * Example:
+ *   <hl-preload hl-key="foo" hl-value='{"a": "z", "b": [1, 2]}'></<hl-preload>
+ *   will result in the current $scope to have a "foo" property with the
+ *   given JSON value in hl-value.
+ */
+angular
+    .module('Common')
+    .directive('hlPreload', function () {
+        return {
+            restrict: 'E',
+            link: function (scope, element, attrs) {
+                scope[attrs.hlKey] = JSON.parse(attrs.hlValue);
+                element.remove();
+            }
+        };
+    });
+
+
+/**
+ * Selects a boolean in <select> options.
+ * This is to fix an AngularJS problem:
+ *     https://github.com/angular/angular.js/issues/6297
+ */
+angular
+    .module('Common')
+    .directive('hlSelectBoolean', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    if (value === 'true' || value === 'false') {
+                        return value === 'true';
+                    }
+                    return null;
+                });
+                ngModel.$formatters.push(function (value) {
+                    if (typeof(value) === 'boolean') {
+                        return value ? 'true' : 'false';
+                    }
+                    return '';
+                });
+            }
+        };
+    });
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+/**
+ * Caregiver professional credentials template.
+ */
+angular
+    .module('app.account')
+    .directive('hlProfessionalCredentials', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_professional_credentials.html'
+        };
+    });
+
+/**
+ * Caregiver Status and Description template.
+ */
+angular
+    .module('app.account')
+    .directive('hlDescriptionStatus', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_description_status.html'
+        };
+    });
+
+/**
+ * Caregiver professional preferences template.
+ */
+angular
+    .module('app.account')
+    .directive('hlProfessionalPreferences', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_professional_preferences.html'
+        };
+    });
+
+/**
+ * Caregiver skills template.
+ */
+angular
+    .module('app.account')
+    .directive('hlSkills', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_skills.html'
+        };
+    });
+
+/**
+ * Caregiver additional information template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAdditionalInformation', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_additional_information.html'
+        };
+    });
+
+/**
+ * Caregiver add certification template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAddCertification', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_add_certification.html'
+        };
+    });
+
+/**
+ * Caregiver add experience template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAddExperience', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_add_experience.html'
+        };
+    });
+
+/**
+ * Caregiver add emergency template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAddEmergency', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_add_emergency.html'
+        };
+    });
+
+/**
+ * Caregiver add languages template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAddLanguage', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_add_language.html'
+        };
+    });
+
+/**
+ * Caregiver add license template.
+ */
+angular
+    .module('app.account')
+    .directive('hlAddLicense', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/views/accounts/partials/dir/caregiver_add_license.html'
+        };
+    });
 (function () {
     'use strict';
 
@@ -1023,35 +1355,6 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
     'use strict';
 
     angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
         .module('app.common')
         .constant('CommonEvents', getEvents());
 
@@ -1086,6 +1389,280 @@ home.controller('homeBaseCtrl', ["$scope", function($scope){
 
         return {
             client: self.client
+        };
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+'use strict';
+
+window.HL = window.HL || {};
+/**
+ * Set HL.CtrlHelper.
+ *
+ * HL.CtrlHelper keeps track of the controller's current status
+ * as well as callbacks for talking to the server via apiService.
+ */
+(function (obj) {
+    var ctrlHelper = function () {
+        var self = this;
+
+        // Default callback that is called regardless of $http response status.
+        self.always = null;
+
+        // Default callback that is called on $http success status.
+        self.success = function (data, status, headers, config) {
+            self.isLoading = false;
+        };
+
+        // Default callback that is called on $http error status.
+        self.failure = function (data, status, headers, config) {
+            self.isLoading = false;
+            self.isValid = false;
+            self.errors = [data.error_message];
+        };
+
+        self.reset = function () {
+            self.isLoading = false;
+            self.isValid = true;
+            self.errors = [];
+        };
+
+        // Initialize.
+        self.reset();
+
+        return self;
+    };
+    obj.CtrlHelper = ctrlHelper;
+}(window.HL));
+
+/**
+ * Set HL.baseUrl.
+ *
+ * HL.baseUrl is base URL of the website.
+ */
+(function (obj) {
+    // Simulates window.location.origin as it is not supported by all browsers.
+    var locationOrigin = function () {
+        return window.location.protocol + '//' + window.location.host;
+    };
+    obj.baseUrl = locationOrigin();
+}(window.HL));
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+window.HL = window.HL || {};
+
+window.HL.helpers = {
+    /**
+     * Returns whether or not the host is in production.
+     */
+    isProd: function () {
+        var h = window.location.host;
+        return (h.indexOf('humanlink.co') === 0 ||
+        h.indexOf('care-tiger.appspot.com') === 0);
+    },
+
+    /**
+     * Returns whether the given phone number is in a valid format.
+     * Valid formats: ###-###-#### or ten digits.
+     */
+    isValidPhone: function (phone) {
+        var re1 = /^\d{10}$/;
+        var re2 = /^\d{3}-\d{3}-\d{4}$/;
+        return re1.test(phone) || re2.test(phone);
+    },
+
+    /**
+     * Returns whether the given email address is in a valid format.
+     */
+    isValidEmail: function (email) {
+        var re = /^[^@]+@[^@.]+\.[^@]+$/;
+        return re.test(email);
+    },
+
+    /**
+     * Returns whether the given credit card number is in a valid format.
+     */
+    isValidCard: function (card) {
+        var re1 = /^\d{16}$/;
+        var re2 = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
+        return re1.test(card) || re2.test(card);
+    }
+
+};
+'use strict';
+
+window.HL = window.HL || {};
+
+/**
+ * Constants and enums that are shared between the server and the client.
+ * These should eventually be auto-generated.
+ */
+(function (obj) {
+    var accountTypes = [
+        {"value": 0, "name": "Caregiver"},
+        {"value": 1, "name": "Careseeker"},
+        {"value": 2, "name": "Business or Organization"}
+    ];
+    var certificates = [
+        {"value": 0, "name": "CNA", "description": "Certified Nursing Aide"},
+        {"value": 1, "name": "HHA", "description": "Home Health Aide"},
+        {"value": 2, "name": "PCA", "description": "Personal Care Aide"},
+    ];
+    var states = [
+        {"value": 0, "name": "AL", "description": "Alabama"},
+        {"value": 1, "name": "AK", "description": "Alaska"},
+        {"value": 2, "name": "AR", "description": "Arkansas"},
+        {"value": 3, "name": "AZ", "description": "Arizona"},
+    ];
+    var languages = [
+        {"value": 0, "name": "English"},
+        {"value": 1, "name": "Arabic"},
+        {"value": 2, "name": "French"},
+        {"value": 3, "name": "Gujarati"},
+    ];
+    var careServices = [
+        {
+            "value": 0,
+            "name": "Companion",
+            "description": "Companionship",
+            "skills": "All things required by companions"
+        },
+        {
+            "value": 1,
+            "name": "Grooming",
+            "description": "Personal Grooming",
+            "skills": "Bathing, dressing and dealing with incontinence"
+        },
+        {
+            "value": 2,
+            "name": "Meals",
+            "description": "Meal Preparations",
+            "skills": "Hot/cold meal preparations"
+        },
+        {
+            "value": 3,
+            "name": "Housekeeping",
+            "description": "Housekeeping",
+            "skills": "Housekeeping - Laundry and cleaning"
+        },
+        {
+            "value": 4,
+            "name": "Medication",
+            "description": "Medication reminders",
+            "skills": "Medication reminders"
+        },
+        {
+            "value": 5,
+            "name": "Transportation",
+            "description": "Transportation",
+            "skills": "Transportation from home to clinic and back"
+        },
+        {
+            "value": 6,
+            "name": "Alzheimers",
+            "description": "Alzheimer's and Dementia",
+            "skills": "Companionship, Mental simulation, 24-hour care"
+        },
+        {
+            "value": 7,
+            "name": "Mobility",
+            "description": "Mobility assistance",
+            "skills": "Mobility assistance"
+        }
+    ];
+    var vaccines = [
+        {"value": 0, "name": "Flu", "description": "Flu Vaccine"},
+        {"value": 1, "name": "TB", "description": "TB Test"},
+        {"value": 2, "name": "Drug", "description": "Drug Test"}
+    ];
+    var allergies = [
+        {"value": 0, "name": "Cats"},
+        {"value": 1, "name": "Dogs"},
+        {"value": 2, "name": "Smoking"}
+    ];
+    var transportation = [
+        {
+            "value": 0,
+            "name": "CanProvide",
+            "description": "I can provide a transportation for the client"
+        },
+        {
+            "value": 1,
+            "name": "CanDrive",
+            "description": "I can drive the client's car"
+        },
+        {
+            "value": 2,
+            "name": "NotDrive",
+            "description": "I prefer not to drive the care recipient"
+        }
+    ];
+    var expertise = [
+        {
+            "value": 0,
+            "name": "ALS",
+            "description": "ALS"
+        },
+        {
+            "value": 1,
+            "name": "AlzheimersDisease",
+            "description": "Alzheimer's Disease"
+        },
+        {
+            "value": 2,
+            "name": "BloodDisorders",
+            "description": "Blood Disorders"
+        },
+        {
+            "value": 3,
+            "name": "Cancer",
+            "description": "Cancer"
+        }
+    ];
+    obj.constants = {
+        accountTypes: accountTypes,
+        states: states,
+        languages: languages,
+        careServices: careServices,
+        allergies: allergies,
+        vaccines: vaccines,
+        transportation: transportation,
+        certificates: certificates,
+        expertise: expertise
+    };
+}(window.HL));/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
         };
     }
 
@@ -1909,6 +2486,103 @@ angular
 
         }]);
 /**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the accounts module.
+ */
+angular
+    .module('app.account')
+    .controller('accountsBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        // CtrlHelper that is shared between the parent and all children.
+        $scope.ctrlHelper = new HL.CtrlHelper();
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+    }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for caregiver profile page
+ */
+angular
+    .module('app.account')
+    .controller('caregiverProfileCtrl', ['$scope', 'apiService', 'userSession',
+                function ($scope, apiService, userSession) {
+
+        var caregiverHelper = new HL.CtrlHelper(),
+            connectionsHelper = new HL.CtrlHelper();
+
+        caregiverHelper.reset();
+
+        // TODO: Get this from API
+        $scope.caregiver = {
+            rating: 4,
+            background_verified: true,
+            community_verified: true,
+            badges: {
+                care_hours: 2100,
+                no_shows: 4,
+                beacons_answered: 14
+            },
+            certifications: [
+                'CNA (Schmeiding Center)',
+                'Bentonville High School'
+            ],
+            complements: [
+                {
+                    name: 'Si Robertson',
+                    description: 'Ariana is a wonderful...'
+                },
+                {
+                    name: 'Peter B',
+                    description: 'Ariana has been a fantastic help to me and my...'
+                },
+                {
+                    name: 'Jackie C',
+                    description: 'Ariana is a lovely caregiver and great at her job!'
+                }
+            ]
+        };
+
+        getInfo();
+        $scope.owner = false;
+
+        function getInfo () {
+            caregiverHelper.success = function (data, status, headers, config) {
+                angular.extend($scope.caregiver, data);
+                $scope.caregiver.pictureUrl = 'profile_' + data.first +
+                    data.last + '.png';
+                $scope.caregiver.bannerUrl = 'banner_' + data.first +
+                    data.last + '.png';
+            };
+
+            connectionsHelper.success = function (data, status, headers,
+                                                  config) {
+                $scope.caregiver.connections = data.items;
+            };
+
+            apiService.Accounts.get(userSession.userdata.account_id,
+                                    caregiverHelper);
+            apiService.Connections.my({}, connectionsHelper);
+        }
+    }]);
+/**
  * Press controller
  */
 angular
@@ -1949,6 +2623,809 @@ angular
             }
 
         }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the signup view.
+ */
+angular
+    .module('app.account')
+    .controller('joinCtrl', ['$scope', '$window', 'apiService',
+        function ($scope, $window, apiService) {
+
+            // Reference to the base ctrlHelper.
+            var ctrlHelper = $scope.$parent.ctrlHelper;
+            ctrlHelper.reset();
+
+            // Possible ng-switch values.
+            var viewModes = ['join_form', 'join_success'];
+
+            $scope.viewMode = viewModes[0];
+            $scope.signupModel = {};
+
+            $scope.join = function (model) {
+                ctrlHelper.reset();
+                if (!validate(model, ctrlHelper)) {
+                    return;
+                }
+                ctrlHelper.success = function (data, status, headers, config) {
+                    $scope.viewMode = viewModes[1];
+                };
+                apiService.Accounts.signup(model, ctrlHelper);
+            };
+
+            $scope.cancel = function () {
+                $scope.$parent.previous();
+            };
+
+            var validate = function (model, ctrlHelper) {
+                var errors = [];
+                if (!model.email || !model.password || !model.first_name || !model.last_name) {
+                    errors.push('All fields are required.');
+                }
+                if (errors.length) {
+                    ctrlHelper.isLoading = false;
+                    ctrlHelper.isValid = false;
+                    ctrlHelper.errors = errors;
+                    return false;
+                }
+                return true;
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+/**
+ * Controller for the login view.
+ */
+(function () {
+    'use strict';
+
+    Ctrl.$inject = ["$scope", "$window", "$stateParams", "apiService"];
+    angular
+        .module('app.account')
+        .controller('loginCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $window, $stateParams, apiService) {
+        // Reference to the base ctrlHelper.
+        var ctrlHelper = $scope.$parent.ctrlHelper;
+        ctrlHelper.reset();
+
+        $scope.loginModel = {
+            email: '',
+            password: ''
+        };
+
+        $scope.login = function (model) {
+            ctrlHelper.reset();
+            if (!model.email || !model.password) {
+                return;
+            }
+            ctrlHelper.success = function (data, status, headers, config) {
+                console.log('HEY! Remove the /r absolute URL once migrated to the new backend.');
+                var redirector = 'http://eb.humanlink.co/r?url=';
+                var next = $stateParams.next || HL.baseUrl + '/accounts#/settings/profile';
+                //$window.location.href = redirector + decodeURIComponent(next);
+                $window.location.href = '/home#/search';
+            };
+            apiService.Accounts.login(model, ctrlHelper);
+        };
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+angular
+    .module('app.account')
+    .controller('providerEditCtrl', ['$scope', '$http', 'Constants', 'apiService', 'userSession',
+        function ($scope, $http, Constants, apiService, userSession) {
+
+            $scope.aboutMe = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+
+            var init = function () {
+                $http.get('/get_caregiver_profile?account_id=' + account_id)
+                    .then(function (response) {
+                        $scope.aboutMe = response.data;
+                        if (response.data.count === '0') {
+                            $scope.siteAlert.type = "success";
+                            $scope.siteAlert.message = (response.data.message);
+                        }
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+            };
+            init();
+
+            $scope.caregiverProfileUpdate = function caregiverProfileUpdate(model) {
+                console.log("account_id : " + account_id);
+                angular.extend(model, {'account_id': account_id});
+
+                $http.post('/post_caregiver_profile', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Changes have been saved.";
+                        $scope.showCaregiverForm = false;
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was an error. Please try again.";
+                    });
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('app.account')
+    .controller('providerPreviewCtrl', ['$scope', 'userSession', '$http',
+        function ($scope, userSession, $http) {
+
+            $scope.profile = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+            var email = $scope.usr.userdata.email;
+
+            var init = function () {
+                $http({
+                    url: '/caregiver_profile',
+                    method: "GET",
+                    params: {account_id: account_id}
+                }).then(function (response) {
+                    $scope.profile = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+            init();
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the password reset
+ */
+angular
+    .module('app.account')
+    .controller('resetCtrl', ['$scope', '$http', function ($scope, $http) {
+
+        var viewModes = ['construction', 'reset_form', 'reset_sent'];
+        $scope.viewMode = viewModes[0];
+
+        $scope.resetModel = {
+            email: ''
+        };
+
+        $scope.reset = function (model) {
+            $http.post('/reset', model)
+                .success(function (data, status) {
+                    $scope.viewMode = viewModes[1];
+                })
+                .error(function () {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                });
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the password reset
+ */
+angular
+    .module('app.account')
+    .controller('resetPasswordCtrl', ['$scope', '$http', function ($scope, $http) {
+        $scope.passwordModel = {};
+        var viewModes = ['working', 'construction'];
+        $scope.viewMode = viewModes[1];
+
+        $scope.resetPassword = function (model) {
+            if (!validate(model)) {
+                return;
+            }
+
+            $http.post('/reset_password', model)
+                .success(function (data, status) {
+                    $scope.siteAlert.type = "success";
+                    $scope.siteAlert.message = "Your password was updated.";
+                })
+                .error(function () {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                });
+        };
+
+        var validate = function (model) {
+            if (!model.password || !model.password_confirm) {
+                $scope.siteAlert.type = "danger";
+                $scope.siteAlert.message = "All fields are required.";
+                return false;
+            }
+            if (model.password !== model.password_confirm) {
+                $scope.siteAlert.type = "danger";
+                $scope.siteAlert.message = "Password does not match the confirmation.";
+                return false;
+            }
+            return true;
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the favorite caregivers sub-page of settings
+ */
+(function () {
+    Ctrl.$inject = ["$scope"];
+    angular
+        .module('app.account')
+        .controller('settingsFavoritesCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope) {
+        $scope.favorites = [
+            {"name": "Jane Caregiver", "status": "I am currently available from M-F from 9-5"},
+            {"name": "Sarah Caregiver", "status": "I am available for live-in and live-out"},
+            {"name": "Zoe Caregiver", "status": "I am on vacation till August 15th"},
+            {"name": "Amanda Caregiver", "status": "I am on vacation till August 10th"},
+        ];
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the media subpage of settings
+ */
+angular
+    .module('app.account')
+    .controller('settingsMediaCtrl', ['$scope', function ($scope) {
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the new recipient sub-page of settings
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$anchorScroll", "$location", "$filter", "$state", "$http", "$stateParams", "Constants", "apiService", "siteAlert", "userSession"];
+    angular
+        .module('app.account')
+        .controller('settingsNewRecipientCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $anchorScroll, $location, $filter, $state, $http,
+                  $stateParams, Constants, apiService, siteAlert, userSession) {
+
+        var userdata = userSession.userdata;
+        $scope.recipient = {};
+        $scope.save = save;
+
+
+        $scope.careServices = Constants.careServices;
+        $scope.states = Constants.states;
+
+        var saveReq = new HL.CtrlHelper();
+
+        init();
+        function init() {
+            if ($stateParams.model) {
+                $scope.recipient = $stateParams.model;
+            }
+
+            $scope.getLocation = function (val) {
+                return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+                    params: {
+                        address: val,
+                        sensor: false
+                    }
+                }).then(function (response) {
+                    return response.data.results.map(function (item) {
+                        return {
+                            geo: item.geometry.location,
+                            label: item.formatted_address
+                        };
+                    });
+                });
+            };
+        }
+
+        /**
+         * Add / Update care recipient.
+         * @param model PatientApiModel.
+         */
+        function save(model) {
+            siteAlert.clear();
+            model = angular.copy(model);
+            if (!validate(model)) {
+                return;
+            }
+            saveReq.success = function (data, status) {
+                siteAlert.success('Care recipient saved.');
+                $state.go('settings.recipients');
+
+            };
+            saveReq.failure = function (data, status) {
+                siteAlert.error('Uh-oh, there was a problem with your request.');
+            };
+            apiService.Accounts.patients.update(model, saveReq);
+        }
+
+        var validate = function (model) {
+            if (!model.care_type) {
+                siteAlert.error("Please select the recipient's care needs.");
+                return false;
+            }
+            if (!model.first || !model.last) {
+                siteAlert.error("Please enter the care recipient's name.");
+                return false;
+            }
+            if (!model.address) {
+                siteAlert.error("Please enter the care recipient's address.");
+                return false;
+            }
+            if (model.phone_number) {
+                if (!HL.helpers.isValidPhone(model.phone_number)) {
+                    siteAlert.error('Please enter a valid phone number.');
+                    return false;
+                }
+                // Endpoint expects an integer.
+                model.phone_number = model.phone_number.replace(/\D/g, '');
+            } else {
+                delete model.phone_number;
+            }
+            if (model.age && !/^\d+$/.test(model.age)) {
+                siteAlert.error('Please enter a valid age.');
+                return false;
+            }
+            return true;
+        };
+
+    }
+
+})
+();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+angular
+    .module('app.account')
+    .controller('settingsProfileCtrl',
+    ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+            // might have to bring back Constants, and userSession as dependency
+
+            // var userdata = userSession.userdata;
+            // $scope.usr = userSession;
+            // var account_id = $scope.usr.userdata.account_id;
+            // var account_email = $scope.usr.userdata.email;
+
+            // Placeholder until initial data is loaded.
+            // $scope.account = userdata;
+            // $scope.accountForm = angular.copy($scope.account);
+
+            $scope.update = function (model) {
+                if (!validate(model)) {
+                    return;
+                }
+                // model = angular.extend(model, {email: account_email});
+
+                $http.post('/post_account_basic', model)
+                    .success(function (data, status) {
+                        fetch(data, status);
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your basic settings were updated successfully.";
+                        //$window.location.reload();
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+            var fetch = function (data, status) {
+                // Full-refresh on name change since it is on the navbar.
+                if (userdata.first != data.first ||
+                    userdata.last != data.last) {
+                    $window.location.reload();
+                }
+                $scope.account = data;
+                $scope.accountForm = angular.copy(data);
+            };
+
+            var validate = function (model) {
+                if (model.phone_number) {
+                    if (!HL.helpers.isValidPhone(model.phone_number)) {
+                        return false;
+                    }
+                    // Endpoint expects an integer.
+                    model.phone_number = model.phone_number.replace(/\D/g, '');
+                }
+                return true;
+            };
+
+            // var init = function () {
+            //     $http({
+            //         url: '/get_account_basic',
+            //         method: "GET",
+            //         // params: {email: account_email}
+            //     }).then(function (response) {
+            //         $scope.accountForm = response.data;
+            //     }, function (response) {
+            //         $scope.siteAlert.type = "danger";
+            //         $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+            //     });
+            // };
+            // init();
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+(function () {
+    Ctrl.$inject = ["$scope", "$state", "Constants", "apiService", "siteAlert"];
+    angular
+        .module('app.account')
+        .controller('settingsRecipientsCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $state, Constants, apiService, siteAlert) {
+
+        $scope.recipients = null;
+        $scope.edit = edit;
+        $scope.archive = archive;
+
+        init();
+        function init() {
+            var initReq = new HL.CtrlHelper();
+            initReq.success = function (data, status) {
+                $scope.recipients = data.items || [];
+            };
+            initReq.failure = function (data, status) {
+                siteAlert.error(data);
+            };
+            apiService.Accounts.patients.list(initReq);
+        }
+
+        function edit(model) {
+            $state.go('settings.new_recipient.who', {model: model});
+        }
+
+        function archive(model) {
+            siteAlert.clear();
+            if (!window.confirm("Are you sure?")) {
+                return;
+            }
+            model.isLoading = true;
+            var archiveReq = new HL.CtrlHelper();
+            var ind = $scope.recipients.indexOf(model);
+            $scope.recipients.splice(ind, 1);
+
+            // Restore.
+            archiveReq.failure = function (data, status) {
+                siteAlert.error('Care recipient could not be archived.');
+                model.isLoading = false;
+                $scope.recipients.splice(ind, 0, model);
+            };
+            apiService.Accounts.patients.remove(model.id, archiveReq);
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the references subpage of settings
+ */
+angular
+    .module('app.account')
+    .controller('settingsReferencesCtrl', ['$scope', function ($scope) {
+        $scope.addReference = function(name, email) {
+            $scope.account.references.push({ name: name, email: email });
+        };
+
+        $scope.account = {
+            references: [
+                {
+                    name: 'Si Robertson',
+                    email: 'sroberston@gmail.com'
+                },
+                {
+                    name: 'Wayne Hoyt',
+                    email: 'whoyt@gmail.com'
+                },
+                {
+                    name: 'Reynold Grover',
+                    email: 'rgrover@gmail.com'
+                }
+            ]
+        };
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the reviews subpage of settings
+ */
+angular
+    .module('app.account')
+    .controller('settingsReviewsCtrl', ['$scope', function ($scope) {
+        $scope.getReviews = function () {
+            $scope.reviews = [
+                {
+                    title: 'Fantastic Caregiver',
+                    body: 'Lorem ipsum dolor sit amet, soleat principes persecuti ea vim, nec debitis deleniti expetendis ei, sit an stet vero dissentias. Ad nam tation mnesarchum argumentum, velit hendrerit suscipiantur ne vel. At eos referrentur deterruisset. Eam an simul oratio moderatius, an meis voluptatibus mei. Mei ad soleat adolescens scriptorem, no nobis alienum quo.',
+                    rating: 4
+                },
+                {
+                    title: 'Totally Amazing',
+                    body: 'Lorem ipsum dolor sit amet, soleat principes persecuti ea vim, nec debitis deleniti expetendis ei, sit an stet vero dissentias. Ad nam tation mnesarchum argumentum, velit hendrerit suscipiantur ne vel. At eos referrentur deterruisset. Eam an simul oratio moderatius, an meis voluptatibus mei. Mei ad soleat adolescens scriptorem, no nobis alienum quo.',
+                    rating: 5
+                },
+                {
+                    title: 'Always Showed Up On Time',
+                    body: 'Lorem ipsum dolor sit amet, soleat principes persecuti ea vim, nec debitis deleniti expetendis ei, sit an stet vero dissentias. Ad nam tation mnesarchum argumentum, velit hendrerit suscipiantur ne vel. At eos referrentur deterruisset. Eam an simul oratio moderatius, an meis voluptatibus mei. Mei ad soleat adolescens scriptorem, no nobis alienum quo.',
+                    rating: 5
+                },
+                {
+                    title: 'So-So',
+                    body: 'Lorem ipsum dolor sit amet, soleat principes persecuti ea vim, nec debitis deleniti expetendis ei, sit an stet vero dissentias. Ad nam tation mnesarchum argumentum, velit hendrerit suscipiantur ne vel. At eos referrentur deterruisset. Eam an simul oratio moderatius, an meis voluptatibus mei. Mei ad soleat adolescens scriptorem, no nobis alienum quo.',
+                    rating: 2
+                },
+            ];
+        };
+
+        $scope.getReviews();
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Controller for the verification subpage of settings
+ */
+angular
+    .module('app.account')
+    .controller('settingsVerificationCtrl', ['$scope', function ($scope) {
+
+        $scope.account = {
+            emailVerified: true,
+            phoneVerified: true,
+            backgroundVerified: false
+        };
+
+        $scope.states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC',
+            'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME',
+            'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+            'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD',
+            'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+        $scope.chosenDLState = $scope.states[0];
+        $scope.chosenAddrState = $scope.states[0];
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+/**
+ * Keeps track of the current logged in user.
+ */
+(function () {
+    angular
+        .module('Common')
+        .provider('userSession', function () {
+
+            getUserSession.$inject = ["apiService"];
+            var roles = {
+                GUEST: 0,
+                AUTHORIZED: 1
+            };
+
+            return {
+                // This is here because it us used in `angular.config()`.
+                roles: roles,
+                $get: getUserSession
+            };
+
+            /** ngInject */
+            function getUserSession(apiService) {
+                var userdata = null;
+                var ctrlHelper = new HL.CtrlHelper();
+
+                // Initial page load.
+                if (window.HL.userdata) {
+                    userdata = window.HL.userdata;
+                }
+
+                return {
+                    roles: roles,
+                    userdata: userdata,
+                    setAccount: setAccount,
+                    unsetAccount: unsetAccount,
+                    isAuthorized: isAuthorized,
+                    update: update,
+                    getRole: getRole
+                };
+
+                function setAccount(account) {
+                    userdata = account;
+                }
+
+                function unsetAccount() {
+                    userdata = null;
+                }
+
+                function isAuthorized() {
+                    return userdata !== null;
+                }
+
+                function update() {
+                    ctrlHelper.success = function (data, status, headers, config) {
+                        userdata = data;
+                    };
+                    ctrlHelper.error = function () {
+                        unsetAccount();
+                    };
+                    apiService.Accounts.userdata({}, ctrlHelper);
+                }
+
+                /**
+                 * Returns roles.GUEST or roles.AUTHORIZED.
+                 * In the future, this should be used for checking account type as well.
+                 */
+                function getRole() {
+                    return isAuthorized() ? roles.AUTHORIZED : roles.GUEST;
+                }
+            }
+        });
+
+})();
 /**
  * Service that keeps track of the current logged in user.
  */
@@ -2080,6 +3557,142 @@ angular
     }
 
 })();
+/**
+ * API Service that talks to the backend.
+ */
+angular
+    .module('Common')
+    .factory('apiService', ['$http', function ($http) {
+
+        // Google Cloud Endpoints URL.
+        var getGceBase = function () {
+            var host = window.location.host;
+            // GCE doesn't work with custom domains.
+            if (host.indexOf('humanlink.co') === 0) {
+                host = 'care-tiger.appspot.com';
+            }
+            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
+            return protocol + host + '/_ah/api/humanlink/v1/';
+        };
+
+        var GCE_BASE = getGceBase();
+
+        var Accounts = {
+            caregiver: {},
+            patients: {}
+        };
+        var Connections = {};
+        var Home = {};
+
+        /**
+         * Base method to communicate with the APIs.
+         *
+         * @param method : 'GET' or 'POST'
+         * @param uri : relative path to the base URL or GCE URL
+         * @param data : request data
+         * @param ctrlHelper : CtrlHelper with callbacks
+         * @param useEndpoints : whether this is a GCE API or not.
+         */
+        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
+            ctrlHelper.isLoading = true;
+            ctrlHelper.isValid = true;
+            ctrlHelper.errors = [];
+
+            // Use endpoints by default.
+            if (!angular.isDefined(useEndpoints)) {
+                useEndpoints = true;
+            }
+
+            $http({
+                method: method,
+                url: (useEndpoints ? GCE_BASE : '/') + uri,
+                data: data
+            })
+                .success(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.success)) {
+                        ctrlHelper.success(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.failure)) {
+                        ctrlHelper.failure(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                });
+        };
+
+        Accounts.login = function (data, ctrlHelper) {
+            apiRequest('POST', 'login.json', data, ctrlHelper, false);
+        };
+
+        Accounts.signup = function (data, ctrlHelper) {
+            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
+        };
+
+        Accounts.userdata = function (data, ctrlHelper) {
+            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
+        };
+
+        Accounts.get = function (id, ctrlHelper) {
+            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
+        };
+
+        Accounts.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.get = function (accountId, ctrlHelper) {
+            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.list = function (ctrlHelper) {
+            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
+        };
+
+        Accounts.patients.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.remove = function (patient_id, ctrlHelper) {
+            var data = {patient_id: patient_id};
+            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
+        };
+
+        Home.contact = function (data, ctrlHelper) {
+            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
+        };
+
+        Connections.my = function (data, ctrlHelper) {
+            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
+        };
+
+        Home.search = function (data, ctrlHelper) {
+            apiRequest('GET', 'home/search', data, ctrlHelper, false);
+        };
+
+        // Public methods.
+        return {
+            Accounts: Accounts,
+            Connections: Connections,
+            Home: Home
+        };
+
+    }]);
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
 /**
  * Parent controller of the dashboard module.
  */
@@ -2305,6 +3918,130 @@ angular
                 vm.view = permission;
             });
         }
+    }
+
+})();
+/**
+ * Base controller for the dashboard module.
+ */
+angular
+    .module('app.dashboard')
+    .controller('dashboardBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+    }]);
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
     }
 
 })();
@@ -2796,114 +4533,6 @@ angular
 
 })();
 
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  *  Controller for the thread Archive.
  */
@@ -3507,30 +5136,6 @@ angular
 
 })();
 /**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            $window.location.href = 'home#/join';
-        };
-    }]);
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = 'home#/join';
-        };
-
-    }]);
-/**
  * Controller for the accept view.
  */
 (function () {
@@ -3941,6 +5546,419 @@ angular
 
 })();
 /**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'home#/join';
+        };
+    }]);
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'home#/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Main landing page.
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('LandingCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+        $scope.gotoInvite = gotoInvite;
+        $scope.contact = {
+            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
+        };
+
+        function gotoInvite() {
+            $location.path('/');
+            $location.hash('invite');
+            $anchorScroll();
+        }
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                    gotoInvite();
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * About Us controller
+ */
+angular
+    .module('Home')
+    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'accounts#/join';
+        };
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'accounts#/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('faqCtrl', ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('homeBaseCtrl', ['$scope', '$http',
+        function ($scope, $http) {
+                // bring in userSession if this controller ever gets used.
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Interest controller
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('interestCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Preview provider profile controller
+ */
+angular
+    .module('Home')
+    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
+        function ($scope, $window, $stateParams, $http, userSession) {
+
+            var provider_id = $stateParams.account_id;
+            $scope.profile = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/caregiver_profile?account_id=' + provider_id)
+                    .then(function (response) {
+                        $scope.profile = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: provider_id,
+                            message: "I want to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
+        function ($scope, $window, $stateParams, $http, userSession) {
+
+            var seeker_id = $stateParams.account_id;
+            $scope.aboutMe = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/seeker_profile?account_id=' + seeker_id)
+                    .then(function (response) {
+                        $scope.aboutMe = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: seeker_id,
+                            message: "I would like to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Pricing controller
+ */
+angular
+    .module('Home')
+    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Privacy controller
+ */
+angular
+    .module('Home')
+    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('searchCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.searchModel = {};
+            $scope.searchCaregiverResults = {};
+
+            var init = function () {
+                $http({
+                    url: '/search_caregivers',
+                    method: "GET",
+                    params: {search_string: ''}
+                }).then(function (response) {
+                    $scope.searchCaregiverResults = response.data;
+
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+
+                $http({
+                    url: '/search_seekers',
+                    method: "GET",
+                    params: {search_string: ''}
+                }).then(function (response) {
+                    $scope.searchSeekerResults = response.data;
+
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+
+            };
+            init();
+
+            /**
+             * Go back to the previous page/view.
+             * @return void
+             */
+            $scope.previous = function () {
+                $window.history.back();
+            };
+
+            $scope.find = function (model) {
+                $http({
+                    url: '/search_caregivers',
+                    method: "GET",
+                    params: {search_string: model.search_string}
+                }).then(function (response) {
+                    $scope.searchCaregiverResults = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+        }]);
+'use strict';
+
+/**
+ * Terms controller
+ */
+angular
+    .module('Home')
+    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
  * Parent controller of the settings module.
  */
 (function () {
@@ -4157,3 +6175,161 @@ angular
     }
 
 })();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Notifications controller
+ */
+angular
+    .module('app.settings')
+    .controller('notificationsCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.notificationModel = {};
+            $scope.errorModel = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+
+            var init = function () {
+                $http.get('/get_settings_notifications?account_id=' + account_id)
+                    .then(function (response) {
+                        $scope.notificationModel = response.data;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+            };
+            init();
+
+            $scope.updateNotifications = function (model) {
+                //add the usr object
+                model = angular.extend(model, {'account_id': account_id});
+                $http.post('/post_settings_notifications', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+        }]);
+'use strict';
+
+/**
+ * Payments controller
+ */
+angular
+    .module('app.settings')
+    .controller('paymentsCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.paymentModel = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+
+            var init = function () {
+                $http.get('/get_settings_payments?account_id=' + account_id)
+                    .success(function (response) {
+                        $scope.paymentModel = response;
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+            };
+            init();
+
+            $scope.updatePayments = function (model) {
+                model = angular.extend(model, {'account_id': account_id});
+                $http.post('/post_settings_payments', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Security controller
+ */
+angular
+    .module('app.settings')
+    .controller('securityCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.paymentModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            var validate = function (model) {
+                if (!model.password || !model.password_confirm) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "All fields are required.";
+                }
+                if (model.password !== model.password_confirm) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "Password does not match the confirmation.";
+                }
+                return true;
+            };
+
+            $scope.updatePassword = function (model) {
+                if (!validate(model)) {
+                    return false;
+                }
+                model = angular.extend(model, {'email': account_email});
+                $http.post('/post_settings_security', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your password was updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the settings module.
+ */
+angular
+    .module('app.settings')
+    .controller('settingsBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        // CtrlHelper that is shared between the parent and all children.
+        $scope.ctrlHelper = new HL.CtrlHelper();
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+    }]);

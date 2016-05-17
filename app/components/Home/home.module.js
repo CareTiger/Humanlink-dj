@@ -72,7 +72,3 @@ function Config($stateProvider, $urlRouterProvider){
                 controller: 'pricingCtrl'
             });
 }
-
-home.controller('homeBaseCtrl', function($scope){
-    console.log("okay this works")
-});
