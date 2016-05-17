@@ -12,6 +12,8 @@
         ])
         .config(Config);
 
+    // test comment
+
     // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
 
     /** ngInject */

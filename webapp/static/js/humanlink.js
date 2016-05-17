@@ -12,6 +12,8 @@
         ])
         .config(Config);
 
+    // test comment
+
     // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
 
     /** ngInject */
@@ -374,6 +376,80 @@
 
 
 })();
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
+
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/views/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/views/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/views/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/views/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/views/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
 /**
  * Guest module.
  */
@@ -474,80 +550,6 @@
     }
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/views/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/views/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/views/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/views/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/views/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
 /**
  * Repository module that communicates with the backend APIs.
  */
@@ -1351,48 +1353,6 @@ angular
     }
 
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    $pusher.$inject = ["Config"];
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher(Config) {
-        var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1638,6 +1598,48 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    $pusher.$inject = ["Config"];
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher(Config) {
+        var self = this;
+        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 (function () {
     'use strict';
 
@@ -3938,114 +3940,6 @@ angular
 
     }]);
 /**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
-/**
  *
  */
 (function () {
@@ -4533,6 +4427,527 @@ angular
 
 })();
 
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'home#/join';
+        };
+    }]);
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'home#/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Main landing page.
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('LandingCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+        $scope.gotoInvite = gotoInvite;
+        $scope.contact = {
+            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
+        };
+
+        function gotoInvite() {
+            $location.path('/');
+            $location.hash('invite');
+            $anchorScroll();
+        }
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                    gotoInvite();
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * About Us controller
+ */
+angular
+    .module('Home')
+    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            $window.location.href = 'accounts#/join';
+        };
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = 'accounts#/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('faqCtrl', ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('homeBaseCtrl', ['$scope', '$http',
+        function ($scope, $http) {
+                // bring in userSession if this controller ever gets used.
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Interest controller
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('interestCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Preview provider profile controller
+ */
+angular
+    .module('Home')
+    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
+        function ($scope, $window, $stateParams, $http, userSession) {
+
+            var provider_id = $stateParams.account_id;
+            $scope.profile = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/caregiver_profile?account_id=' + provider_id)
+                    .then(function (response) {
+                        $scope.profile = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: provider_id,
+                            message: "I want to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
+        function ($scope, $window, $stateParams, $http, userSession) {
+
+            var seeker_id = $stateParams.account_id;
+            $scope.aboutMe = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/seeker_profile?account_id=' + seeker_id)
+                    .then(function (response) {
+                        $scope.aboutMe = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: seeker_id,
+                            message: "I would like to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Pricing controller
+ */
+angular
+    .module('Home')
+    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Privacy controller
+ */
+angular
+    .module('Home')
+    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('searchCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.searchModel = {};
+            $scope.searchCaregiverResults = {};
+
+            var init = function () {
+                $http({
+                    url: '/search_caregivers',
+                    method: "GET",
+                    params: {search_string: ''}
+                }).then(function (response) {
+                    $scope.searchCaregiverResults = response.data;
+
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+
+                $http({
+                    url: '/search_seekers',
+                    method: "GET",
+                    params: {search_string: ''}
+                }).then(function (response) {
+                    $scope.searchSeekerResults = response.data;
+
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+
+            };
+            init();
+
+            /**
+             * Go back to the previous page/view.
+             * @return void
+             */
+            $scope.previous = function () {
+                $window.history.back();
+            };
+
+            $scope.find = function (model) {
+                $http({
+                    url: '/search_caregivers',
+                    method: "GET",
+                    params: {search_string: model.search_string}
+                }).then(function (response) {
+                    $scope.searchCaregiverResults = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+        }]);
+'use strict';
+
+/**
+ * Terms controller
+ */
+angular
+    .module('Home')
+    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
 /**
  *  Controller for the thread Archive.
  */
@@ -5545,419 +5960,6 @@ angular
     }
 
 })();
-/**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            $window.location.href = 'home#/join';
-        };
-    }]);
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = 'home#/join';
-        };
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Main landing page.
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('LandingCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-        $scope.gotoInvite = gotoInvite;
-        $scope.contact = {
-            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
-        };
-
-        function gotoInvite() {
-            $location.path('/');
-            $location.hash('invite');
-            $anchorScroll();
-        }
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                    gotoInvite();
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * About Us controller
- */
-angular
-    .module('Home')
-    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            $window.location.href = 'accounts#/join';
-        };
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = 'accounts#/join';
-        };
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('faqCtrl', ['$scope', '$window', '$http',
-        function ($scope, $window, $http) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('homeBaseCtrl', ['$scope', '$http',
-        function ($scope, $http) {
-                // bring in userSession if this controller ever gets used.
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Interest controller
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('interestCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('Home')
-    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Preview provider profile controller
- */
-angular
-    .module('Home')
-    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
-        function ($scope, $window, $stateParams, $http, userSession) {
-
-            var provider_id = $stateParams.account_id;
-            $scope.profile = {};
-            $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/caregiver_profile?account_id=' + provider_id)
-                    .then(function (response) {
-                        $scope.profile = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: provider_id,
-                            message: "I want to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('Home')
-    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
-        function ($scope, $window, $stateParams, $http, userSession) {
-
-            var seeker_id = $stateParams.account_id;
-            $scope.aboutMe = {};
-            $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/seeker_profile?account_id=' + seeker_id)
-                    .then(function (response) {
-                        $scope.aboutMe = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: seeker_id,
-                            message: "I would like to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Pricing controller
- */
-angular
-    .module('Home')
-    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Privacy controller
- */
-angular
-    .module('Home')
-    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('searchCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.searchModel = {};
-            $scope.searchCaregiverResults = {};
-
-            var init = function () {
-                $http({
-                    url: '/search_caregivers',
-                    method: "GET",
-                    params: {search_string: ''}
-                }).then(function (response) {
-                    $scope.searchCaregiverResults = response.data;
-
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-
-                $http({
-                    url: '/search_seekers',
-                    method: "GET",
-                    params: {search_string: ''}
-                }).then(function (response) {
-                    $scope.searchSeekerResults = response.data;
-
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-
-            };
-            init();
-
-            /**
-             * Go back to the previous page/view.
-             * @return void
-             */
-            $scope.previous = function () {
-                $window.history.back();
-            };
-
-            $scope.find = function (model) {
-                $http({
-                    url: '/search_caregivers',
-                    method: "GET",
-                    params: {search_string: model.search_string}
-                }).then(function (response) {
-                    $scope.searchCaregiverResults = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-        }]);
-'use strict';
-
-/**
- * Terms controller
- */
-angular
-    .module('Home')
-    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
 /**
  * Parent controller of the settings module.
  */
