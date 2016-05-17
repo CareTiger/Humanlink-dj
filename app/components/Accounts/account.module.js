@@ -12,7 +12,7 @@
         ])
         .config(Config);
 
-    // test comment
+    // test comment2
 
     // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
 
