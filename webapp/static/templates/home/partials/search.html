@@ -1,0 +1,99 @@
+<div class="search">
+
+  <div class="search-container">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-lg-offset-2 col-lg-6">
+            <input type="text" id="search" name="search" class="form-control input-lg"
+                   ng-model="searchModel.search_string"
+                   placeholder="Where do you need care? Rogers, Bentonville, etc."/>
+          </div>
+          <div class="col-lg-2">
+            <button ng-click="find(searchModel)"
+                    class="btn btn-lg btn-block btn-outline-primary">Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <tabset>
+    <tab index="0" heading="Care Seekers">
+
+      <div class="results-container">
+        <p class="lead">{{ searchSeekerResults.length }} care seekers.</p>
+
+        <div ng-show="searchSeekerResults">
+          <div ng-repeat="skr in searchSeekerResults">
+            <div class="result">
+              <div class="row col-sm-offset-1">
+                <div class="media">
+                  <div class="media-left">
+                    <a href ui-sref="previewSeekerProfile({account_id: skr.account_id })">
+                      <img class="media-object" src="https://placehold.it/75x75" alt="">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <h3 class="media-heading">{{ skr.team_name }}</h3>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="lead"><i
+                                class="material-icons">home</i> {{ skr.mission }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tab>
+
+    <tab index="1" heading="Care Providers">
+      <div class="results-container">
+        <p class="lead">{{ searchCaregiverResults.length }} care providers.</p>
+
+        <div ng-show="searchCaregiverResults">
+          <div ng-repeat="cgvr in searchCaregiverResults">
+            <div class="result">
+              <div class="row col-sm-offset-1">
+                <div class="media">
+                  <div class="media-left">
+                    <a href
+                       ui-sref="previewProviderProfile({account_id: cgvr.account_id })">
+                      <img class="media-object" src="https://placehold.it/75x75" alt="">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <h3 class="media-heading">{{cgvr.first_name}} {{cgvr.last_name}}</h3>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <p class="lead">
+                          <i class="material-icons">add_location</i> {{ cgvr.city }}
+                        </p>
+                      </div>
+                      <div class="col-md-6">
+                        <p class="lead">
+                          <i class="material-icons">phone</i>
+                          (XXX) XXX - XX {{ cgvr.phone_number.slice(8,10) }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </tab>
+  </tabset>
+
+</div>

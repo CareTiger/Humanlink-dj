@@ -17,7 +17,7 @@
     /** ngInject */
     function Config($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/settings/profile');
+        $urlRouterProvider.otherwise('/');
 
         $stateProvider
             .state('account.security', {

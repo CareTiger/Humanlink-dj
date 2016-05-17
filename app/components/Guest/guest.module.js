@@ -7,6 +7,7 @@
     Config.$inject = ["$locationProvider", "$stateProvider", "$urlRouterProvider", "$httpProvider"];
     angular
         .module('app.guest', [
+            'app.common',
             'app.core',
             'app.repo'
         ])
@@ -35,6 +36,11 @@
                 templateUrl: '/static/templates/home/partials/auth/login.html',
                 controller: 'Login',
                 controllerAs: 'vm'
+            })
+            .state('auth.search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
             })
             .state('auth.reset', {
                 url: '/reset',
