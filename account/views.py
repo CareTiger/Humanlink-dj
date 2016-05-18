@@ -466,8 +466,19 @@ def get_caregivers(request):
 						'background_verified': caregiver.background_verified
 					}
 					caregiver_list.append(caregiver_map)
+
+			account = Account.objects.get(email=request.user.email)
+
 			context = {
-				'caregiver_list': caregiver_list
+				'caregiver_list': caregiver_list,
+				'userdata': {
+					'id': account.id
+				},
+				'user_data': {
+					'gravatar_url': account.gravatar_url(),
+					'name': account.username,
+					'email': account.email
+				}
 			}
 
 			return composeJsonResponse(200, '', context)
@@ -480,8 +491,18 @@ def get_careseekers(request):
 		for careseeker in careseekers:
 			careseekers_list.append(careseeker)
 
+		account = Account.objects.get(email=request.user.email)
+
 		context = {
-			'careseekers': careseekers
+			'careseekers': careseekers,
+			'userdata': {
+				'id': account.id
+			},
+			'user_data': {
+				'gravatar_url': account.gravatar_url(),
+				'name': account.username,
+				'email': account.email
+			}
 		}
 		return composeJsonResponse(200, '', context)
 

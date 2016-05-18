@@ -9,7 +9,8 @@
         .module('app.guest', [
             'app.common',
             'app.core',
-            'app.repo'
+            'app.repo',
+            'ui.bootstrap'
         ])
         .config(Config);
 
