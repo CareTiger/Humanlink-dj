@@ -48,27 +48,27 @@ function Config($stateProvider, $urlRouterProvider){
             })
             .state('terms', {
                 url: '/terms',
-                templateUrl: '/views/home/partials/terms.html',
+                templateUrl: '/static/templates/home/partials/terms.html',
                 controller: 'termsCtrl'
             })
             .state('privacy', {
                 url: '/privacy',
-                templateUrl: '/views/home/partials/privacy.html',
+                templateUrl: '/static/templates/home/partials/privacy.html',
                 controller: 'privacyCtrl'
             })
             .state('press', {
                 url: '/press',
-                templateUrl: '/views/home/partials/press.html',
+                templateUrl: '/static/templates/home/partials/press.html',
                 controller: 'pressCtrl'
             })
             .state('interest', {
                 url: '/interest',
-                templateUrl: '/views/home/partials/interest.html',
+                templateUrl: '/static/templates/home/partials/interest.html',
                 controller: 'interestCtrl'
             })
             .state('pricing', {
                 url: '/pricing',
-                templateUrl: '/views/home/partials/pricing.html',
+                templateUrl: '/static/templates/home/partials/pricing.html',
                 controller: 'pricingCtrl'
             });
 }
