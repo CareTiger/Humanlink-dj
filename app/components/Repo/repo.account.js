@@ -16,6 +16,8 @@
             login: login,
             save: save,
             threadInvite: threadInvite,
+            get_caregivers: get_caregivers,
+            get_seekers: get_seekers,
         };
 
         /**
@@ -64,6 +66,22 @@
          */
         function me() {
             return AbstractRepo.get('accounts/me/');
+        }
+
+        /**
+         * Retrieve caregiver information for all caregivers, or those that match search parameters
+         * @returns {*}
+         */
+        function get_caregivers() {
+            return AbstractRepo.get('/accounts/search_caregivers/');
+        }
+
+        /**
+         * Retrieve all seekers.
+         * @returns {*}
+         */
+        function get_seekers() {
+            return AbstractRepo.get('/accounts/search_seekers/');
         }
 
         /**

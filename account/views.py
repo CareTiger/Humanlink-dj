@@ -13,7 +13,7 @@ from django.conf import settings
 import json
 from django.shortcuts import render, redirect
 from api_helpers import composeJsonResponse
-from account.models import Account, CareGiver
+from account.models import Account, CareGiver, CareSeeker
 from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
 # from third_party import pusher
@@ -444,14 +444,17 @@ def get_caregivers(request):
 	# Returns all caregivers, based on search or no search
 	caregiver_list = []
 	if request.method == 'POST':
-		return HttpResponse('POST')
-	else:
+		context = {
+			'message': 'post'
+		}
+		return composeJsonResponse(200, '', context)
+	elif request.method == 'GET':
 		caregivers = CareGiver.objects.all()
-		if len(caregivers > 0):
+		if len(caregivers) > 0:
 			for caregiver in caregivers:
 				if caregiver.background_verified and caregiver.phone_verified:
 					account = Account.objects.get(id=caregiver.account.id)
-					caregiverMap = {
+					caregiver_map = {
 						'first_name': account.first,
 						'last_name': account.last,
 						'phone_number': account.phone_number,
@@ -462,10 +465,28 @@ def get_caregivers(request):
 						'phone_verified': account.phone_verified,
 						'background_verified': caregiver.background_verified
 					}
-					caregiver_list.append(caregiverMap)
-		return composeJsonResponse(200, '', caregiver_list)
+					caregiver_list.append(caregiver_map)
+			context = {
+				'caregiver_list': caregiver_list
+			}
+
+			return composeJsonResponse(200, '', context)
 
 def get_careseekers(request):
 	# Return all careseekers who are 'public'
 	if request.method == 'GET':
-		return HttpResponse('good to go')
+		careseekers_list = []
+		careseekers = CareSeeker.objects.filter()
+		for careseeker in careseekers:
+			careseekers_list.append(careseeker)
+
+		context = {
+			'careseekers': careseekers
+		}
+		return composeJsonResponse(200, '', context)
+
+	elif request.method == 'POST':
+		context = {
+			'message': 'post'
+		}
+		return composeJsonResponse(200, '', context)

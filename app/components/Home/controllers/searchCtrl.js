@@ -7,12 +7,12 @@
 /**
  * Base controller for the home module.
  */
-Search.$inject = ['$scope', '$http', 'SiteAlert']
+Search.$inject = ['$scope', '$http', 'SiteAlert', 'AccountRepo']
 angular
     .module('app.guest')
     .controller('searchCtrl', Search)
 
-    function Search ($scope, $http, SiteAlert) {
+    function Search ($scope, $http, SiteAlert, AccountRepo) {
 
         // find replacement for userSession
 
@@ -20,28 +20,25 @@ angular
         $scope.searchCaregiverResults = {};
 
         var init = function () {
-            $http({
-                url: 'accounts/search_caregivers',
-                method: "GET",
-                params: {search_string: ''}
-            }).then(function (response) {
+            AccountRepo.get_caregivers()
+                .then(function (response) {
                 $scope.searchCaregiverResults = response.data;
-
-            }, function (response) {
-                $scope.siteAlert.type = "danger";
-                $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-            });
-
-            $http({
-                url: 'accounts/search_seekers',
-                method: "GET",
-                params: {search_string: ''}
-            }).then(function (response) {
-                $scope.searchSeekerResults = response.data;
+                console.log($scope.searchCaregiverResults)
 
             }, function (response) {
                 SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            });
+            })
+
+            AccountRepo.get_seekers()
+                .then(function (response) {
+                $scope.searchSeekerResults = response.data;
+                console.log($scope.searchSeekerResults)
+
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            })
+
+            $scope.auth.viewReady = true;
 
         };
         init();

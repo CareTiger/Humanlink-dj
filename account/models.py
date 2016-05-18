@@ -49,7 +49,8 @@ class CareGiver(models.Model):
     about = models.TextField()
     certs = models.TextField()
     headline = models.CharField(max_length=200, null=True)
-    background_verified = models.BooleanField(default=True)
+    background_verified = models.BooleanField(default=False)
+    phone_verified = models.BooleanField(default=False)
 
 
     def __str__(self):

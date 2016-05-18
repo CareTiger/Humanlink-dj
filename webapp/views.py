@@ -24,7 +24,6 @@ def home(request):
 
 	return render(request, "home/index.html", context_instance=RequestContext(request))
 
-
 # @login_required
 def app(request):
 	account = Account.objects.get(email=request.user.email)
@@ -39,7 +38,6 @@ def app(request):
         }
 	}
 	return render(request, "dashboard/index.html", context)
-
 
 @login_required
 def settings(request):
