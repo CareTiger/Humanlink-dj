@@ -51,7 +51,7 @@
             // $state.go('.', {data: null}, {location: 'replace'});
 
             // Impossible token.
-            if ($stateParams.token.length > 8) {
+            if ($stateParams.token.length > 16) {
                 return ready();
             }
 
@@ -81,9 +81,9 @@
         function signup(model) {
             vm.spinners.signup = true;
             vm.messages.signup = null;
-            AccountRepo.withToken(model).then(
+            AccountRepo.join(withToken(model)).then(
                 function () {
-                    return CommonService.hardRedirect('/account#/edit');
+                    return CommonService.hardRedirect('/app');
                 },
                 function (data) {
                     vm.spinners.signup = false;

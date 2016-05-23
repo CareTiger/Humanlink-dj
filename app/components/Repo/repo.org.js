@@ -33,7 +33,7 @@
          * @param model: name and email of the person receiving the invite.
          */
         function sendInvite(orgId, model) {
-            return AbstractRepo.post('/org/' + orgId + '/invite-email', model)
+            return AbstractRepo.post('/orgs/' + orgId + '/invite-email/', model)
                 .then(AbstractRepo.genericSuccess, AbstractRepo.genericError);
         }
 

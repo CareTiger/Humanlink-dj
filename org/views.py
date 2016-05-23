@@ -10,7 +10,7 @@ from account.models import Account
 from api_helpers import composeJsonResponse
 from org.forms import NewOrg, OrgInviteEmail
 from org.models import Org, OrgMember, OrgInvite
-from account.views import get_current_user
+from account.views import get_current_user, requestPost
 from message.models import Thread, PRIVACY_CHOICES
 import mandrill
 
@@ -26,8 +26,6 @@ def orgs(request):
 def _orgs_get(request):
 	# """ Get the list of orgs the account is part of."""
 	account = Account.objects.get(email=request.user.username)
-
-	# all_orgs = Org.objects.join(Org.OrgMember_set).filter(OrgMember.account_id == account.id)
 
 	all_orgs = []
 	all_members = OrgMember.objects.all()
@@ -98,12 +96,11 @@ def _orgs_post(request):
 def invite_by_email(request, org_id):
 	# """Invite a new member by email address to org."""
 
-	account = get_current_user(request)
+	account = Account.objects.get(email=request.user.username)
 	token = codecs.encode(os.urandom(8), 'hex')
-	org_invite = OrgInvite()
 
 	if request.method == "POST":
-		form = OrgInviteEmail(request.POST)
+		form = OrgInviteEmail(requestPost(request))
 
 		if form.is_valid():
 			cleaned_data = form.cleaned_data
@@ -111,54 +108,65 @@ def invite_by_email(request, org_id):
 			if not cleaned_data['email']:
 				raise Exception("Email address is not specified, or is invalid.")
 
-			member = OrgMember.objects.get(org_id=org_id, email=cleaned_data['email'])
-			if member:
-				raise Exception("Email address is already in team.")
-			org_invitation = OrgInvite.objects.get(org_id=org_id, email=cleaned_data['email'], used=False)
+			invite_account = Account.objects.filter(email=cleaned_data['email'])
+
+			if invite_account:
+				member = OrgMember.objects.filter(org=org_id, account=invite_account)
+				if member:
+					raise Exception("Email address is already in team.")
+
+			org_invitation = OrgInvite.objects.filter(org=org_id, email=cleaned_data['email'])
 			if org_invitation:
 				raise Exception("Email address has already been invited.")
 
 			email = cleaned_data['email'].strip().lower()
-
-			org_invite.name = cleaned_data['name']
-			org_invite.is_admin = cleaned_data['is_admin']
-			org_invite.email = email
-			org_invite.org_id = org_id
-			org_invite.token = token
-			org_invite.account_id = account
-			org_invite.save()
-
 			org = Org.objects.get(id=org_id)
 
-			# Send Email
-
-			url = 'https://www.humanlink.co/accept/{}'.format(org_invite.token)
-			md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-			message = {
-				'to': [{
-					'email': org_invite.email,
-					'name': org_invite.name or ''
-				}],
-				'subject': 'You are invited to join {}'.format(org.name),
-				'global_merge_vars': [
-					{'name': 'INVITE_URL', 'content': url},
-					{'name': 'NAME', 'content': org_invite.name or ''},
-					{'name': 'ORG_NAME', 'content': org.name},
-					{'name': 'INVITER_NAME', 'content': account.name},
-				]
-			}
-			message['from_name'] = message.get('from_name', 'Humanlink')
-			message['from_email'] = message.get('from_email', 'support@humanlink.co')
 			try:
-				md.messages.send_template(
-					template_name='humanlink-org-invite', message=message,
-					template_content=[], async=True)
-			except mandrill.Error as e:
-				logging.exception(e)
-				raise Exception('Unknown service exception')
+				org_invite = OrgInvite.objects.create(name=cleaned_data['name'], is_admin=cleaned_data['is_admin'], email=email,
+										 org=org, token=token, account=account)
 
-	else:
-		form = OrgInviteEmail()
+				url = 'http://localhost:8000/home/accept/{}'.format(org_invite.token)
+				md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+				message = {
+					'to': [{
+						'email': 'tim@millcreeksoftware.biz',
+						'name': org_invite.name or ''
+					}],
+					'subject': 'You are invited to join {}'.format(org.name),
+					'global_merge_vars': [
+						{
+							'name': 'INVITE_URL',
+							'content': url
+						},
+						{
+							'name': 'NAME',
+							'content': org_invite.name or ''
+						},
+						{
+							'name': 'ORG_NAME',
+							'content': org.name
+						},
+						{
+							'name': 'INVITER_NAME',
+							'content': account.email
+						},
+					]
+				}
+				message['from_name'] = message.get('from_name', 'Humanlink')
+				message['from_email'] = message.get('from_email', 'support@humanlink.co')
+				try:
+					md.messages.send_template(
+						template_name='humanlink-org-invite', message=message,
+						template_content=[], async=True)
+				except mandrill.Error as e:
+					logging.exception(e)
+					raise Exception('Unknown service exception')
+
+			except Exception, e:
+				logging.error(e)
+				OrgInvite.objects.filter(email=email, org=org, token=token).delete()
+
 
 	context = {
 		'message': 'ok'

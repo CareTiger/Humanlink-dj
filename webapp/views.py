@@ -91,6 +91,7 @@ def verify_email(request, token):
 	return verify(request, token)
 
 
+
 def invite_accept(request, token):
 	""" -Redirects user after successful invite """
 

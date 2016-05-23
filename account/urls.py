@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^caregiver/', views.update_caregiver, name="update_caregiver"),
     url(r'^(?P<account_id>\d+)/?$', views.profile, name="profile"),
     url(r'^(?P<account_id>\d+)/caregiver/', views.caregiver_info, name="caregiver_info"),
-    url(r'^invite/(?P<token>\d+)/?$', views.invite, name="invite"),
+    url(r'^invite/(?P<token>\w+)/?$', views.invite, name="invite"),
     url(r'^search_caregivers/', views.get_caregivers, name="get_caregivers"),
     url(r'^search_seekers/', views.get_careseekers, name="get_careseekers")
 ]

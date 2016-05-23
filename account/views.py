@@ -16,7 +16,7 @@ from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver, CareSeeker
 from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
-# from third_party import pusher
+import pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
 from django.http import QueryDict
@@ -60,18 +60,18 @@ def broadcast(chat_id=None):
 	partition = chunks(all_members, 10)
 	for part in partition:
 		channels = ['private-account-{}'.format(m.account.id) for m in part]
-		# pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+		pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
 def add_to_welcome(org_id, account_id, inviter_id):
 
-	thread = Thread.objects.get(org=org_id, name="welcome")
+	thread = Thread.objects.filter(org=org_id, name="welcome")
 	if thread:
 
 		thread_member = ThreadMember.objects.create(account=account_id, thread=thread)
-		thread.add_members(account_id)
 
-		chat = ThreadChat.objects.create(thread=thread, account=account_id, text=account_id, kind=2, inviter=2, remover=3)
+		chat = ThreadChat.objects.create(thread=thread, account=account_id, text=account_id + ' has joined ',
+										 kind=2, inviter=2, remover=3)
 		chat.save()
 
 		broadcast(chat_id=chat.id)
@@ -139,8 +139,6 @@ def login(request):
 							else:
 								raise Exception("Invitation token is invalid.")
 
-								# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
-
 						context = {
 							'message': form.errors,
 							'next': '/app/',
@@ -152,7 +150,7 @@ def login(request):
 def logout_user(request):
 	logout(request)
 
-
+@csrf_exempt
 def signup(request):
 	# """Register a new account with a new org."""
 	if request.is_ajax():
@@ -166,12 +164,16 @@ def signup(request):
 				password = cleaned_data['password']
 				org_name = cleaned_data['org_name']
 				org_username = cleaned_data['org_username']
-				invite_token = cleaned_data['invite']
+
+				if cleaned_data['token']:
+					invite_token = cleaned_data['token']
+				else:
+					invite_token = cleaned_data['invite']
 
 				try:
 					account = Account.objects.create(email=email, password=password)
 					if len(email) > 30:
-						User.objects.create_user(email, email, password)
+						user = User.objects.create_user(email, email, password)
 					else:
 						email = email[:30]
 						user = User.objects.create_user(email, email, password)
@@ -185,16 +187,21 @@ def signup(request):
 							invitation = OrgInvite.objects.get(token=invite_token)
 							if invitation.used:
 								raise Exception("invitation code is invalid")
+							org = Org.objects.get(id=invitation.org.id)
+							OrgMember.objects.create(org=org, account=account)
 							invitation.used = False
 							invitation.save()
+							# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invitation.token)
 
 					if org_username and org_name:
-						Org.objects.create(name=org_name, username=org_username)
+						org = Org.objects.create(name=org_name, username=org_username)
+						OrgMember.objects.create(account=account, org=org)
+
 				except Exception, e:
+					logging.error(e)
 					Account.objects.filter(email=email, password=password).delete()
 					User.objects.filter(username=email[:30], password=password).delete()
 					Org.objects.filter(name=org_name, username=org_username).delete()
-					logging.error(e)
 
 
 				login(request)
@@ -378,19 +385,17 @@ def get_invite(token):
 def invite_accept_redirect(token):
 	# """ -Redirects to the accept invite frontend view with pre-fetched data. """
 
-	try:
-		invite = get_invite(token)
-		if not invite:
-			raise Exception("Invitation token is invalid")
-		if invite.used:
-			invite = {'used': True}
-	except:
-		invite = {'invalid': True}
-		raise Exception("Resource not found.")
+	key = token
+
+	invitation = OrgInvite.objects.get(token=token)
+	if not invitation:
+		raise Exception("Invitation token is invalid")
+	if invitation.used:
+		raise Exception("Invitation token has already been used.")
 
 	base = "home/accept"
 
-	invite_dict = model_to_dict(invite)
+	invite_dict = model_to_dict(invitation)
 
 	url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 

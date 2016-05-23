@@ -11,4 +11,4 @@ class NewOrg(forms.Form):
 class OrgInviteEmail(forms.Form):
 	name = forms.CharField(max_length=70)
 	email = forms.EmailField()
-	is_admin = forms.BooleanField()
+	is_admin = forms.BooleanField(required=False)
