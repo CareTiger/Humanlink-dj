@@ -8,10 +8,10 @@
  * Preview provider profile controller
  */
 angular
-    .module('Home')
-    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
-        function ($scope, $window, $stateParams, $http, userSession) {
-
+    .module('app.guest')
+    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            
             var provider_id = $stateParams.account_id;
             $scope.profile = {};
             $scope.usr = userSession;

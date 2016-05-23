@@ -1,0 +1,151 @@
+<div class="settings-profile">
+  <div class="card">
+
+    <div class="row">
+      <div class="col-md-3 text-center">
+        <img src="https://placehold.it/150x150">
+
+        <p class="vmargin10">
+          <button class="btn btn-primary" ng-click="connect()">Connect</button>
+        </p>
+      </div>
+      <div class="col-md-9">
+        <h3><strong>{{profile.first_name}} {{profile.last_name}}</strong></h3>
+        <h4>Location: {{profile.city}}, {{profile.county}} </h4>
+        <h4>Phone: ({{ profile.phone_number.slice(0,3) }}
+          ) {{ profile.phone_number.slice(3,6) }}
+          - {{ profile.phone_number.slice(6,10) }}</h4>
+        <h4>Headline: <strong>{{profile.headline}}</strong></h4>
+        <h4>Bio: {{profile.bio}}</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-offset-3 col-md-9">
+        <hr>
+        <h3>Education</h3>
+        <h4>School: {{profile.school}}</h4>
+        <h4>
+          <div ng-if="profile.cna">Degree: CNA</div>
+          <div ng-if="profile.lpn">Degree: LPN</div>
+          <div ng-if="profile.iha">Degree: IHA</div>
+          <div ng-if="profile.ad">Degree: AD</div>
+          <div ng-if="profile.hcs">Degree: HCS</div>
+        </h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-offset-3 col-md-9">
+        <hr>
+        <h3>Preferences</h3>
+        <h4>
+          <div ng-if="profile.live_in"> I am open to live-in arrangements.</div>
+          <div ng-if="profile.weekdays"> I can work on weekdays.</div>
+          <div ng-if="profile.weekends"> I can work on weekends.</div>
+          <div ng-if="profile.cats"> I am allergic to cats.</div>
+          <div ng-if="profile.dogs"> I am allergic to dogs.</div>
+          <div ng-if="profile.smoking"> I am allergic to smoking.</div>
+        </h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-offset-3 col-md-9">
+        <hr>
+        <h3 class="text-center">Trust and Verification</h3>
+
+        <div class="profile-trust">
+          <div class="row">
+
+            <div class="col-sm-4">
+              <div ng-show="profile.phone_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-ok-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Phone</p>
+
+                  <p>Verified</p>
+                </div>
+              </div>
+
+              <div ng-hide="profile.phone_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-remove-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Phone</p>
+
+                  <p>Not Verified</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div ng-show="profile.offlineID_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-ok-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Offline ID</p>
+
+                  <p>Verified</p>
+                </div>
+              </div>
+
+              <div ng-hide="profile.offlineID_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-remove-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Offline ID</p>
+
+                  <p>Not Verified</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div ng-show="profile.background_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-ok-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Background</p>
+
+                  <p>Verified</p>
+                </div>
+              </div>
+
+              <div ng-hide="profile.background_verified">
+                <div class="col-sm-3">
+                  <h4>
+                    <span class="glyphicon glyphicon-remove-sign"></span>
+                  </h4>
+                </div>
+                <div class="col-sm-9">
+                  <p class="lead">Background</p>
+
+                  <p>Not Verified</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

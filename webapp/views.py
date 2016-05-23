@@ -21,8 +21,24 @@ def caregivers(request):
 	return render(request, "home/caregivers.html")
 
 def home(request):
+	if request.user.is_active:
 
-	return render(request, "home/index.html", context_instance=RequestContext(request))
+		x = type(request.user)
+
+		account = Account.objects.get(email=request.user.email)
+		context = {
+			'userdata': {
+				'id': account.id
+			},
+			'user_data': {
+				'gravatar_url': account.gravatar_url(),
+				'name': account.username,
+				'email': account.email
+			}
+		}
+		return render(request, "home/index.html", context)
+	else:
+		return render(request, "home/index.html", context_instance=RequestContext(request))
 
 # @login_required
 def app(request):
@@ -101,15 +117,17 @@ def pusher_auth(request):
 
 		account = Account.objects.get(email=user.email)
 
-		pusher_client = Pusher(app_id='199731', key='feea095554f736862bf4', secret='9550fb09aacce399eeb6',
-							   cluster='mt1', ssl=True)
+		pusher_client = Pusher(key='feea095554f736862bf4', cluster='mt1', ssl=True)
 
-		auth = pusher_client.authenticate(channel, socket_id)
+		auth = pusher_client.authenticate(channel=channel, socket_id=socket_id)
 
 		try:
 			if resource == 'account' and (account.id == resource_id):
 				print(auth)
-				context = auth
+				context = {
+					'channel': channel,
+					'auth': auth
+				}
 				return composeJsonResponse(200, "", context)
 			else:
 				return {'nope'}

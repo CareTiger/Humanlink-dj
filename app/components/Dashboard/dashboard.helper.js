@@ -31,7 +31,7 @@
                 return threads;
             });
             var pusherPr = bindPusher();
-            return $q.all([threadsPr]);
+            return $q.all([threadsPr, pusherPr]);
         //    remember to put pusherPr back into array on line above next to threadsPr
         }
 
@@ -55,7 +55,8 @@
         function bindPusher() {
             var defer = $q.defer();
 
-            var channelName = 'private-account-' + Session.account.id;
+            var channelName = 'public-account-' + Session.account.id;
+            // In the future, this will need to be private
             var channel = $pusher.client.subscribe(channelName);
 
             channel.bind('pusher:subscription_succeeded', function (data) {

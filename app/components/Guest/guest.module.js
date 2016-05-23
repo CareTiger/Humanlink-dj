@@ -54,6 +54,21 @@
                 controller: 'Join',
                 controllerAs: 'vm'
             })
+            .state('auth.faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('auth.previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('auth.previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
             .state('auth.join.personal', {
                 url: '/join?invite',
                 templateUrl: '/static/templates/home/partials/auth/join.personal.html',

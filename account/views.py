@@ -139,13 +139,11 @@ def login(request):
 							else:
 								raise Exception("Invitation token is invalid.")
 
-
-
 								# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invite.token)
 
 						context = {
 							'message': form.errors,
-							'next': '/app/'
+							'next': '/app/',
 						}
 
 						return composeJsonResponse(200, "", context)
@@ -170,50 +168,57 @@ def signup(request):
 				org_username = cleaned_data['org_username']
 				invite_token = cleaned_data['invite']
 
-				account = Account.objects.create(email=email, password=password)
-				if len(email) > 30:
-					User.objects.create_user(email, email, password)
-				else:
-					email = email[:30]
-					User.objects.create_user(email, email, password)
+				try:
+					account = Account.objects.create(email=email, password=password)
+					if len(email) > 30:
+						User.objects.create_user(email, email, password)
+					else:
+						email = email[:30]
+						user = User.objects.create_user(email, email, password)
 
-				if ThreadInvite.objects.filter(token=invite_token):
-					invitation = ThreadInvite.objects.get(token=invite_token)
-					thread = Thread.objects.get(id=invitation.thread.id)
-					ThreadMember.objects.create(thread=thread, account=account)
-				else:
-					invitation = OrgInvite.objects.get(token=invite_token)
-					if invitation.used:
-						raise Exception("invitation code is invalid")
+					if invite_token:
+						if ThreadInvite.objects.filter(token=invite_token):
+							invitation = ThreadInvite.objects.get(token=invite_token)
+							thread = Thread.objects.get(id=invitation.thread.id)
+							ThreadMember.objects.create(thread=thread, account=account)
+						else:
+							invitation = OrgInvite.objects.get(token=invite_token)
+							if invitation.used:
+								raise Exception("invitation code is invalid")
+							invitation.used = False
+							invitation.save()
+
 					if org_username and org_name:
 						Org.objects.create(name=org_name, username=org_username)
-						invitation.used = False
-						invitation.save()
+				except Exception, e:
+					Account.objects.filter(email=email, password=password).delete()
+					User.objects.filter(username=email[:30], password=password).delete()
+					Org.objects.filter(name=org_name, username=org_username).delete()
+					logging.error(e)
+
 
 				login(request)
 
-				# Send Email
-				if account.email == 'tim@millcreeksoftware.biz':
-					md = mandrill.Mandrill('0Ub_zOSRJBIIhpN9bbqpwA')
-					t = invite_token.replace(' ', '+')
-					url = "https://localhost:8000/verify/{}".format(t)
-					message = {
-						'global_merge_vars': [
-							{'name': 'VERIFICATION_URL', 'content': url},
-						],
-						'to': [
-							{'email': account.email},
-						],
-					}
-					message['from_name'] = message.get('from_name', 'Humanlink')
-					message['from_email'] = message.get('from_email', 'support@humanlink.co')
-					try:
-						md.messages.send_template(
-							template_name='humanlink-welcome', message=message,
-							template_content=[], async=True)
-					except mandrill.Error as e:
-						logging.exception(e)
-						raise Exception(e)
+				md = mandrill.Mandrill('0Ub_zOSRJBIIhpN9bbqpwA')
+				t = invite_token.replace(' ', '+')
+				url = "https://localhost:8000/verify/{}".format(t)
+				message = {
+					'global_merge_vars': [
+						{'name': 'VERIFICATION_URL', 'content': url},
+					],
+					'to': [
+						{'email': 'tim@millcreeksoftware.biz'},
+					],
+				}
+				message['from_name'] = message.get('from_name', 'Humanlink')
+				message['from_email'] = message.get('from_email', 'support@humanlink.co')
+				try:
+					md.messages.send_template(
+						template_name='humanlink-welcome', message=message,
+						template_content=[], async=True)
+				except mandrill.Error as e:
+					logging.exception(e)
+					raise Exception(e)
 
 				context = {
 					'message': 'ok'
@@ -509,5 +514,17 @@ def get_careseekers(request):
 	elif request.method == 'POST':
 		context = {
 			'message': 'post'
+		}
+		return composeJsonResponse(200, '', context)
+
+def seeker_profile(request):
+	if request.method == 'POST':
+		context = {
+			'message': 'ok'
+		}
+		return composeJsonResponse(200, '', context)
+	if request.method == 'GET':
+		context = {
+			'message': 'ok'
 		}
 		return composeJsonResponse(200, '', context)

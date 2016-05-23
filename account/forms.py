@@ -40,7 +40,7 @@ class AcceptInvite(forms.Form):
 
 class SignUp(forms.Form):
     email = forms.EmailField(required=True)
-    invite = forms.CharField(required=True)
+    invite = forms.CharField(required=False)
     password = forms.CharField(required=True)
     password_confirm = forms.CharField(required=True)
     org_name = forms.CharField(required=False)

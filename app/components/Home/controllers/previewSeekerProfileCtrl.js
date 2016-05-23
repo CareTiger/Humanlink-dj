@@ -8,13 +8,13 @@
  * Press controller
  */
 angular
-    .module('Home')
-    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http', 'userSession',
-        function ($scope, $window, $stateParams, $http, userSession) {
-
+    .module('app.guest')
+    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            // bring in alternative to userSession
             var seeker_id = $stateParams.account_id;
             $scope.aboutMe = {};
-            $scope.usr = userSession;
+            // $scope.usr = userSession;
 
             var init = function () {
                 $http.get('/seeker_profile?account_id=' + seeker_id)
