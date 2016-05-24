@@ -206,16 +206,22 @@ def signup(request):
 
 				login(request)
 
-				md = mandrill.Mandrill('0Ub_zOSRJBIIhpN9bbqpwA')
+				md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
 				t = invite_token.replace(' ', '+')
 				url = "https://localhost:8000/verify/{}".format(t)
 				message = {
 					'global_merge_vars': [
-						{'name': 'VERIFICATION_URL', 'content': url},
+						{
+							'name': 'VERIFICATION_URL',
+							'content': url
+						},
 					],
 					'to': [
-						{'email': 'tim@millcreeksoftware.biz'},
+						{
+							'email': 'tim@millcreeksoftware.biz',
+						 },
 					],
+					'subject': 'You are invited to join {}'.format(org.name),
 				}
 				message['from_name'] = message.get('from_name', 'Humanlink')
 				message['from_email'] = message.get('from_email', 'support@humanlink.co')
