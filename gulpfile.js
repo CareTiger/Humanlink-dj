@@ -74,6 +74,7 @@ gulp.task('less', ['move-bootstrap', 'move-fonts'], function () {
 
 gulp.task('watch', function(){
   gulp.watch('app/**/*.js', ['js']);
+  gulp.watch('webapp/static/less/**/*.less', ['less']);
   // Other watchers
 })
 
