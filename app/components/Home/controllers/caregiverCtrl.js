@@ -12,6 +12,7 @@ angular
     .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
 
         $scope.SignUp = function (){
-            $window.location.href = 'accounts#/join';
+            console.log("Hello");
+            $window.location.href = '/home/join';
         };
     }]);

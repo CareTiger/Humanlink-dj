@@ -13,7 +13,7 @@ angular
         function ($scope, $window) {
 
         $scope.SignUp = function () {
-            $window.location.href = 'accounts#/join';
+            $window.location.href = '/home/join';
         };
 
     }]);

@@ -5587,30 +5587,6 @@ angular
 
 })();
 /**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            $window.location.href = 'home#/join';
-        };
-    }]);
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = 'home#/join';
-        };
-
-    }]);
-/**
  * Created by timothybaney on 5/16/16.
  */
 
@@ -5686,7 +5662,8 @@ angular
     .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
 
         $scope.SignUp = function (){
-            $window.location.href = 'accounts#/join';
+            console.log("Hello");
+            $window.location.href = '/home/join';
         };
     }]);
 /**
@@ -5704,7 +5681,7 @@ angular
         function ($scope, $window) {
 
         $scope.SignUp = function () {
-            $window.location.href = 'accounts#/join';
+            $window.location.href = '/home/join';
         };
 
     }]);
