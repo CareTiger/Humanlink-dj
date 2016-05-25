@@ -1,9 +1,17 @@
-.landing {
+.careseekers {
 
   .container {
     padding-top: 75px;
     padding-bottom: 75px;
   }
+
+  .section img {
+    @media (max-width: 760px) {
+      text-align: center;
+      max-height: 400px;
+    }
+  }
+
 
   /*
    SECTION HORIZONTAL - PRIMARY
@@ -12,9 +20,6 @@
   section.horizontal {
     background: @primary;
     color: white;
-    .container-fluid {
-      padding: 100px;
-    }
   }
   section.horizontal h2 {
     font-size: 3em;
@@ -26,6 +31,29 @@
   section.horizontal a.active {
     color: white;
     outline: none;
+  }
+
+  /*
+   SECTION HORIZONTAL - TYPE
+  */
+
+  section.type {
+    background: @type;
+    color: white;
+  }
+
+  /*
+   SECTION VERTICAL
+  */
+
+  section.vertical {
+    color: @type;
+    .fa, .material-icons {
+      font-size: 100px;
+    }
+  }
+  section.vertical h2 {
+    font-size: 3em;
   }
 
   /*
@@ -49,17 +77,46 @@
   }
 
   /*
+   button outline (flipped)
+  */
+  .btn-outline-type {
+    color: @primary;
+    font-size: 20px;
+    border: solid 2px @primary;
+    background: transparent;
+    transition: all 0.3s ease-in-out;
+    margin-top: 15px;
+  }
+  .btn-outline-type:hover,
+  .btn-outline-type:focus,
+  .btn-outline-type:active,
+  .btn-outline-type.active {
+    color: white;
+    background: @primary;
+    border: solid 2px @primary;
+  }
+
+  /*
   hr with star-light
   */
-  hr.star-heart  {
+  hr.star-light, .star-heart {
     padding: 0;
     border: none;
     border-top: solid 5px;
     text-align: center;
     max-width: 250px;
   }
+  hr.star-light:after {
+    content: '\2605';
+    font-size: 2em;
+    display: inline-block;
+    position: relative;
+    top: -0.8em;
+    background-color: @primary;
+    padding: 0 0.25em;
+  }
   hr.star-heart:after {
-    content: '\2661';
+    content: '\2665';
     font-size: 2em;
     display: inline-block;
     position: relative;

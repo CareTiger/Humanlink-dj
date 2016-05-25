@@ -7333,7 +7333,7 @@ footer,
   padding-bottom: 0;
 }
 .blanket .press {
-  background: url("../images/landing/press_logos.png") no-repeat;
+  background: url("/images/landing/press_logos.png") no-repeat;
   margin: 0 auto;
 }
 .blanket .press.press-cw {
@@ -7373,139 +7373,413 @@ footer,
 .blanket footer a:focus {
   color: #cccccc;
 }
-.landing .section-welcome {
+.landing {
+  /*
+   SECTION HORIZONTAL - PRIMARY
+  */
+  /*
+   button outline (primary)
+  */
+  /*
+  hr with star-light
+  */
+}
+.landing .container {
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+.landing section.horizontal {
+  background: #174a7c;
+  color: white;
+}
+.landing section.horizontal .container-fluid {
+  padding: 100px;
+}
+.landing section.horizontal h2 {
+  font-size: 3em;
+}
+.landing section.horizontal a,
+.landing section.horizontal a:hover,
+.landing section.horizontal a:focus,
+.landing section.horizontal a:active,
+.landing section.horizontal a.active {
+  color: white;
+  outline: none;
+}
+.landing .btn-outline {
+  color: white;
+  font-size: 20px;
+  border: solid 2px white;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
+}
+.landing .btn-outline:hover,
+.landing .btn-outline:focus,
+.landing .btn-outline:active,
+.landing .btn-outline.active {
+  color: #174a7c;
+  background: white;
+  border: solid 2px white;
+}
+.landing hr.star-heart {
+  padding: 0;
+  border: none;
+  border-top: solid 5px;
+  text-align: center;
+  max-width: 250px;
+}
+.landing hr.star-heart:after {
+  content: '\2661';
+  font-size: 2em;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  background-color: #174a7c;
+  padding: 0 0.25em;
+}
+.caregivers {
+  /*
+   SECTION HORIZONTAL - TYPE
+  */
+  /*
+   button outline type
+  */
+  /*
+   button outline type inverse
+  */
+  /*
+  hr with star-heart
+  */
+  /*
+  hr with star-heart
+  */
+}
+.caregivers .container {
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+.caregivers section.horizontal {
   background: #5f6062;
-  color: #fff;
-  background-image: url("../images/landing/cover.jpg");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  min-height: 600px;
-  padding: 80px 0;
+  color: white;
 }
-.landing .section-welcome a {
-  color: #e6e6e6;
+.caregivers section.enlarged-icons .fa,
+.caregivers section.enlarged-icons .material-icons {
+  font-size: 100px;
 }
-.landing .section-welcome a:hover,
-.landing .section-welcome a:focus {
-  color: #cccccc;
+.caregivers section.horizontal h2 {
+  font-size: 3em;
 }
-@media (min-width: 970px) {
-  .landing .section-overview .steps {
-    padding-top: 50px;
-  }
+.caregivers section.horizontal a,
+.caregivers section.horizontal a:hover,
+.caregivers section.horizontal a:focus,
+.caregivers section.horizontal a:active,
+.caregivers section.horizontal a.active {
+  color: white;
+  outline: none;
 }
-.landing .section-overview img {
-  float: right;
-  max-height: 600px;
+.caregivers section.vertical h2 {
+  font-size: 3em;
 }
-.landing .section-benefits {
-  background: #0093d0;
-  color: #fff;
+.caregivers .btn-outline-type {
+  color: white;
+  font-size: 20px;
+  border: solid 2px white;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
 }
-.landing .section-benefits a {
-  color: #f8ed9b;
+.caregivers .btn-outline-type:hover,
+.caregivers .btn-outline-type:focus,
+.caregivers .btn-outline-type:active,
+.caregivers .btn-outline-type.active {
+  color: #5f6062;
+  background: white;
+  border: solid 2px white;
 }
-.landing .section-benefits a:hover,
-.landing .section-benefits a:focus {
-  color: #f5e46b;
+.caregivers .btn-outline-type-inverse {
+  color: #5f6062;
+  font-size: 20px;
+  border: solid 2px #5f6062;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
 }
-.landing .section-benefits small {
-  color: #e6e6e6;
+.caregivers .btn-outline-type-inverse:hover,
+.caregivers .btn-outline-type-inverse:focus,
+.caregivers .btn-outline-type-inverse:active,
+.caregivers .btn-outline-type-inverse.active {
+  color: white;
+  background: #5f6062;
+  border: solid 2px #5f6062;
 }
-.landing .section-benefits .fa,
-.landing .section-benefits .material-icons {
-  font-size: 140px;
+.caregivers hr.star-heart {
+  padding: 0;
+  border: none;
+  border-top: solid 5px;
+  text-align: center;
+  max-width: 250px;
 }
-.landing .section-pricing ul {
-  line-height: 2em;
+.caregivers hr.star-heart:after {
+  content: '\2665';
+  font-size: 2em;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  background-color: #5f6062;
+  padding: 0 0.25em;
 }
-.landing .section-invite {
-  background: #0093d0;
-  color: #fff;
+.caregivers hr.spotlight {
+  padding: 0;
+  border: none;
+  border-top: solid 5px;
+  text-align: center;
+  max-width: 250px;
 }
-.landing .section-invite a {
-  color: #f8ed9b;
+.caregivers hr.spotlight:after {
+  content: '\25c6';
+  font-size: 2em;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  background-color: white;
+  padding: 0 0.25em;
 }
-.landing .section-invite a:hover,
-.landing .section-invite a:focus {
-  color: #f5e46b;
+.careseekers {
+  /*
+   SECTION HORIZONTAL - PRIMARY
+  */
+  /*
+   SECTION HORIZONTAL - TYPE
+  */
+  /*
+   SECTION VERTICAL
+  */
+  /*
+   button outline (primary)
+  */
+  /*
+   button outline (flipped)
+  */
+  /*
+  hr with star-light
+  */
 }
-.landing .section-invite small {
-  color: #e6e6e6;
-}
-.landing .section-invite form {
-  background: #f2f2f2;
-  color: #555555;
-  padding: 20px 10px;
-  border: 10px solid #777777;
-}
-.landing .section-invite form img {
-  height: 80px;
+.careseekers .container {
+  padding-top: 75px;
+  padding-bottom: 75px;
 }
 @media (max-width: 760px) {
-  .caregivers .section img {
+  .careseekers .section img {
     text-align: center;
     max-height: 400px;
   }
 }
-.caregivers .section-welcome {
+.careseekers section.horizontal {
+  background: #174a7c;
+  color: white;
+}
+.careseekers section.horizontal h2 {
+  font-size: 3em;
+}
+.careseekers section.horizontal a,
+.careseekers section.horizontal a:hover,
+.careseekers section.horizontal a:focus,
+.careseekers section.horizontal a:active,
+.careseekers section.horizontal a.active {
+  color: white;
+  outline: none;
+}
+.careseekers section.type {
   background: #5f6062;
-  color: #fff;
-  background-image: url("../images/landing/caregivers_cover.jpg");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  min-height: 600px;
-  padding: 80px 0;
+  color: white;
 }
-.caregivers .section-welcome a {
-  color: #e6e6e6;
+.careseekers section.vertical {
+  color: #5f6062;
 }
-.caregivers .section-welcome a:hover,
-.caregivers .section-welcome a:focus {
-  color: #cccccc;
+.careseekers section.vertical .fa,
+.careseekers section.vertical .material-icons {
+  font-size: 100px;
 }
-.caregivers .section-benefits {
-  background: #0093d0;
-  color: #fff;
+.careseekers section.vertical h2 {
+  font-size: 3em;
 }
-.caregivers .section-benefits a {
-  color: #f8ed9b;
+.careseekers .btn-outline {
+  color: white;
+  font-size: 20px;
+  border: solid 2px white;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
 }
-.caregivers .section-benefits a:hover,
-.caregivers .section-benefits a:focus {
-  color: #f5e46b;
+.careseekers .btn-outline:hover,
+.careseekers .btn-outline:focus,
+.careseekers .btn-outline:active,
+.careseekers .btn-outline.active {
+  color: #174a7c;
+  background: white;
+  border: solid 2px white;
 }
-.caregivers .section-benefits small {
-  color: #e6e6e6;
+.careseekers .btn-outline-type {
+  color: #174a7c;
+  font-size: 20px;
+  border: solid 2px #174a7c;
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
 }
-.caregivers .section-benefits img {
+.careseekers .btn-outline-type:hover,
+.careseekers .btn-outline-type:focus,
+.careseekers .btn-outline-type:active,
+.careseekers .btn-outline-type.active {
+  color: white;
+  background: #174a7c;
+  border: solid 2px #174a7c;
+}
+.careseekers hr.star-light,
+.careseekers .star-heart {
+  padding: 0;
+  border: none;
+  border-top: solid 5px;
+  text-align: center;
+  max-width: 250px;
+}
+.careseekers hr.star-light:after {
+  content: '\2605';
+  font-size: 2em;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  background-color: #174a7c;
+  padding: 0 0.25em;
+}
+.careseekers hr.star-heart:after {
+  content: '\2665';
+  font-size: 2em;
+  display: inline-block;
+  position: relative;
+  top: -0.8em;
+  background-color: #174a7c;
+  padding: 0 0.25em;
+}
+.pricing .well {
+  margin: 10px;
+}
+.pricing .highlight .well {
+  margin: 10px;
+  border: 4px solid #174A7C;
+}
+.about_us .well {
+  margin: 0;
+  border: 2px solid #174A7C;
+}
+@media (max-width: 760px) {
+  .about_us .section img {
+    text-align: center;
+    max-height: 400px;
+  }
+}
+@media (min-width: 970px) {
+  .about_us .section-overview .steps {
+    padding-top: 70px;
+  }
+}
+.about_us .section-overview .title {
+  margin-top: 50px;
+}
+.about_us .section-overview img {
   float: right;
   max-height: 600px;
 }
-.caregivers .section-invite {
-  background: #0093d0;
-  color: #fff;
+.about_us .section-overview h1 {
+  color: #5f6062;
+  line-height: 135%;
 }
-.caregivers .section-invite a {
-  color: #f8ed9b;
+.interest .container {
+  padding-top: 75px;
+  padding-bottom: 75px;
 }
-.caregivers .section-invite a:hover,
-.caregivers .section-invite a:focus {
-  color: #f5e46b;
+.interest .section h1 {
+  font-size: 43.2px;
+  margin-top: 0;
+  margin-bottom: 30px;
 }
-.caregivers .section-invite small {
-  color: #e6e6e6;
+.interest .section h2 {
+  font-size: 36px;
 }
-.caregivers .section-invite form {
+.interest .section-invite form {
   background: #f2f2f2;
   color: #555555;
   padding: 20px 10px;
   border: 10px solid #777777;
 }
-.caregivers .section-invite form img {
-  height: 80px;
+.interest .section-invite form img {
+  max-height: 80px;
+}
+.interest .section-invite form .fa {
+  color: #555555;
+  font-size: 40px;
+}
+.search {
+  /*
+   button outline (primary)
+  */
+}
+.search .results-container {
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+.search .search-container {
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+.search .btn-outline-primary {
+  color: white;
+  font-size: 20px;
+  border: solid 2px white;
+  background: #174a7c;
+  transition: all 0.3s ease-in-out;
+}
+.search .btn-outline-primary:hover,
+.search .btn-outline-primary:focus,
+.search .btn-outline-primary:active,
+.search .btn-outline-primary.active {
+  color: #174a7c;
+  background: white;
+  border: solid 2px #174a7c;
+}
+.search .result {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #f8ed9b;
+}
+.faq {
+  /*
+   SECTION HORIZONTAL - accent
+  */
+}
+.faq .container {
+  padding-top: 100px;
+  padding-bottom: 75px;
+}
+.faq .fa,
+.faq .material-icons {
+  font-size: 100px;
+}
+.faq section.horizontal {
+  background: #174a7c;
+  color: white;
+}
+.faq section.horizontal h2 {
+  font-size: 3em;
+}
+.faq section.horizontal a,
+.faq section.horizontal a:hover,
+.faq section.horizontal a:focus,
+.faq section.horizontal a:active,
+.faq section.horizontal a.active {
+  color: white;
+  outline: none;
 }
 .account-accept h2 {
   margin-bottom: 20px;
