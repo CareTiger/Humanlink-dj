@@ -14,12 +14,36 @@
         </a>
 
         <ul class="dropdown-menu" aria-labelledby="dropdownmenu1">
-          <li ng-repeat="item in ['Channel info', 'Invite others']">
+          <li>
+            <a ui-sref-active-eq="active"
+               ui-sref="dashboard.messages.invite">
+              Invite new member</a>
+          </li>
+          <li>
+            <a ui-sref-active-eq="active"
+               ui-sref="dashboard.messages.update">
+              Edit channel information</a>
+          </li>
+          <li>
+            <a ui-sref-active-eq="active"
+               ui-sref="dashboard.messages.leave">
+              Leave channel</a>
+          </li>
+          <li>
+            <a ui-sref-active-eq="active"
+               ui-sref="dashboard.messages.search">
+              Search Caregiver</a>
+          </li>
+
+          <li><a ui-sref-active-eq="active"
+                 ui-sref="dashboard.messages.archive">
+            Archive channel</a></li>
+
+          <li ng-repeat="item in ['Caregiver search', 'Channel boards']">
             <a href>{{ item }}</a>
           </li>
         </ul>
     </div>
-
 
 </div>
 

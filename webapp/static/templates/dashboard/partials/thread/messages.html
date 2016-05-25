@@ -32,7 +32,7 @@
               </small>
             </h5>
           </div>
-          <div ng-bind-html="vm.body(msg)"></div>
+          <div ng-class="{'notification': msg.kind !== 0}" ng-bind-html="vm.body(msg)"></div>
         </div>
       </div>
     </div>
