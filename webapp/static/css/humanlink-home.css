@@ -6747,17 +6747,6 @@ form .form-group:last-of-type {
 body {
   -webkit-font-smoothing: antialiased;
 }
-.container-main,
-.container-footer {
-  background-color: #fff;
-  color: #5f6062;
-  margin-top: 15px;
-  padding: 15px;
-  border-radius: 6px;
-}
-.container-footer ul {
-  margin: 0;
-}
 .no-top-margin {
   margin-top: 0;
 }
@@ -7886,18 +7875,7 @@ fieldset[disabled] .btn-secondary.focus {
 .settings h2.panel-title {
   font-size: 30px;
 }
-.account-login form {
-  background: #eee;
-  color: #555555;
-  padding: 20px 10px;
-  border: 10px solid #777777;
-}
-.account-join form {
-  background: #eee;
-  color: #555555;
-  padding: 20px 10px;
-  border: 10px solid #777777;
-}
+
 .settings-payments .payment-input {
   margin: 4px;
 }
