@@ -7333,7 +7333,7 @@ footer,
   padding-bottom: 0;
 }
 .blanket .press {
-  background: url("../images/landing/press_logos.png") no-repeat;
+  background: url("/images/landing/press_logos.png") no-repeat;
   margin: 0 auto;
 }
 .blanket .press.press-cw {
@@ -7798,7 +7798,7 @@ footer,
   display: flex;
 }
 .account-join .join-sidebar {
-  background-image: url("/images/home/sample-convo.png");
+  background-image: url("../images/home/sample-convo.png");
   background-position: center left;
   background-repeat: no-repeat;
   background-size: cover;

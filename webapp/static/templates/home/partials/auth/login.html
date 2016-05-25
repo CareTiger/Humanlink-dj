@@ -42,20 +42,20 @@
         <div class="form-group">
           <div class="col-sm-3"></div>
           <div class="col-sm-9 col-md-7">
-            <button class="btn btn-lg btn-block btn-secondary" ng-click="login(loginModel)"
+            <button class="btn btn-lg btn-block btn-secondary"
+                    ng-click="login(loginModel)"
                     ng-disabled="!form.$valid || vm.submitBusy">
               Sign in
             </button>
           </div>
         </div>
+        <div class="col-sm-6 col-sm-offset-3">
+          Forgot your password? Reset it <a ui-sref="reset">here</a>.
+          <br>
+          <a ui-sref="join">Sign up</a> to get started.
+        </div>
 
       </form>
-    </div>
-    <div class="col-sm-6 col-sm-offset-3 vmargin20">
-      <h4>Forgot your password? Reset it
-        <a ui-sref="reset">here</a>.</h4>
-
-      <h4><a ui-sref="join">Sign up</a> to get started.</h4>
     </div>
 
   </div>
