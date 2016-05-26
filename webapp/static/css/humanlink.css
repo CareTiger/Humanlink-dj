@@ -7987,6 +7987,66 @@ footer,
   color: transparent;
   text-shadow: 0 0 10px #eeeeee;
 }
+.dashboard .thread .sidepanel .info {
+  background-color: #fff;
+  overflow-y: scroll;
+  padding: 15px;
+}
+.dashboard .thread .sidepanel .info a {
+  text-decoration: none;
+}
+.dashboard .thread .sidepanel .info i {
+  vertical-align: middle;
+}
+.dashboard .thread .sidepanel .info .name a {
+  color: #5f6062;
+}
+.dashboard .thread .sidepanel .info .media {
+  margin: 0;
+  padding: 5px 0;
+}
+.dashboard .thread .sidepanel .info .media .media-object {
+  width: 60px;
+  height: 60px;
+}
+.dashboard .thread .sidepanel .info .avatar {
+  width: 30px;
+  height: 30px;
+}
+.dashboard .thread .sidepanel .info .actionable-icon {
+  display: inline;
+  vertical-align: middle;
+}
+.dashboard .thread .sidepanel .info .actionable-icon i {
+  color: rgba(95, 96, 98, 0.7);
+}
+.dashboard .thread .sidepanel .info .info-title-div {
+  padding-bottom: 25px;
+}
+.dashboard .thread .sidepanel .info .info-item-div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid #ddd;
+  cursor: pointer;
+}
+.dashboard .thread .sidepanel .info .info-item-div a.fill-div {
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
+}
+.team-directory .media {
+  margin: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+.team-directory .media:last-of-type {
+  border-bottom: none;
+}
+.team-directory .media .media-object {
+  width: 40px;
+  height: 40px;
+}
 .dashboard .thread .messages-container {
   padding: 0;
 }
@@ -8047,65 +8107,11 @@ footer,
   position: absolute;
   left: -20px;
 }
-.dashboard .thread .sidepanel .info {
-  background-color: #fff;
-  overflow-y: scroll;
-  padding: 15px;
+.dashboard .thread .invite-container {
+  margin: 10%;
 }
-.dashboard .thread .sidepanel .info a {
-  text-decoration: none;
-}
-.dashboard .thread .sidepanel .info i {
-  vertical-align: middle;
-}
-.dashboard .thread .sidepanel .info .name a {
-  color: #5f6062;
-}
-.dashboard .thread .sidepanel .info .media {
-  margin: 0;
-  padding: 5px 0;
-}
-.dashboard .thread .sidepanel .info .media .media-object {
-  width: 60px;
-  height: 60px;
-}
-.dashboard .thread .sidepanel .info .avatar {
-  width: 30px;
-  height: 30px;
-}
-.dashboard .thread .sidepanel .info .actionable-icon {
-  display: inline;
-  vertical-align: middle;
-}
-.dashboard .thread .sidepanel .info .actionable-icon i {
-  color: rgba(95, 96, 98, 0.7);
-}
-.dashboard .thread .sidepanel .info .info-title-div {
-  padding-bottom: 25px;
-}
-.dashboard .thread .sidepanel .info .info-item-div {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-top: 1px solid #ddd;
-  cursor: pointer;
-}
-.dashboard .thread .sidepanel .info .info-item-div a.fill-div {
-  display: block;
-  height: 100%;
-  width: 100%;
-  text-decoration: none;
-}
-.team-directory .media {
-  margin: 0;
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
-}
-.team-directory .media:last-of-type {
-  border-bottom: none;
-}
-.team-directory .media .media-object {
-  width: 40px;
-  height: 40px;
+.dashboard .thread .update-container {
+  margin: 10%;
 }
 
 /*!

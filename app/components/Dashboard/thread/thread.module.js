@@ -70,11 +70,14 @@
             .state('dashboard.messages.update', {
                 url: '/update',
                 views: {
-                    '@dashboard.messages': {
+                    'messages@dashboard.messages': {
                         templateUrl: '/static/templates/dashboard/partials/thread/update.html',
                         controller: 'Update',
                         controllerAs: 'vm'
                     }
+                },
+                resolve: {
+                    threadInfo: threadInfoResolve,
                 }
             })
             .state('dashboard.messages.leave', {
