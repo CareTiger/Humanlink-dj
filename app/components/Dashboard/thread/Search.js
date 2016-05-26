@@ -38,7 +38,8 @@
                 params: {
                     address: val,
                     sensor: false
-                }
+                },
+                dataType: 'jsonp'
             }).then(function (response) {
                 return response.data.results.map(function (item) {
                     return item.formatted_address;

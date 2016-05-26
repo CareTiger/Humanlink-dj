@@ -8061,6 +8061,7 @@ footer,
   overflow-y: scroll;
   background-color: #fff;
   padding: 10px;
+  margin-bottom: 70px;
 }
 .dashboard .thread .messages .message {
   padding: 7px 0;
@@ -8092,6 +8093,10 @@ footer,
   height: 70px;
   border-top: 1px solid #ddd;
   padding-top: 17.5px;
+  position: fixed;
+  bottom: 0px;
+  width: 84%;
+  background-color: white;
 }
 .dashboard .thread .reply .block {
   position: relative;

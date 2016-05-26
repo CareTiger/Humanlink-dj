@@ -112,16 +112,6 @@
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }
 
-         /**
-         * Un-Archive the channel
-         *
-         * @param threadID:
-         */
-        function archive(threadId) {
-            return AbstractRepo.post('/message/' + threadId + '/unarchive/')
-                .then(apiGenericSuccess, AbstractRepo.genericError);
-        }
-
         /**
          * Search caregivers
          *

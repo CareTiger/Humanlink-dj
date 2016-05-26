@@ -43,62 +43,42 @@
             })
             .state('dashboard.messages.default', {
                 url: '/',
-                views: {
-                    'messages@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/messages.html',
-                        controller: 'Messages',
-                        controllerAs: 'vm'
-                    }
-                },
+                templateUrl: '/static/templates/dashboard/partials/thread/messages.html',
+                controller: 'Messages',
+                controllerAs: 'vm',
                 resolve: {
                     threadInfo: threadInfoResolve,
                 }
             })
             .state('dashboard.messages.invite', {
                 url: '/invite',
-                views: {
-                    'messages@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/invite.html',
-                        controller: 'Invite',
-                        controllerAs: 'vm'
-                    }
-                },
+                templateUrl: '/static/templates/dashboard/partials/thread/invite.html',
+                controller: 'Invite',
+                controllerAs: 'vm',
                 resolve: {
                     threadInfo: threadInfoResolve,
                 }
             })
             .state('dashboard.messages.update', {
                 url: '/update',
-                views: {
-                    'messages@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/update.html',
-                        controller: 'Update',
-                        controllerAs: 'vm'
-                    }
-                },
+                templateUrl: '/static/templates/dashboard/partials/thread/update.html',
+                controller: 'Update',
+                controllerAs: 'vm',
                 resolve: {
                     threadInfo: threadInfoResolve,
                 }
             })
             .state('dashboard.messages.leave', {
                 url: '/leave',
-                views: {
-                    '@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
-                        controller: 'Leave',
-                        controllerAs: 'vm'
-                    }
-                }
+                templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
+                controller: 'Leave',
+                controllerAs: 'vm'
             })
             .state('dashboard.messages.archive', {
                 url: '/archive',
-                views: {
-                    '@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/archive.html',
-                        controller: 'Archive',
-                        controllerAs: 'vm'
-                    }
-                }
+                templateUrl: '/static/templates/dashboard/partials/thread/archive.html',
+                controller: 'Archive',
+                controllerAs: 'vm'
             })
             .state('dashboard.messages.search', {
                 url: '/search',
@@ -114,13 +94,9 @@
             })
             .state('dashboard.messages.default.sidepanel.default', {
                 url: 'info',
-                views: {
-                    '@dashboard.messages': {
-                        templateUrl: '/static/templates/dashboard/partials/thread/info.html',
-                        controller: 'Info',
-                        controllerAs: 'vm'
-                    }
-                }
+                templateUrl: '/static/templates/dashboard/partials/thread/info.html',
+                controller: 'Info',
+                controllerAs: 'vm'
             })
     }
 

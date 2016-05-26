@@ -153,7 +153,7 @@ def send(request, thread_id):
                 'remover': threadchat.remover
             }
 
-            broadcast(threadchat.id)
+            # broadcast(threadchat.id)
 
             context = {"threadchat": chatObject}
             return composeJsonResponse(200, "", context)
@@ -310,14 +310,14 @@ def thread_invite(request, token):
 def leave(request, thread_id):
     # """Leave the thread."""
 
-    account = get_current_user(request)
-    thread_member = ThreadMember.objects.get(account=account.id, thread=thread_id)
-    thread = Thread.objects.get(id=thread_id)
-    thread.delete(thread_member)
+    account = Account.objects.get(email=request.user.username)
+    ThreadMember.objects.get(account=account.id, thread=thread_id).delete()
 
-    context = {"account": account, "thread_member": thread_member, "thread": thread}
+    context = {
+        'message': 'ok'
+    }
+
     return composeJsonResponse(200, "", context)
-
 
 # @login_required
 def remove(request, thread_id, member_id):
@@ -341,12 +341,14 @@ def archive(request, thread_id):
     thread.is_archived = True
     thread.save()
 
-    thread_chat = ThreadChat.objects.create(thread=thread.id, account=thread.account,
-                                         message=thread.account.id, kind=CHAT_CHOICES(4))
+    # thread_chat = ThreadChat.objects.create(thread=thread.id, account=thread.account,
+    #                                      message=thread.account.id, kind=CHAT_CHOICES(4))
 
-    broadcast(thread_chat.id)
+    # broadcast(thread_chat.id)
 
-    context = {"thread": thread}
+    context = {
+        'message': 'ok'
+    }
     return composeJsonResponse(200, "", context)
 
 
