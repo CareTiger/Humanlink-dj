@@ -20,6 +20,18 @@
         $urlRouterProvider.otherwise('/');
 
         $stateProvider
+            .state('account', {
+                abstract: true,
+                templateUrl: '/static/templates/accounts/partials/main.html',
+                controller: 'Base',
+                controllerAs: 'base'
+            })
+            .state('account.edit', {
+                url: '/',
+                templateUrl: '/static/templates/accounts/partials/edit.html',
+                controller: 'Edit',
+                controllerAs: 'vm'
+            })
             .state('account.security', {
                 url: '/security',
                 templateUrl: '/static/templates/accounts/partials/security.html',

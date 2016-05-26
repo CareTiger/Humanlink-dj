@@ -1,92 +1,4 @@
 /**
- * Account module.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('app.account', [
-            'app.core',
-            'app.repo'
-        ])
-        .config(Config);
-    
-    // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('account.security', {
-                url: '/security',
-                templateUrl: '/static/templates/accounts/partials/security.html',
-                controller: 'Security',
-                controllerAs: 'vm'
-            })
-            .state('reset', {
-                url: '/reset',
-                templateUrl: '/views/accounts/partials/reset.html',
-                controller: 'resetCtrl'
-            })
-            .state('reset_password', {
-                url: '/reset_password',
-                templateUrl: '/views/accounts/partials/reset_password.html',
-                controller: 'resetPasswordCtrl'
-            })
-            .state('settings', {
-                abstract: true,
-                templateUrl: '/static/templates/accounts/partials/settings/base_settings.html'
-            })
-            .state('settings.profile', {
-                url: '/settings/profile',
-                templateUrl: '/static/templates/accounts/partials/settings/profile.html',
-                controller: 'settingsProfileCtrl'
-            })
-            .state('settings.connections', {
-                url: '/settings/connections',
-                templateUrl: '/static/templates/accounts/partials/settings/connections.html',
-                controller: 'connectionsCtrl'
-            })
-            .state('settings.seeker', {
-                url: '/settings/seeker',
-                templateUrl: '/static/templates/accounts/partials/settings/seeker.html',
-                controller: 'settingsSeekerCtrl'
-            })
-            .state('settings.seeker_preview', {
-                url: '/settings/seeker_preview',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'settingsSeekerCtrl'
-            })
-            .state('provider', {
-                abstract: true,
-                templateUrl: '/static/templates/accounts/partials/settings/base_settings_provider.html',
-            })
-            .state('provider.edit', {
-                url: '/settings/provider_edit',
-                templateUrl: '/static/templates/accounts/partials/settings/provider.html',
-                controller: 'providerEditCtrl'
-            })
-            .state('provider.preview', {
-                url: '/settings/preview',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'providerPreviewCtrl'
-            })
-            .state('provider.media', {
-                url: '/settings/media',
-                templateUrl: '/static/templates/accounts/partials/settings/media.html',
-                controller: 'settingsMediaCtrl'
-            })
-            .state('provider.verification', {
-                url: '/settings/verification',
-                templateUrl: '/static/templates/accounts/partials/settings/verification.html',
-                controller: 'settingsVerificationCtrl'
-            });
-        }
-})();
-/**
  * Admin module.
  */
 (function () {
@@ -197,6 +109,106 @@
         // Empty.
     }
 
+})();
+/**
+ * Account module.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('app.account', [
+            'app.core',
+            'app.repo'
+        ])
+        .config(Config);
+    
+    // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('account', {
+                abstract: true,
+                templateUrl: '/static/templates/accounts/partials/main.html',
+                controller: 'Base',
+                controllerAs: 'base'
+            })
+            .state('account.edit', {
+                url: '/',
+                templateUrl: '/static/templates/accounts/partials/edit.html',
+                controller: 'Edit',
+                controllerAs: 'vm'
+            })
+            .state('account.security', {
+                url: '/security',
+                templateUrl: '/static/templates/accounts/partials/security.html',
+                controller: 'Security',
+                controllerAs: 'vm'
+            })
+            .state('reset', {
+                url: '/reset',
+                templateUrl: '/views/accounts/partials/reset.html',
+                controller: 'resetCtrl'
+            })
+            .state('reset_password', {
+                url: '/reset_password',
+                templateUrl: '/views/accounts/partials/reset_password.html',
+                controller: 'resetPasswordCtrl'
+            })
+            .state('settings', {
+                abstract: true,
+                templateUrl: '/static/templates/accounts/partials/settings/base_settings.html'
+            })
+            .state('settings.profile', {
+                url: '/settings/profile',
+                templateUrl: '/static/templates/accounts/partials/settings/profile.html',
+                controller: 'settingsProfileCtrl'
+            })
+            .state('settings.connections', {
+                url: '/settings/connections',
+                templateUrl: '/static/templates/accounts/partials/settings/connections.html',
+                controller: 'connectionsCtrl'
+            })
+            .state('settings.seeker', {
+                url: '/settings/seeker',
+                templateUrl: '/static/templates/accounts/partials/settings/seeker.html',
+                controller: 'settingsSeekerCtrl'
+            })
+            .state('settings.seeker_preview', {
+                url: '/settings/seeker_preview',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'settingsSeekerCtrl'
+            })
+            .state('provider', {
+                abstract: true,
+                templateUrl: '/static/templates/accounts/partials/settings/base_settings_provider.html',
+            })
+            .state('provider.edit', {
+                url: '/settings/provider_edit',
+                templateUrl: '/static/templates/accounts/partials/settings/provider.html',
+                controller: 'providerEditCtrl'
+            })
+            .state('provider.preview', {
+                url: '/settings/preview',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'providerPreviewCtrl'
+            })
+            .state('provider.media', {
+                url: '/settings/media',
+                templateUrl: '/static/templates/accounts/partials/settings/media.html',
+                controller: 'settingsMediaCtrl'
+            })
+            .state('provider.verification', {
+                url: '/settings/verification',
+                templateUrl: '/static/templates/accounts/partials/settings/verification.html',
+                controller: 'settingsVerificationCtrl'
+            });
+        }
 })();
 /**
  * Core module that bootstrap most of the dependencies and configuration.
@@ -2322,6 +2334,446 @@ window.HL = window.HL || {};
 
 })();
 /**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+/**
+ * Keeps track of the current logged in user.
+ */
+(function () {
+    angular
+        .module('Common')
+        .provider('userSession', function () {
+
+            getUserSession.$inject = ["apiService"];
+            var roles = {
+                GUEST: 0,
+                AUTHORIZED: 1
+            };
+
+            return {
+                // This is here because it us used in `angular.config()`.
+                roles: roles,
+                $get: getUserSession
+            };
+
+            /** ngInject */
+            function getUserSession(apiService) {
+                var userdata = null;
+                var ctrlHelper = new HL.CtrlHelper();
+
+                // Initial page load.
+                if (window.HL.userdata) {
+                    userdata = window.HL.userdata;
+                }
+
+                return {
+                    roles: roles,
+                    userdata: userdata,
+                    setAccount: setAccount,
+                    unsetAccount: unsetAccount,
+                    isAuthorized: isAuthorized,
+                    update: update,
+                    getRole: getRole
+                };
+
+                function setAccount(account) {
+                    userdata = account;
+                }
+
+                function unsetAccount() {
+                    userdata = null;
+                }
+
+                function isAuthorized() {
+                    return userdata !== null;
+                }
+
+                function update() {
+                    ctrlHelper.success = function (data, status, headers, config) {
+                        userdata = data;
+                    };
+                    ctrlHelper.error = function () {
+                        unsetAccount();
+                    };
+                    apiService.Accounts.userdata({}, ctrlHelper);
+                }
+
+                /**
+                 * Returns roles.GUEST or roles.AUTHORIZED.
+                 * In the future, this should be used for checking account type as well.
+                 */
+                function getRole() {
+                    return isAuthorized() ? roles.AUTHORIZED : roles.GUEST;
+                }
+            }
+        });
+
+})();
+/**
+ * Service that keeps track of the current logged in user.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .provider('Session', Session);
+
+    function Session() {
+
+        SessionService.$inject = ["AccountRepo"];
+        var roles = {
+            GUEST: 0,
+            AUTHORIZED: 1
+        };
+
+        return {
+            roles: roles,
+            $get: SessionService
+        };
+
+        function SessionService(AccountRepo) {
+            var self = this;
+
+            // Initial page load.
+            // TODO: Rename this to window.hl.account
+            self.account = window.HL.userdata;
+
+            return {
+                roles: roles,
+                account: self.account,
+                isAuthorized: isAuthorized,
+                update: update
+            };
+
+            /**
+             * Refreshes the user information from the server.
+             * @return {Promise}
+             */
+            function update() {
+                return AccountRepo.me().then(
+                    function (data) {
+                        self.account = data;
+                    },
+                    function (error) {
+                        self.account = null;
+                    }
+                );
+            }
+
+            /**
+             * Returns whether or not the current user is logged in.
+             * @return {boolean}
+             */
+            function isAuthorized() {
+                return angular.isObject(self.account);
+            }
+        }
+
+    }
+
+})();
+/**
+ * Service that controls the site alert that is attached to the root scope.
+ *
+ * Site alerts are alert messages that are displayed at the top of the website.
+ * They are useful for displaying one-time (flash) messages.
+ *
+ * Future enhancements:
+ *  - Inject HTML
+ *  - Auto-dismiss
+ */
+
+(function () {
+    'use strict';
+
+    SiteAlert.$inject = ["$rootScope"];
+    angular
+        .module('app.common')
+        .factory('SiteAlert', SiteAlert);
+
+    /** ngInject */
+    function SiteAlert($rootScope) {
+
+        $rootScope.siteAlert = {};
+
+        var alertBox = $rootScope.siteAlert;
+
+        return {
+            clear: clear,
+            success: success,
+            error: danger,
+            danger: danger,
+            warning: warning,
+            info: info,
+            check: checkAlert,
+        };
+
+        function checkAlert(){
+            console.log(alertBox)
+        }
+
+        function clear() {
+            addAlert(null, null);
+        }
+
+        function success(content) {
+            addAlert('success', content);
+        }
+
+        function danger(content) {
+            addAlert('danger', content);
+        }
+
+        function warning(content) {
+            addAlert('warning', content);
+        }
+
+        function info(content) {
+            addAlert('info', content);
+        }
+
+        function addAlert(type, content) {
+            alertBox.type = type;
+            alertBox.message = content;
+        }
+    }
+
+})();
+/**
+ * API Service that talks to the backend.
+ */
+angular
+    .module('Common')
+    .factory('apiService', ['$http', function ($http) {
+
+        // Google Cloud Endpoints URL.
+        var getGceBase = function () {
+            var host = window.location.host;
+            // GCE doesn't work with custom domains.
+            if (host.indexOf('humanlink.co') === 0) {
+                host = 'care-tiger.appspot.com';
+            }
+            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
+            return protocol + host + '/_ah/api/humanlink/v1/';
+        };
+
+        var GCE_BASE = getGceBase();
+
+        var Accounts = {
+            caregiver: {},
+            patients: {}
+        };
+        var Connections = {};
+        var Home = {};
+
+        /**
+         * Base method to communicate with the APIs.
+         *
+         * @param method : 'GET' or 'POST'
+         * @param uri : relative path to the base URL or GCE URL
+         * @param data : request data
+         * @param ctrlHelper : CtrlHelper with callbacks
+         * @param useEndpoints : whether this is a GCE API or not.
+         */
+        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
+            ctrlHelper.isLoading = true;
+            ctrlHelper.isValid = true;
+            ctrlHelper.errors = [];
+
+            // Use endpoints by default.
+            if (!angular.isDefined(useEndpoints)) {
+                useEndpoints = true;
+            }
+
+            $http({
+                method: method,
+                url: (useEndpoints ? GCE_BASE : '/') + uri,
+                data: data
+            })
+                .success(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.success)) {
+                        ctrlHelper.success(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.failure)) {
+                        ctrlHelper.failure(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                });
+        };
+
+        Accounts.login = function (data, ctrlHelper) {
+            apiRequest('POST', 'login.json', data, ctrlHelper, false);
+        };
+
+        Accounts.signup = function (data, ctrlHelper) {
+            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
+        };
+
+        Accounts.userdata = function (data, ctrlHelper) {
+            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
+        };
+
+        Accounts.get = function (id, ctrlHelper) {
+            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
+        };
+
+        Accounts.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.get = function (accountId, ctrlHelper) {
+            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.list = function (ctrlHelper) {
+            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
+        };
+
+        Accounts.patients.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.remove = function (patient_id, ctrlHelper) {
+            var data = {patient_id: patient_id};
+            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
+        };
+
+        Home.contact = function (data, ctrlHelper) {
+            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
+        };
+
+        Connections.my = function (data, ctrlHelper) {
+            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
+        };
+
+        Home.search = function (data, ctrlHelper) {
+            apiRequest('GET', 'home/search', data, ctrlHelper, false);
+        };
+
+        // Public methods.
+        return {
+            Accounts: Accounts,
+            Connections: Connections,
+            Home: Home
+        };
+
+    }]);
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
  * Parent controller of the account module.
  */
 (function () {
@@ -3294,446 +3746,6 @@ angular
         $scope.chosenDLState = $scope.states[0];
         $scope.chosenAddrState = $scope.states[0];
     }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-/**
- * Keeps track of the current logged in user.
- */
-(function () {
-    angular
-        .module('Common')
-        .provider('userSession', function () {
-
-            getUserSession.$inject = ["apiService"];
-            var roles = {
-                GUEST: 0,
-                AUTHORIZED: 1
-            };
-
-            return {
-                // This is here because it us used in `angular.config()`.
-                roles: roles,
-                $get: getUserSession
-            };
-
-            /** ngInject */
-            function getUserSession(apiService) {
-                var userdata = null;
-                var ctrlHelper = new HL.CtrlHelper();
-
-                // Initial page load.
-                if (window.HL.userdata) {
-                    userdata = window.HL.userdata;
-                }
-
-                return {
-                    roles: roles,
-                    userdata: userdata,
-                    setAccount: setAccount,
-                    unsetAccount: unsetAccount,
-                    isAuthorized: isAuthorized,
-                    update: update,
-                    getRole: getRole
-                };
-
-                function setAccount(account) {
-                    userdata = account;
-                }
-
-                function unsetAccount() {
-                    userdata = null;
-                }
-
-                function isAuthorized() {
-                    return userdata !== null;
-                }
-
-                function update() {
-                    ctrlHelper.success = function (data, status, headers, config) {
-                        userdata = data;
-                    };
-                    ctrlHelper.error = function () {
-                        unsetAccount();
-                    };
-                    apiService.Accounts.userdata({}, ctrlHelper);
-                }
-
-                /**
-                 * Returns roles.GUEST or roles.AUTHORIZED.
-                 * In the future, this should be used for checking account type as well.
-                 */
-                function getRole() {
-                    return isAuthorized() ? roles.AUTHORIZED : roles.GUEST;
-                }
-            }
-        });
-
-})();
-/**
- * Service that keeps track of the current logged in user.
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .provider('Session', Session);
-
-    function Session() {
-
-        SessionService.$inject = ["AccountRepo"];
-        var roles = {
-            GUEST: 0,
-            AUTHORIZED: 1
-        };
-
-        return {
-            roles: roles,
-            $get: SessionService
-        };
-
-        function SessionService(AccountRepo) {
-            var self = this;
-
-            // Initial page load.
-            // TODO: Rename this to window.hl.account
-            self.account = window.HL.userdata;
-
-            return {
-                roles: roles,
-                account: self.account,
-                isAuthorized: isAuthorized,
-                update: update
-            };
-
-            /**
-             * Refreshes the user information from the server.
-             * @return {Promise}
-             */
-            function update() {
-                return AccountRepo.me().then(
-                    function (data) {
-                        self.account = data;
-                    },
-                    function (error) {
-                        self.account = null;
-                    }
-                );
-            }
-
-            /**
-             * Returns whether or not the current user is logged in.
-             * @return {boolean}
-             */
-            function isAuthorized() {
-                return angular.isObject(self.account);
-            }
-        }
-
-    }
-
-})();
-/**
- * Service that controls the site alert that is attached to the root scope.
- *
- * Site alerts are alert messages that are displayed at the top of the website.
- * They are useful for displaying one-time (flash) messages.
- *
- * Future enhancements:
- *  - Inject HTML
- *  - Auto-dismiss
- */
-
-(function () {
-    'use strict';
-
-    SiteAlert.$inject = ["$rootScope"];
-    angular
-        .module('app.common')
-        .factory('SiteAlert', SiteAlert);
-
-    /** ngInject */
-    function SiteAlert($rootScope) {
-
-        $rootScope.siteAlert = {};
-
-        var alertBox = $rootScope.siteAlert;
-
-        return {
-            clear: clear,
-            success: success,
-            error: danger,
-            danger: danger,
-            warning: warning,
-            info: info,
-            check: checkAlert,
-        };
-
-        function checkAlert(){
-            console.log(alertBox)
-        }
-
-        function clear() {
-            addAlert(null, null);
-        }
-
-        function success(content) {
-            addAlert('success', content);
-        }
-
-        function danger(content) {
-            addAlert('danger', content);
-        }
-
-        function warning(content) {
-            addAlert('warning', content);
-        }
-
-        function info(content) {
-            addAlert('info', content);
-        }
-
-        function addAlert(type, content) {
-            alertBox.type = type;
-            alertBox.message = content;
-        }
-    }
-
-})();
-/**
- * API Service that talks to the backend.
- */
-angular
-    .module('Common')
-    .factory('apiService', ['$http', function ($http) {
-
-        // Google Cloud Endpoints URL.
-        var getGceBase = function () {
-            var host = window.location.host;
-            // GCE doesn't work with custom domains.
-            if (host.indexOf('humanlink.co') === 0) {
-                host = 'care-tiger.appspot.com';
-            }
-            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
-            return protocol + host + '/_ah/api/humanlink/v1/';
-        };
-
-        var GCE_BASE = getGceBase();
-
-        var Accounts = {
-            caregiver: {},
-            patients: {}
-        };
-        var Connections = {};
-        var Home = {};
-
-        /**
-         * Base method to communicate with the APIs.
-         *
-         * @param method : 'GET' or 'POST'
-         * @param uri : relative path to the base URL or GCE URL
-         * @param data : request data
-         * @param ctrlHelper : CtrlHelper with callbacks
-         * @param useEndpoints : whether this is a GCE API or not.
-         */
-        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
-            ctrlHelper.isLoading = true;
-            ctrlHelper.isValid = true;
-            ctrlHelper.errors = [];
-
-            // Use endpoints by default.
-            if (!angular.isDefined(useEndpoints)) {
-                useEndpoints = true;
-            }
-
-            $http({
-                method: method,
-                url: (useEndpoints ? GCE_BASE : '/') + uri,
-                data: data
-            })
-                .success(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.success)) {
-                        ctrlHelper.success(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                })
-                .error(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.failure)) {
-                        ctrlHelper.failure(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                });
-        };
-
-        Accounts.login = function (data, ctrlHelper) {
-            apiRequest('POST', 'login.json', data, ctrlHelper, false);
-        };
-
-        Accounts.signup = function (data, ctrlHelper) {
-            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
-        };
-
-        Accounts.userdata = function (data, ctrlHelper) {
-            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
-        };
-
-        Accounts.get = function (id, ctrlHelper) {
-            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
-        };
-
-        Accounts.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.get = function (accountId, ctrlHelper) {
-            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.list = function (ctrlHelper) {
-            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
-        };
-
-        Accounts.patients.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.remove = function (patient_id, ctrlHelper) {
-            var data = {patient_id: patient_id};
-            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
-        };
-
-        Home.contact = function (data, ctrlHelper) {
-            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
-        };
-
-        Connections.my = function (data, ctrlHelper) {
-            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
-        };
-
-        Home.search = function (data, ctrlHelper) {
-            apiRequest('GET', 'home/search', data, ctrlHelper, false);
-        };
-
-        // Public methods.
-        return {
-            Accounts: Accounts,
-            Connections: Connections,
-            Home: Home
-        };
-
-    }]);
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
 /**
  * Parent controller of the dashboard module.
  */
