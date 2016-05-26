@@ -6,13 +6,13 @@
 
     Invite.$inject = ["$scope", "$log", "CommonService", "CommonEvents", "SiteAlert", "MessagesRepo", "threadInfo"];
     angular
-        .module('app.dashboard.thread')
+        .module('app.dashboard')
         .controller('Invite', Invite);
 
     /** @ngInject */
     function Invite($scope, $log,
-                  CommonService, CommonEvents, SiteAlert,
-                  MessagesRepo, threadInfo) {
+                    CommonService, CommonEvents, SiteAlert,
+                    MessagesRepo, threadInfo) {
         var vm = this;
         vm.errorMessage = null;
         vm.submitBusy = false;

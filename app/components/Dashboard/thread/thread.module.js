@@ -47,18 +47,25 @@
                     'messages@dashboard.messages': {
                         templateUrl: '/static/templates/dashboard/partials/thread/messages.html',
                         controller: 'Messages',
-                        controllerAs: 'vm',
+                        controllerAs: 'vm'
                     }
                 },
                 resolve: {
                     threadInfo: threadInfoResolve,
-                },
+                }
             })
             .state('dashboard.messages.invite', {
                 url: '/invite',
-                templateUrl: '/static/templates/dashboard/partials/thread/invite.html',
-                controller: 'Invite',
-                controllerAs: 'vm'
+                views: {
+                    'messages@dashboard.messages': {
+                        templateUrl: '/static/templates/dashboard/partials/thread/invite.html',
+                        controller: 'Invite',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    threadInfo: threadInfoResolve,
+                }
             })
             .state('dashboard.messages.update', {
                 url: '/update',
@@ -130,10 +137,10 @@
             var ownerId = parseInt($stateParams.owner);
             var threadName = $stateParams.thread.toLowerCase();
 
-            function thread(threads){
+            function thread(threads) {
                 var threadsList = threads[0]
-                for(var thread in threadsList){
-                    if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName){
+                for (var thread in threadsList) {
+                    if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName) {
                         return threadsList[thread]
                     }
                 }

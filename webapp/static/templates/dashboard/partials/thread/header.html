@@ -7,43 +7,43 @@
     </button>
   </div>
 
-    <div class="dropdown">
-        <a href class="title dropdown-toggle" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {{ vm.thread.name }}
-          <span class="caret"></span>
-        </a>
+  <div class="dropdown">
+    <a href class="title dropdown-toggle" id="dropdownmenu1" data-toggle="dropdown">
+      {{ vm.thread.name }}
+      <span class="caret"></span>
+    </a>
 
-        <ul class="dropdown-menu" aria-labelledby="dropdownmenu1">
-          <li>
-            <a ui-sref-active-eq="active"
-               ui-sref="dashboard.messages.invite">
-              Invite new member</a>
-          </li>
-          <li>
-            <a ui-sref-active-eq="active"
-               ui-sref="dashboard.messages.update">
-              Edit channel information</a>
-          </li>
-          <li>
-            <a ui-sref-active-eq="active"
-               ui-sref="dashboard.messages.leave">
-              Leave channel</a>
-          </li>
-          <li>
-            <a ui-sref-active-eq="active"
-               ui-sref="dashboard.messages.search">
-              Search Caregiver</a>
-          </li>
+    <ul class="dropdown-menu">
+      <li>
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.invite">
+          Invite new member</a>
+      </li>
+      <li>
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.update">
+          Edit channel information</a>
+      </li>
+      <li>
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.leave">
+          Leave channel</a>
+      </li>
+      <li>
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.search">
+          Search Caregiver</a>
+      </li>
 
-          <li><a ui-sref-active-eq="active"
-                 ui-sref="dashboard.messages.archive">
-            Archive channel</a></li>
+      <li><a ui-sref-active-eq="active"
+             ui-sref="dashboard.messages.archive">
+        Archive channel</a></li>
 
-          <li ng-repeat="item in ['Caregiver search', 'Channel boards']">
-            <a href>{{ item }}</a>
-          </li>
-        </ul>
-    </div>
+      <li ng-repeat="item in ['Caregiver search', 'Channel boards']">
+        <a href>{{ item }}</a>
+      </li>
+    </ul>
+  </div>
 
 </div>
 
