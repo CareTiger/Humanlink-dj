@@ -233,11 +233,13 @@ def add_member(request, thread_id):
                 md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                 t = thread_invite.token.replace(' ', '+')
                 url = "http://localhost:8000/home/thread/{}".format(t)
+                print "###########"
+                print cleaned_data['email']
                 message = {
                     'global_merge_vars': [
                         {
                             "name": "inviter",
-                            "content": account.first
+                            "content": account.email
                         },
                         {
                             "name": "thread_name",
@@ -249,7 +251,7 @@ def add_member(request, thread_id):
                         }
                     ],
                     'to': [
-                        {'email': 'tim@millcreeksoftware.biz'},
+                        {'email': cleaned_data['email']},
                     ],
                 }
                 message['from_name'] = message.get('from_name', 'Humanlink')

@@ -3375,6 +3375,13 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
 /**
  * Keeps track of the current logged in user.
  */
@@ -3448,13 +3455,6 @@ angular
         });
 
 })();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
 /**
  * Service that keeps track of the current logged in user.
  */
