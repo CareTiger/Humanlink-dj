@@ -194,7 +194,7 @@ def signup(request):
 							# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invitation.token)
 
 					if org_username and org_name:
-						org = Org.objects.create(name=org_name, username=org_username)
+						org = Org.objects.create(name=org_name, username=org_username, actor=account)
 						OrgMember.objects.create(account=account, org=org)
 
 					login(request)
