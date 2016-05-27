@@ -204,6 +204,8 @@ def signup(request):
 					Org.objects.filter(name=org_name, username=org_username).delete()
 
 
+
+
 				login(request)
 
 				md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
