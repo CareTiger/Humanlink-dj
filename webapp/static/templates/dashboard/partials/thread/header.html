@@ -1,6 +1,6 @@
 <div class="header">
 
-  <div class="pull-right header-icons col-sm-5">
+  <div class="pull-right header-icons col-sm-2">
     <button class="btn btn-link" title="Channel info" ng-click="thread.toggleSidepanel()">
       <i class="material-icons" ng-if="!thread.sidepanel.isOpen">info_outline</i>
       <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
@@ -29,19 +29,14 @@
            ui-sref="dashboard.messages.leave">
           Leave channel</a>
       </li>
-      <li>
-        <a ui-sref-active-eq="active"
-           ui-sref="dashboard.messages.search">
-          Search Caregiver</a>
-      </li>
 
       <li><a ui-sref-active-eq="active"
              ui-sref="dashboard.messages.archive">
         Archive channel</a></li>
-
-      <li ng-repeat="item in ['Caregiver search', 'Channel boards']">
+      <!--
+      <li ng-repeat="item in ['Search channel', 'Caregiver search', 'Channel boards']">
         <a href>{{ item }}</a>
-      </li>
+      </li> -->
     </ul>
   </div>
 
