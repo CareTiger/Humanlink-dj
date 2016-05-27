@@ -197,52 +197,46 @@ def signup(request):
 						org = Org.objects.create(name=org_name, username=org_username)
 						OrgMember.objects.create(account=account, org=org)
 
+					login(request)
+
+					md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+					t = invite_token.replace(' ', '+')
+					url = "https://localhost:8000/verify/{}".format(t)
+					message = {
+						'global_merge_vars': [
+							{
+								'name': 'VERIFICATION_URL',
+								'content': url
+							},
+						],
+						'to': [
+							{
+								'email': 'tim@millcreeksoftware.biz',
+							},
+						],
+						'subject': 'You are invited to join {}'.format(org.name),
+					}
+					message['from_name'] = message.get('from_name', 'Humanlink')
+					message['from_email'] = message.get('from_email', 'support@humanlink.co')
+					try:
+						md.messages.send_template(
+							template_name='humanlink-welcome', message=message,
+							template_content=[], async=True)
+					except mandrill.Error as e:
+						logging.exception(e)
+						raise Exception(e)
+
+					context = {
+						'message': 'ok'
+					}
+
+					return composeJsonResponse(200, "", context)
+
 				except Exception, e:
 					logging.error(e)
 					Account.objects.filter(email=email, password=password).delete()
 					User.objects.filter(username=email[:30], password=password).delete()
 					Org.objects.filter(name=org_name, username=org_username).delete()
-
-
-
-
-				login(request)
-
-				md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-				t = invite_token.replace(' ', '+')
-				url = "https://localhost:8000/verify/{}".format(t)
-				message = {
-					'global_merge_vars': [
-						{
-							'name': 'VERIFICATION_URL',
-							'content': url
-						},
-					],
-					'to': [
-						{
-							'email': 'tim@millcreeksoftware.biz',
-						 },
-					],
-					'subject': 'You are invited to join {}'.format(org.name),
-				}
-				message['from_name'] = message.get('from_name', 'Humanlink')
-				message['from_email'] = message.get('from_email', 'support@humanlink.co')
-				try:
-					md.messages.send_template(
-						template_name='humanlink-welcome', message=message,
-						template_content=[], async=True)
-				except mandrill.Error as e:
-					logging.exception(e)
-					raise Exception(e)
-
-				context = {
-					'message': 'ok'
-				}
-
-				return composeJsonResponse(200, "", context)
-
-			else:
-				raise Exception(form.errors)
 
 def accept_invite(request):
 	# """ -Create a new account and accept an org member invitation."""

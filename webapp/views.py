@@ -9,6 +9,7 @@ from account.views import logout, verify, invite_accept_redirect, requestPost
 from api_helpers import composeJsonResponse
 from django.template import RequestContext
 import settings
+from org.models import Org
 from pusher.pusher import Pusher
 from django.views.decorators.csrf import csrf_exempt
 
@@ -43,6 +44,7 @@ def home(request):
 # @login_required
 def app(request):
 	account = Account.objects.get(email=request.user.email)
+	org = Org.objects.get(actor=account)
 	context = {
 		'userdata': {
 			'id': account.id
@@ -50,7 +52,8 @@ def app(request):
         'user_data': {
             'gravatar_url': account.gravatar_url(),
             'name': account.username,
-            'email': account.email
+            'email': account.email,
+            'org': org.name.lower()
         }
 	}
 	return render(request, "dashboard/index.html", context)
