@@ -8089,6 +8089,13 @@ footer,
   background: #fff;
   padding: 0 20px;
 }
+.dashboard .thread .textarea-copy {
+  padding: 12px;
+  display: none;
+}
+.dashboard .thread .superRed {
+  background-color: red !important;
+}
 .dashboard .thread .reply {
   height: 70px;
   border-top: 1px solid #ddd;

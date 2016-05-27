@@ -35,6 +35,25 @@
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
 
+            $('textarea').on('keydown', function(e){
+                var value = $('textarea').val();
+                var rows = $('textarea').attr('rows');
+                console.log(rows)
+                $('.textarea-copy').html(value);
+                var textareaWidth = $('.textarea-copy').width();
+                console.log(textareaWidth);
+                if (textareaWidth < 1050){
+                    $('.reply').css({"height": "70px"})
+                    $('textarea').attr('rows', '1');
+                } else if (textareaWidth >= 1050 && textareaWidth < 2100){
+                    $('.reply').css({"height": "100px"})
+                    $('textarea').attr('rows', '2');
+                } else if (textareaWidth > 2100){
+                    $('.reply').css({"height": "130px"})
+                    $('textarea').attr('rows', '3');
+                }
+            });
+
             var threadId = $stateParams.threadId
 
             load(threadId);

@@ -52,15 +52,16 @@
       <i class="fa fa-circle-o-notch fa-spin"></i>
     </span>
 
-    <textarea rows="1" class="form-control"
+    <textarea rows="1" class="form-control chat-box"
               placeholder="Enter a message&hellip;"
               ng-model="vm.message"
               ng-keypress="vm.onKeypress($event, vm.message)"
               ng-disabled="vm.submitBusy"
               hl-focus>
     </textarea>
-
-      </div>
+    <div></div>
+        <span class="textarea-copy"></span>
+    </div>
     </div>
 
   </div>
