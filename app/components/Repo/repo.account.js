@@ -15,6 +15,7 @@
             join: join,
             login: login,
             save: save,
+            me: me,
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
@@ -65,7 +66,7 @@
          * @returns {*}
          */
         function me() {
-            return AbstractRepo.get('accounts/me/');
+            return AbstractRepo.get('/accounts/me/');
         }
 
         /**
@@ -101,7 +102,7 @@
                     return genericError(response);
                 });
         }
-        
+
         function threadInvite(token) {
             return AbstractRepo.get('messages/invite/' + token, {}, false)
                 .then(genericSuccess, function (response) {

@@ -22,6 +22,20 @@
         vm.submitBusy = false;
         vm.update = update;
 
+        init();
+        function init() {
+            vm.submitBusy = true;
+            AccountRepo.me().then(
+                function (data) {
+                    vm.submitBusy = false;
+                    console.log(data);
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
         function update(model) {
             vm.submitBusy = true;
             AccountRepo.save(model).then(

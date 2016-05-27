@@ -26,512 +26,539 @@ from django.contrib import messages
 import mandrill
 from django.views.decorators.csrf import csrf_exempt
 
+
 def index(request):
-	# """ -Return Account Template """
-	account = Account.objects.get(email=request.user.email)
-	context = {
-		'userdata': {
-			'id': account.id
-		},
-		'user_data': {
-			'gravatar_url': account.gravatar_url(),
-			'name': account.username,
-			'email': account.email
-		}
-	}
-	return render(request, 'accounts/index.html', context)
+    # """ -Return Account Template """
+    account = Account.objects.get(email=request.user.email)
+    context = {
+        'userdata': {
+            'id': account.id
+        },
+        'user_data': {
+            'gravatar_url': account.gravatar_url(),
+            'name': account.username,
+            'email': account.email
+        }
+    }
+    return render(request, 'accounts/index.html', context)
+
 
 def broadcast(chat_id=None):
-	# """Sends out push notifications to thread members about chat message. """
+    # """Sends out push notifications to thread members about chat message. """
 
-	def chunks(li, n):
-		"""Yields n-sized chunks from the list."""
-		for i in xrange(0, len(li), n):
-			yield li[i:i + n]
+    def chunks(li, n):
+        """Yields n-sized chunks from the list."""
+        for i in xrange(0, len(li), n):
+            yield li[i:i + n]
 
-	chat = ThreadChat.objects.get(id=chat_id)
-	thread = Thread.objects.get(id=chat.thread.id)
+    chat = ThreadChat.objects.get(id=chat_id)
+    thread = Thread.objects.get(id=chat.thread.id)
 
-	if not chat or not thread:
-		raise Exception("thread or chat not found")
+    if not chat or not thread:
+        raise Exception("thread or chat not found")
 
-	all_members = ThreadMember.objects.filter(thread=thread)
+    all_members = ThreadMember.objects.filter(thread=thread)
 
-	partition = chunks(all_members, 10)
-	for part in partition:
-		channels = ['private-account-{}'.format(m.account.id) for m in part]
-		pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+    partition = chunks(all_members, 10)
+    for part in partition:
+        channels = ['private-account-{}'.format(m.account.id) for m in part]
+        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
 def add_to_welcome(org_id, account_id, inviter_id):
+    thread = Thread.objects.filter(org=org_id, name="welcome")
+    if thread:
+        thread_member = ThreadMember.objects.create(account=account_id, thread=thread)
 
-	thread = Thread.objects.filter(org=org_id, name="welcome")
-	if thread:
+        chat = ThreadChat.objects.create(thread=thread, account=account_id,
+                                         text=account_id + ' has joined ',
+                                         kind=2, inviter=2, remover=3)
+        chat.save()
 
-		thread_member = ThreadMember.objects.create(account=account_id, thread=thread)
+        broadcast(chat_id=chat.id)
 
-		chat = ThreadChat.objects.create(thread=thread, account=account_id, text=account_id + ' has joined ',
-										 kind=2, inviter=2, remover=3)
-		chat.save()
-
-		broadcast(chat_id=chat.id)
 
 # Converts AJAX JSON into query dictionary for the view to process.
 def requestPost(request):
-	querystring = urllib.urlencode(ast.literal_eval(request.body))
-	postdata = QueryDict(query_string=querystring)
+    querystring = urllib.urlencode(ast.literal_eval(request.body))
+    postdata = QueryDict(query_string=querystring)
 
-	return postdata
+    return postdata
+
 
 @csrf_exempt
 def login(request):
-	if request.is_ajax():
-		if request.method == "POST":
-			form = LoginForm(requestPost(request))
+    if request.is_ajax():
+        if request.method == "POST":
+            form = LoginForm(requestPost(request))
 
-			if form.is_valid():
-				cleaned_data = form.cleaned_data
+            if form.is_valid():
+                cleaned_data = form.cleaned_data
 
-				if len(form.errors) > 0:
-					return cleaned_data
-				else:
-					email = cleaned_data['email']
-					password = cleaned_data['password']
+                if len(form.errors) > 0:
+                    return cleaned_data
+                else:
+                    email = cleaned_data['email']
+                    password = cleaned_data['password']
 
-					if email is None or password is None:
-						messages.error(form.request, 'Please enter an email and password.')
-						return form.ValidationError("Error")
-					else:
-						form.cached_user = authenticate(username=email[:30], password=password)
+                    if email is None or password is None:
+                        messages.error(form.request,
+                                       'Please enter an email and password.')
+                        return form.ValidationError("Error")
+                    else:
+                        form.cached_user = authenticate(username=email[:30],
+                                                        password=password)
 
-						auth_login(request, form.cached_user)
+                        auth_login(request, form.cached_user)
 
-						if form.cached_user is None:
-							form.errors["password"] = form.error_class(["Password incorrect. Passwords are case sensitive."])
-						elif not form.cached_user.is_active:
-							messages.error(form.request,
-										   'This account is inactive. Please check your inbox for our confirmation email, and '
-										   'click the link within to activate your account.')
-							raise form.ValidationError("Error")
+                        if form.cached_user is None:
+                            form.errors["password"] = form.error_class(
+                                ["Password incorrect. Passwords are case sensitive."])
+                        elif not form.cached_user.is_active:
+                            messages.error(form.request,
+                                           'This account is inactive. Please check your inbox for our confirmation email, and '
+                                           'click the link within to activate your account.')
+                            raise form.ValidationError("Error")
 
-						account = Account.objects.get(email=email, password=password)
+                        account = Account.objects.get(email=email, password=password)
 
-						if cleaned_data['invite']:
+                        if cleaned_data['invite']:
 
-							token = cleaned_data['invite']
-							if ThreadInvite.objects.filter(token=token):
-								threadInvite = ThreadInvite.objects.get(token=token)
-								thread = Thread.objects.get(id=threadInvite.thread.id)
-								ThreadMember.objects.create(account=account, thread=thread)
-							elif OrgInvite.objects.filter(token=token):
-								orgInvite = OrgInvite.objects.get(token=token)
-								if orgInvite.used:
-									raise Exception("Invitation token has already been used.")
+                            token = cleaned_data['invite']
+                            if ThreadInvite.objects.filter(token=token):
+                                threadInvite = ThreadInvite.objects.get(token=token)
+                                thread = Thread.objects.get(id=threadInvite.thread.id)
+                                ThreadMember.objects.create(account=account,
+                                                            thread=thread)
+                            elif OrgInvite.objects.filter(token=token):
+                                orgInvite = OrgInvite.objects.get(token=token)
+                                if orgInvite.used:
+                                    raise Exception(
+                                        "Invitation token has already been used.")
 
-								org = Org.objects.get(id=orgInvite.org.id)
-								org_member = OrgMember.objects.filter(account=account, org=org)
+                                org = Org.objects.get(id=orgInvite.org.id)
+                                org_member = OrgMember.objects.filter(account=account,
+                                                                      org=org)
 
-								if org_member:
-									raise Exception("Account is already in team.")
-								else:
-									OrgMember.objects.create(account=account, org=org)
-									invite.used = False
-							else:
-								raise Exception("Invitation token is invalid.")
+                                if org_member:
+                                    raise Exception("Account is already in team.")
+                                else:
+                                    OrgMember.objects.create(account=account, org=org)
+                                    invite.used = False
+                            else:
+                                raise Exception("Invitation token is invalid.")
 
-						context = {
-							'message': form.errors,
-							'next': '/app/',
-						}
+                        context = {
+                            'message': form.errors,
+                            'next': '/app/',
+                        }
 
-						return composeJsonResponse(200, "", context)
+                        return composeJsonResponse(200, "", context)
 
 
 def logout_user(request):
-	logout(request)
+    logout(request)
+
 
 @csrf_exempt
 def signup(request):
-	# """Register a new account with a new org."""
-	if request.is_ajax():
-		if request.method == "POST":
-			form = SignUp(requestPost(request))
+    # """Register a new account with a new org."""
+    if request.is_ajax():
+        if request.method == "POST":
+            form = SignUp(requestPost(request))
 
-			if form.is_valid():
-				cleaned_data = form.cleaned_data
+            if form.is_valid():
+                cleaned_data = form.cleaned_data
 
-				email = cleaned_data['email']
-				password = cleaned_data['password']
-				org_name = cleaned_data['org_name']
-				org_username = cleaned_data['org_username']
+                email = cleaned_data['email']
+                password = cleaned_data['password']
+                org_name = cleaned_data['org_name']
+                org_username = cleaned_data['org_username']
 
-				if cleaned_data['token']:
-					invite_token = cleaned_data['token']
-				else:
-					invite_token = cleaned_data['invite']
+                if cleaned_data['token']:
+                    invite_token = cleaned_data['token']
+                else:
+                    invite_token = cleaned_data['invite']
 
-				try:
-					account = Account.objects.create(email=email, password=password)
-					if len(email) > 30:
-						user = User.objects.create_user(email, email, password)
-					else:
-						email = email[:30]
-						user = User.objects.create_user(email, email, password)
+                try:
+                    account = Account.objects.create(email=email, password=password)
+                    if len(email) > 30:
+                        user = User.objects.create_user(email, email, password)
+                    else:
+                        email = email[:30]
+                        user = User.objects.create_user(email, email, password)
 
-					if invite_token:
-						if ThreadInvite.objects.filter(token=invite_token):
-							invitation = ThreadInvite.objects.get(token=invite_token)
-							thread = Thread.objects.get(id=invitation.thread.id)
-							ThreadMember.objects.create(thread=thread, account=account)
-						else:
-							invitation = OrgInvite.objects.get(token=invite_token)
-							if invitation.used:
-								raise Exception("invitation code is invalid")
-							org = Org.objects.get(id=invitation.org.id)
-							OrgMember.objects.create(org=org, account=account)
-							invitation.used = False
-							invitation.save()
-							# add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invitation.token)
+                    if invite_token:
+                        if ThreadInvite.objects.filter(token=invite_token):
+                            invitation = ThreadInvite.objects.get(token=invite_token)
+                            thread = Thread.objects.get(id=invitation.thread.id)
+                            ThreadMember.objects.create(thread=thread, account=account)
+                        else:
+                            invitation = OrgInvite.objects.get(token=invite_token)
+                            if invitation.used:
+                                raise Exception("invitation code is invalid")
+                            org = Org.objects.get(id=invitation.org.id)
+                            OrgMember.objects.create(org=org, account=account)
+                            invitation.used = False
+                            invitation.save()
+                            # add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invitation.token)
 
-					if org_username and org_name:
-						org = Org.objects.create(name=org_name, username=org_username, actor=account)
-						OrgMember.objects.create(account=account, org=org)
+                    if org_username and org_name:
+                        org = Org.objects.create(name=org_name, username=org_username,
+                                                 actor=account)
+                        OrgMember.objects.create(account=account, org=org)
 
-					login(request)
+                    login(request)
 
-					md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
-					t = invite_token.replace(' ', '+')
-					url = "https://localhost:8000/verify/{}".format(t)
-					message = {
-						'global_merge_vars': [
-							{
-								'name': 'VERIFICATION_URL',
-								'content': url
-							},
-						],
-						'to': [
-							{
-								'email': 'tim@millcreeksoftware.biz',
-							},
-						],
-						'subject': 'You are invited to join {}'.format(org.name),
-					}
-					message['from_name'] = message.get('from_name', 'Humanlink')
-					message['from_email'] = message.get('from_email', 'support@humanlink.co')
-					try:
-						md.messages.send_template(
-							template_name='humanlink-welcome', message=message,
-							template_content=[], async=True)
-					except mandrill.Error as e:
-						logging.exception(e)
-						raise Exception(e)
+                    md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+                    t = invite_token.replace(' ', '+')
+                    url = "https://localhost:8000/verify/{}".format(t)
+                    message = {
+                        'global_merge_vars': [
+                            {
+                                'name': 'VERIFICATION_URL',
+                                'content': url
+                            },
+                        ],
+                        'to': [
+                            {
+                                'email': 'tim@millcreeksoftware.biz',
+                            },
+                        ],
+                        'subject': 'You are invited to join {}'.format(org.name),
+                    }
+                    message['from_name'] = message.get('from_name', 'Humanlink')
+                    message['from_email'] = message.get('from_email',
+                                                        'support@humanlink.co')
+                    try:
+                        md.messages.send_template(
+                            template_name='humanlink-welcome', message=message,
+                            template_content=[], async=True)
+                    except mandrill.Error as e:
+                        logging.exception(e)
+                        raise Exception(e)
 
-					context = {
-						'message': 'ok'
-					}
+                    context = {
+                        'message': 'ok'
+                    }
 
-					return composeJsonResponse(200, "", context)
+                    return composeJsonResponse(200, "", context)
 
-				except Exception, e:
-					logging.error(e)
-					Account.objects.filter(email=email, password=password).delete()
-					User.objects.filter(username=email[:30], password=password).delete()
-					Org.objects.filter(name=org_name, username=org_username).delete()
+                except Exception, e:
+                    logging.error(e)
+                    Account.objects.filter(email=email, password=password).delete()
+                    User.objects.filter(username=email[:30], password=password).delete()
+                    Org.objects.filter(name=org_name, username=org_username).delete()
+
 
 def accept_invite(request):
-	# """ -Create a new account and accept an org member invitation."""
+    # """ -Create a new account and accept an org member invitation."""
 
-	if request.method == "POST":
-		form = AcceptInvite(request.POST)
+    if request.method == "POST":
+        form = AcceptInvite(request.POST)
 
-		if form.is_valid():
-			cleaned_data = form.cleaned_data
-			token = cleaned_data['token']
-			email = cleaned_data['email']
-			password = cleaned_data['password']
-			password_conf = cleaned_data['password_conf']
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            token = cleaned_data['token']
+            email = cleaned_data['email']
+            password = cleaned_data['password']
+            password_conf = cleaned_data['password_conf']
 
-			if password != password_conf:
-				raise Exception('Password does not match confirmation.')
+            if password != password_conf:
+                raise Exception('Password does not match confirmation.')
 
-			invite = OrgInvite.objects.get(token=token)
+            invite = OrgInvite.objects.get(token=token)
 
-			if not invite:
-				raise Exception('Invitation token is invalid.')
-			if invite.used:
-				raise Exception('Invitation token has already been used.')
+            if not invite:
+                raise Exception('Invitation token is invalid.')
+            if invite.used:
+                raise Exception('Invitation token has already been used.')
 
-			Account.objects.create(email=email)
-			org = invite.org
+            Account.objects.create(email=email)
+            org = invite.org
 
-			new_account = Account.objects.get(email=email)
-			OrgMember.objects.create(account=new_account, org=org)
-			org.add_members(new_account)
+            new_account = Account.objects.get(email=email)
+            OrgMember.objects.create(account=new_account, org=org)
+            org.add_members(new_account)
 
-			add_to_welcome(org=org, account=new_account, inviter_id=invite.token)
+            add_to_welcome(org=org, account=new_account, inviter_id=invite.token)
 
-			context = {
-				'message': 'ok'
-			}
+            context = {
+                'message': 'ok'
+            }
 
-			return composeJsonResponse(200, "", context)
+            return composeJsonResponse(200, "", context)
 
 
 def invite(request, token):
-	# """ -Retrieve an org member invitation information """
-	invite = get_invite(token)
-	if invite.used:
-		raise Exception("Invitation token has already been used")
+    # """ -Retrieve an org member invitation information """
+    invite = get_invite(token)
+    if invite.used:
+        raise Exception("Invitation token has already been used")
 
-	context = {
-		"invite": invite
-	}
+    context = {
+        "invite": invite
+    }
 
-	return composeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
+
 
 @login_required
 def me(request):
-	# """ - Retrieve Current Account Information in JSON Format """
+    # """ - Retrieve Current Account Information in JSON Format """
+    account = Account.objects.get(email=request.user.email)
+    print '############'
+    print account
+    print '-------------'
+    context = {
+        'first': account.first,
+        'last': account.last,
+        'phone_number': account.phone_number,
+        'username': account.username,
+    }
 
-	account = get_current_user(request)
-
-	context = {
-		"account": account
-	}
-
-	return composeJsonResponse(200, "", context)
+    print context
+    return composeJsonResponse(200, "", context)
 
 
 # @login_required
 @csrf_exempt
 def update(request):
-	# """ - Update Account Information """
+    # """ - Update Account Information """
 
-	account = Account.objects.get(email=request.user.email)
+    account = Account.objects.get(email=request.user.email)
 
-	if request.method == "POST":
-		form = BasicInfo(requestPost(request))
+    if request.method == "POST":
+        form = BasicInfo(requestPost(request))
 
-		if form.is_valid():
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            account.first = cleaned_data['first']
+            account.last = cleaned_data['last']
+            account.phone = cleaned_data['phone_number']
+            account.save()
 
-			cleaned_data = form.cleaned_data
-			account.first = cleaned_data['first']
-			account.last = cleaned_data['last']
-			account.phone = cleaned_data['phone_number']
-			account.save()
+            context = {
+                'account': 'test'
+            }
 
-			context = {
-				'account': 'test'
-			}
-
-			return composeJsonResponse(200, "", context)
+            return composeJsonResponse(200, "", context)
 
 
 # @login_required
 def update_caregiver(request):
-	# """ -Updates Account's Caregiver Information. """
+    # """ -Updates Account's Caregiver Information. """
 
-	account = Account.objects.get(email=request.user.username)
-	caregiver = CareGiver.objects.get(account=account)
+    account = Account.objects.get(email=request.user.username)
+    caregiver = CareGiver.objects.get(account=account)
 
-	if request.method == "POST":
-		form = CareGiverInfo
+    if request.method == "POST":
+        form = CareGiverInfo
 
-		if form.is_valid:
+        if form.is_valid:
+            cleaned_data = form.cleaned_data
+            caregiver.is_hireable = cleaned_data['is_hireable']
+            caregiver.location = cleaned_data['location']
+            caregiver.about = cleaned_data['about']
+            caregiver.certs = cleaned_data['certs']
+            caregiver.save()
 
-			cleaned_data = form.cleaned_data
-			caregiver.is_hireable = cleaned_data['is_hireable']
-			caregiver.location = cleaned_data['location']
-			caregiver.about = cleaned_data['about']
-			caregiver.certs = cleaned_data['certs']
-			caregiver.save()
+            context = {
+                'caregiver': caregiver
+            }
 
-			context = {
-				'caregiver': caregiver
-			}
+            return composeJsonResponse(200, "", context)
 
-			return composeJsonResponse(200, "", context)
 
 @login_required
 def profile(request, account_id):
-	# """ -Retrieve Profile With Account ID """
+    # """ -Retrieve Profile With Account ID """
 
-	account = Account.objects.get(id=account_id)
-	context = {
-		'account': account
-	}
+    account = Account.objects.get(id=account_id)
+    context = {
+        'account': account
+    }
 
-	return composeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
+
 
 # @login_required
 def caregiver_info(request, account_id):
-	# """ -Retrieve Caregiver Details for an Account """
+    # """ -Retrieve Caregiver Details for an Account """
 
-	caregiver = CareGiver.objects.get(account=account_id)
-	context = {
+    caregiver = CareGiver.objects.get(account=account_id)
+    context = {
         'caregiver': caregiver
     }
-	return composeJsonResponse(200, "", context)
+    return composeJsonResponse(200, "", context)
+
 
 def get_invite(token):
-	if not token:
-		raise Exception("Invitation token is not specified")
+    if not token:
+        raise Exception("Invitation token is not specified")
 
-	invitation = OrgInvite.objects.get(token=token)
-	if not invitation:
-		raise Exception("Invitation token is invalid.")
+    invitation = OrgInvite.objects.get(token=token)
+    if not invitation:
+        raise Exception("Invitation token is invalid.")
 
-	return invitation
+    return invitation
 
 
 def invite_accept_redirect(token):
-	# """ -Redirects to the accept invite frontend view with pre-fetched data. """
+    # """ -Redirects to the accept invite frontend view with pre-fetched data. """
 
-	key = token
+    key = token
 
-	invitation = OrgInvite.objects.get(token=token)
-	if not invitation:
-		raise Exception("Invitation token is invalid")
-	if invitation.used:
-		raise Exception("Invitation token has already been used.")
+    invitation = OrgInvite.objects.get(token=token)
+    if not invitation:
+        raise Exception("Invitation token is invalid")
+    if invitation.used:
+        raise Exception("Invitation token has already been used.")
 
-	base = "home/accept"
+    base = "home/accept"
 
-	invite_dict = model_to_dict(invitation)
+    invite_dict = model_to_dict(invitation)
 
-	url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
+    url = '/{}/{}/?data={}'.format(base, token,
+                                   urllib.quote_plus(json.dumps(invite_dict)))
 
-	return redirect(url)
+    return redirect(url)
+
 
 def generate_token(length):
-	# """ -Returns randomly generate email token """
+    # """ -Returns randomly generate email token """
 
-	return codecs.encode(os.urandom(length // 2), 'hex')
+    return codecs.encode(os.urandom(length // 2), 'hex')
 
 
 email_serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt='email-token')
 
+
 def verification_token(account_id):
-	"""Get account's email verification token."""
+    """Get account's email verification token."""
 
-	account = Account.objects.get(id=account_id)
-	if not account.email:
-		raise Exception("No email found for account {}".format(account.id))
+    account = Account.objects.get(id=account_id)
+    if not account.email:
+        raise Exception("No email found for account {}".format(account.id))
 
-	email_hash = account.email_hash()
-	rand = generate_token(4)
-	data = (account.id, email_hash, rand)
-	return email_serializer.dumps(data)
+    email_hash = account.email_hash()
+    rand = generate_token(4)
+    data = (account.id, email_hash, rand)
+    return email_serializer.dumps(data)
 
 
 def verify(request, token):
-	# """ -If verification token is valid, Account.email_verified = True """
+    # """ -If verification token is valid, Account.email_verified = True """
 
-	try:
-		account_id, email_hash, rand = email_serializer.loads(token)
-		account = Account.objects.get(id=account_id)
-		if account.email_hash() != email_hash:
-			raise Exception("token invalid")
-		if account.email_verified:
-			raise Exception("Email address already verified.")
-		account.email_verified = True
-		account.save()
-		logging.info('Email verified: {}'.format(account.email))
-		login(request)
-	except:
-		logging.warning('Bad Signature.')
-		raise Exception("Token invalid")
+    try:
+        account_id, email_hash, rand = email_serializer.loads(token)
+        account = Account.objects.get(id=account_id)
+        if account.email_hash() != email_hash:
+            raise Exception("token invalid")
+        if account.email_verified:
+            raise Exception("Email address already verified.")
+        account.email_verified = True
+        account.save()
+        logging.info('Email verified: {}'.format(account.email))
+        login(request)
+    except:
+        logging.warning('Bad Signature.')
+        raise Exception("Token invalid")
 
 
-	# return redirect("/account s/")
-	return HttpResponse('This Works')
+    # return redirect("/account s/")
+    return HttpResponse('This Works')
+
 
 def get_current_user(request):
-	user = request.user
-	account = Account.objects.get(username=user.username)
+    user = request.user
+    account = Account.objects.get(username=user.username)
 
-	return account
+    return account
+
 
 def get_caregivers(request):
-	# Returns all caregivers, based on search or no search
-	caregiver_list = []
-	if request.method == 'POST':
-		context = {
-			'message': 'post'
-		}
-		return composeJsonResponse(200, '', context)
-	elif request.method == 'GET':
-		caregivers = CareGiver.objects.all()
-		if len(caregivers) > 0:
-			for caregiver in caregivers:
-				if caregiver.background_verified and caregiver.phone_verified:
-					account = Account.objects.get(id=caregiver.account.id)
-					caregiver_map = {
-						'first_name': account.first,
-						'last_name': account.last,
-						'phone_number': account.phone_number,
-						'account_id': account.id,
-						'headline': caregiver.headline,
-						'bio': caregiver.about,
-						'city': caregiver.city,
-						'phone_verified': account.phone_verified,
-						'background_verified': caregiver.background_verified
-					}
-					caregiver_list.append(caregiver_map)
+    # Returns all caregivers, based on search or no search
+    caregiver_list = []
+    if request.method == 'POST':
+        context = {
+            'message': 'post'
+        }
+        return composeJsonResponse(200, '', context)
+    elif request.method == 'GET':
+        caregivers = CareGiver.objects.all()
+        if len(caregivers) > 0:
+            for caregiver in caregivers:
+                if caregiver.background_verified and caregiver.phone_verified:
+                    account = Account.objects.get(id=caregiver.account.id)
+                    caregiver_map = {
+                        'first_name': account.first,
+                        'last_name': account.last,
+                        'phone_number': account.phone_number,
+                        'account_id': account.id,
+                        'headline': caregiver.headline,
+                        'bio': caregiver.about,
+                        'city': caregiver.city,
+                        'phone_verified': account.phone_verified,
+                        'background_verified': caregiver.background_verified
+                    }
+                    caregiver_list.append(caregiver_map)
 
-			account = Account.objects.get(email=request.user.email)
+            account = Account.objects.get(email=request.user.email)
 
-			context = {
-				'caregiver_list': caregiver_list,
-				'userdata': {
-					'id': account.id
-				},
-				'user_data': {
-					'gravatar_url': account.gravatar_url(),
-					'name': account.username,
-					'email': account.email
-				}
-			}
+            context = {
+                'caregiver_list': caregiver_list,
+                'userdata': {
+                    'id': account.id
+                },
+                'user_data': {
+                    'gravatar_url': account.gravatar_url(),
+                    'name': account.username,
+                    'email': account.email
+                }
+            }
 
-			return composeJsonResponse(200, '', context)
+            return composeJsonResponse(200, '', context)
+
 
 def get_careseekers(request):
-	# Return all careseekers who are 'public'
-	if request.method == 'GET':
-		careseekers_list = []
-		careseekers = CareSeeker.objects.filter()
-		for careseeker in careseekers:
-			careseekers_list.append(careseeker)
+    # Return all careseekers who are 'public'
+    if request.method == 'GET':
+        careseekers_list = []
+        careseekers = CareSeeker.objects.filter()
+        for careseeker in careseekers:
+            careseekers_list.append(careseeker)
 
-		account = Account.objects.get(email=request.user.email)
+        account = Account.objects.get(email=request.user.email)
 
-		context = {
-			'careseekers': careseekers,
-			'userdata': {
-				'id': account.id
-			},
-			'user_data': {
-				'gravatar_url': account.gravatar_url(),
-				'name': account.username,
-				'email': account.email
-			}
-		}
-		return composeJsonResponse(200, '', context)
+        context = {
+            'careseekers': careseekers,
+            'userdata': {
+                'id': account.id
+            },
+            'user_data': {
+                'gravatar_url': account.gravatar_url(),
+                'name': account.username,
+                'email': account.email
+            }
+        }
+        return composeJsonResponse(200, '', context)
 
-	elif request.method == 'POST':
-		context = {
-			'message': 'post'
-		}
-		return composeJsonResponse(200, '', context)
+    elif request.method == 'POST':
+        context = {
+            'message': 'post'
+        }
+        return composeJsonResponse(200, '', context)
+
 
 def seeker_profile(request):
-	if request.method == 'POST':
-		context = {
-			'message': 'ok'
-		}
-		return composeJsonResponse(200, '', context)
-	if request.method == 'GET':
-		context = {
-			'message': 'ok'
-		}
-		return composeJsonResponse(200, '', context)
+    if request.method == 'POST':
+        context = {
+            'message': 'ok'
+        }
+        return composeJsonResponse(200, '', context)
+    if request.method == 'GET':
+        context = {
+            'message': 'ok'
+        }
+        return composeJsonResponse(200, '', context)
