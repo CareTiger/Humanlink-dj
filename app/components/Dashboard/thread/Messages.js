@@ -81,7 +81,8 @@
                 function (data) {
                     vm.submitBusy = false;
                     vm.message = '';
-                    vm.messages.unshift(data.threadchat)
+                    vm.messages.push(data.threadchat)
+                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
                     console.log(vm.messages)
                 },
                 function (data) {
