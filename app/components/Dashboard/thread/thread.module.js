@@ -68,6 +68,12 @@
                     threadInfo: threadInfoResolve,
                 }
             })
+            .state('dashboard.messages.pending', {
+                url: '/pending',
+                templateUrl: '/static/templates/dashboard/partials/thread/pending.html',
+                controller: 'Pending',
+                controllerAs: 'vm'
+            })
             .state('dashboard.messages.leave', {
                 url: '/leave',
                 templateUrl: '/static/templates/dashboard/partials/thread/leave.html',
