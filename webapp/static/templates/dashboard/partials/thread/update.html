@@ -177,12 +177,6 @@
       <div class="col-md-offset-3 col-sm-9 col-md-7">
         <div class="row">
           <div class="col-xs-6">
-            <button type="button"
-                    class="btn btn-block btn-default"
-                    ng-click="vm.cancel()">Cancel
-            </button>
-          </div>
-          <div class="col-xs-6">
             <button type="submit" class="btn btn-block btn-secondary"
                     ng-click="vm.UpdateInfo(vm.thread)"
                     ng-disabled="!form.$valid || vm.submitBusy">Update Info
@@ -191,7 +185,12 @@
                       </span>
             </button>
           </div>
-
+          <div class="col-xs-6">
+            <button type="button"
+                    class="btn btn-block btn-default"
+                    ng-click="vm.cancel()">Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>

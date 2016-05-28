@@ -38,7 +38,6 @@
 
         function update(model) {
             vm.submitBusy = true;
-            console.log(model);
             AccountRepo.save(model).then(
                 function (data) {
                     console.log(data);
