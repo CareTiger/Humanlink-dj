@@ -28,7 +28,7 @@
             AccountRepo.me().then(
                 function (data) {
                     vm.submitBusy = false;
-                    console.log(data);
+                    vm.profile = data.data.response;
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -38,9 +38,10 @@
 
         function update(model) {
             vm.submitBusy = true;
+            console.log(model);
             AccountRepo.save(model).then(
                 function (data) {
-                    console.log(data)
+                    console.log(data);
                     vm.submitBusy = false;
                     SiteAlert.success("Your account has been updated.");
                 },

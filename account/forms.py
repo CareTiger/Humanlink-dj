@@ -24,7 +24,7 @@ class BasicInfo(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ['first', 'last', 'phone_number']
+        fields = ['username', 'first', 'last', 'phone_number']
 
 class CareGiverInfo(forms.ModelForm):
 

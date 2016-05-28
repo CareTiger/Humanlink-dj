@@ -307,17 +307,15 @@ def invite(request, token):
 def me(request):
     # """ - Retrieve Current Account Information in JSON Format """
     account = Account.objects.get(email=request.user.email)
-    print '############'
-    print account
-    print '-------------'
+
     context = {
         'first': account.first,
         'last': account.last,
         'phone_number': account.phone_number,
         'username': account.username,
+        'email': account.email,
     }
 
-    print context
     return composeJsonResponse(200, "", context)
 
 
@@ -330,9 +328,9 @@ def update(request):
 
     if request.method == "POST":
         form = BasicInfo(requestPost(request))
-
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            account.username = cleaned_data['username']
             account.first = cleaned_data['first']
             account.last = cleaned_data['last']
             account.phone = cleaned_data['phone_number']
