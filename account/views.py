@@ -333,7 +333,7 @@ def update(request):
             account.username = cleaned_data['username']
             account.first = cleaned_data['first']
             account.last = cleaned_data['last']
-            account.phone = cleaned_data['phone_number']
+            account.phone_number = cleaned_data['phone_number']
             account.save()
 
             context = {

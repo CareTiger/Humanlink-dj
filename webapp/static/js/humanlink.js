@@ -2385,10 +2385,10 @@ window.HL = window.HL || {};
         }
 
         function update(model) {
+            console.log(model);
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
-                    console.log(data);
                     vm.submitBusy = false;
                     SiteAlert.success("Your account has been updated.");
                 },
