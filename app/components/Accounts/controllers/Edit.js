@@ -41,10 +41,6 @@
             AccountRepo.save(model).then(
                 function (data) {
                     console.log(data)
-                    if (userData.first !== data.first || userData.last !== data.last) {
-                        CommonService.hardRedirect($window.location.pathname);
-                        return;
-                    }
                     vm.submitBusy = false;
                     SiteAlert.success("Your account has been updated.");
                 },
