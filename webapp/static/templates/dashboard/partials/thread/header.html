@@ -1,10 +1,21 @@
 <div class="header">
 
-  <div class="pull-right header-icons col-sm-2">
-    <button class="btn btn-link" title="Channel info" ng-click="thread.toggleSidepanel()">
-      <i class="material-icons" ng-if="!thread.sidepanel.isOpen">info_outline</i>
-      <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
-    </button>
+  <div class="pull-right header-icons col-sm-4">
+    <div class="col-sm-8 search-box">
+      <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">
+          <span class="glyphicon glyphicon-search"></span>
+        </span>
+        <input type="text" class="form-control" placeholder="Search">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <button class="btn btn-link" title="Channel info"
+              ng-click="thread.toggleSidepanel()">
+        <i class="material-icons" ng-if="!thread.sidepanel.isOpen">info_outline</i>
+        <i class="material-icons" ng-if="thread.sidepanel.isOpen">info</i>
+      </button>
+    </div>
   </div>
 
   <div class="dropdown">

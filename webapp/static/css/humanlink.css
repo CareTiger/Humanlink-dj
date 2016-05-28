@@ -7907,6 +7907,10 @@ footer,
 .dashboard .header .dropdown {
   display: inline-block;
 }
+.dashboard .header .search-box {
+  display: inline-block;
+  margin-top: 5px;
+}
 .dashboard .header .header-icons button {
   padding: 0;
 }
@@ -8060,7 +8064,7 @@ footer,
   min-height: 200px;
   overflow-y: scroll;
   background-color: #fff;
-  padding: 10px;
+  padding: 40px;
   margin-bottom: 70px;
 }
 .dashboard .thread .messages .message {
@@ -8074,7 +8078,7 @@ footer,
   font-weight: 700;
 }
 .dashboard .thread .messages .thread-welcome {
-  padding: 20px 0;
+  padding: 40px 20;
 }
 .dashboard .thread .messages .date-divider {
   color: #555555;

@@ -1,10 +1,12 @@
 <div>
   <div class="messages-container"
-       ng-class="{'hidden-xs col-sm-7': thread.sidepanel.isOpen}" style="position: relative">
+       ng-class="{'hidden-xs col-sm-7': thread.sidepanel.isOpen}"
+       style="position: relative">
     <div class="messages" hl-resize-messages scroll-glue>
 
       <div class="thread-welcome" ng-if="vm.messages.length < 30">
-        <p class="lead">Yay! <strong>{{ vm.thread.name }}</strong> is now available.</p>
+        <p class="lead">Yay! <strong>{{ vm.thread.name }}</strong> is now available.
+        </p>
 
         <p class="lead">You can set a purpose and add other care details in the
           <a ui-sref="dashboard.messages.update" href>channel information</a> section.</p>
@@ -48,20 +50,19 @@
     <div class="reply">
       <div class="block">
 
-    <span class="spinner" ng-show="vm.submitBusy">
-      <i class="fa fa-circle-o-notch fa-spin"></i>
-    </span>
+        <span class="spinner" ng-show="vm.submitBusy">
+          <i class="fa fa-circle-o-notch fa-spin"></i>
+        </span>
 
-    <textarea rows="1" class="form-control chat-box"
-              placeholder="Enter a message&hellip;"
-              ng-model="vm.message"
-              ng-keypress="vm.onKeypress($event, vm.message)"
-              ng-disabled="vm.submitBusy"
-              hl-focus>
-    </textarea>
-    <div></div>
+        <textarea rows="1" class="form-control"
+                  placeholder="Enter a message&hellip;"
+                  ng-model="vm.message"
+                  ng-keypress="vm.onKeypress($event, vm.message)"
+                  ng-disabled="vm.submitBusy"
+                  hl-focus>
+        </textarea>
         <span class="textarea-copy"></span>
-    </div>
+      </div>
     </div>
 
   </div>
