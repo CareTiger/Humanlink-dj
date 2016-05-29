@@ -336,6 +336,7 @@ def remove(request, thread_id, member_id):
 @login_required
 def archive(request, thread_id):
     # """Archive the thread."""
+    print '############'
 
     thread = Thread.objects.get(id=thread_id)
     thread.is_archived = True

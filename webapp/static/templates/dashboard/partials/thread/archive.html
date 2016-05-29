@@ -11,15 +11,15 @@
     <div class="form-group row vmargin10">
       <div class="col-md-10 col-md-offset-1">
         <div class="col-xs-6">
-          <button type="button" class="btn btn-block btn-default"
-                  ng-click="vm.cancel()">Cancel
-          </button>
-        </div>
-        <div class="col-xs-6">
           <button type="submit" class="btn btn-block btn-secondary"
                   ng-click="vm.archive()"
                   ng-disabled="!form.$valid || vm.submitBusy">
             Confirm
+          </button>
+        </div>
+        <div class="col-xs-6">
+          <button type="button" class="btn btn-block btn-default"
+                  ng-click="vm.cancel()">Cancel
           </button>
         </div>
       </div>
