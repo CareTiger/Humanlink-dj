@@ -9,6 +9,11 @@ THREADTYPE_CHOICES = (
     (1, 'Group')
 )
 
+THREADPURPOSE_CHOICES = (
+    (0, 'General'),
+    (1, 'Care')
+)
+
 PRIVACY_CHOICES = (
     (0, 'Open'),  # see notes file - messages 1
     (1, 'Closed'),
@@ -39,7 +44,8 @@ class Thread(models.Model):
     org = models.ForeignKey(Org, related_name="thread_org_id", null=True)
     name = models.CharField(max_length=30, null=False)
     is_archived = models.BooleanField(default=False)
-    purpose = models.TextField(max_length=500, null=True, default="New Thread")
+    purpose_type = models.IntegerField(choices=THREADPURPOSE_CHOICES, null=False, default=0)
+    purpose = models.TextField(max_length=500, null=True, default="")
 
     @property
     def owner_kind(self):

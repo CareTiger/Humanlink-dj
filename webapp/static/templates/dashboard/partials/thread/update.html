@@ -13,13 +13,13 @@
       <div class="col-sm-9 col-md-7">
         <div class="radio">
           <label>
-            <input type="radio" name="type" id="type" value="option1" checked
-                   ng-model="vm.type">General channel
+            <input type="radio" name="type" id="type" value="0" checked
+                   ng-model="vm.thread.purpose_type">General channel
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="type" id="type" value="option2" ng-model="vm.type">
+            <input type="radio" name="type" id="type" value="1" ng-model="vm.thread.purpose_type">
             Care channel
           </label>
         </div>
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <div ng-show="vm.type == 'option2'">
+    <div ng-show="vm.thread.purpose_type === '1'">
 
       <div class="form-group">
         <label for="hours" class="col-sm-3 control-label">Hours of care</label>
@@ -116,10 +116,8 @@
         <div class="col-sm-9 col-md-7">
           <div class="checkbox" ng-repeat="care in ::vm.careServices">
             <label>
-              <input type="checkbox"
-                     checklist-model="vm.thread.basic.care_needs"
-                     checklist-value="care.name"> {{ care.description }}
-              <small>({{ care.skills }})</small>
+              <input type="checkbox" ng-model="vm.careServices[care]"> {{ care }}
+              <small>({{ care }})</small>
             </label>
           </div>
         </div>

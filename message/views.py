@@ -56,6 +56,8 @@ def get_threads(request):
                     "id": thread.owner.id
                 },
                 "name": thread.name,
+                "purpose": thread.purpose,
+                "purpose_type": thread.purpose_type,
                 "is_archived": thread.is_archived,
                 "members": threads_members
             }
@@ -82,7 +84,6 @@ def new_thread(request):
             cleaned_data = form.cleaned_data
             thread.org = cleaned_data['org_id']
             thread.name = cleaned_data['name']
-            # thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.account = account
             thread.owner = account
@@ -103,7 +104,7 @@ def new_thread(request):
 
 # @login_required
 # @csrf_exempt
-def handle_thread(request, thread_id):
+def update_purpose(request, thread_id):
     # """Retrieve and update thread information."""
 
     thread = Thread.objects.get(id=thread_id)
