@@ -53,6 +53,8 @@ def get_threads(request):
                     "id": thread.owner.id
                 },
                 "name": thread.name,
+                "purpose": thread.purpose,
+                "purpose_type": thread.purpose_type,
                 "is_archived": thread.is_archived,
                 "members": threads_members
             }
@@ -319,6 +321,7 @@ def remove(request, thread_id, member_id):
 @login_required
 def archive(request, thread_id):
     # """Archive the thread."""
+    print '############'
 
     thread = Thread.objects.get(id=thread_id)
     thread.is_archived = True

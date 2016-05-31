@@ -21,12 +21,12 @@
         vm.type = true;
         vm.UpdateInfo = UpdateInfo;
         vm.cancel = cancel;
-
+        vm.careServices = {Blue: true, Orange: true};
 
         init();
 
         function init() {
-            $log.debug('Update init');
+            console.log('UPDATE INIT2');
             vm.thread = threadInfo.thread;
 
             CommonService.broadcast(CommonEvents.viewReady);
@@ -43,13 +43,11 @@
                 purpose: vm.thread.purpose
             };
 
-            MessagesRepo.update(vm.thread.id, model).then(
+            MessagesRepo.updatePurpose(vm.thread.id, model).then(
                 function (data) {
                     vm.submitBusy = false;
-                    SiteAlert.success("Your channel information update was successful.");
-                    SiteAlert.check()
-                    // CommonService.previous();
-                    $state.go('dashboard.messages', {thread: vm.thread.name})
+                    SiteAlert.success("Your update was successful.");
+                    SiteAlert.check();
                 },
                 function (data) {
                     vm.submitBusy = false;
