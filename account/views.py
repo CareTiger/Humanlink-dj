@@ -65,17 +65,18 @@ def broadcast(chat_id=None):
         pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
-def add_to_welcome(org_id, account_id, inviter_id):
-    thread = Thread.objects.filter(org=org_id, name="welcome")
+def add_to_welcome(org_id, account_id):
+    account = Account.objects.get(id=account_id)
+    org = Org.objects.get(id=org_id)
+    thread = Thread.objects.get(org=org, name="welcome")
     if thread:
-        thread_member = ThreadMember.objects.create(account=account_id, thread=thread)
+        ThreadMember.objects.create(account=account, thread=thread)
 
-        chat = ThreadChat.objects.create(thread=thread, account=account_id,
-                                         text=account_id + ' has joined ',
-                                         kind=2, inviter=2, remover=3)
-        chat.save()
+        chat = ThreadChat.objects.create(thread=thread, account=account,
+                                         text=account.email + ' has joined ',
+                                         kind=0, inviter=2, remover=3)
 
-        broadcast(chat_id=chat.id)
+        # broadcast(chat_id=chat.id)
 
 
 # Converts AJAX JSON into query dictionary for the view to process.
@@ -146,10 +147,12 @@ def login(request):
                                 org = Org.objects.get(id=orgInvite.org.id)
                                 org_member = OrgMember.objects.filter(account=account,
                                                                       org=org)
+                                thread = Thread.objects.get(name='welcome', org=org)
+                                welcomeChat = ThreadChat.objects.filter(thread=thread, account=account, text=account.email + ' has joined ')
+                                if not welcomeChat:
+                                    add_to_welcome(org_id=org.id, account_id=account.id)
 
-                                if org_member:
-                                    raise Exception("Account is already in team.")
-                                else:
+                                if not org_member:
                                     OrgMember.objects.create(account=account, org=org)
                                     invite.used = False
                             else:
@@ -190,11 +193,13 @@ def signup(request):
 
                 try:
                     account = Account.objects.create(email=email, password=password)
-                    if len(email) > 30:
-                        user = User.objects.create_user(email, email, password)
-                    else:
-                        email = email[:30]
-                        user = User.objects.create_user(email, email, password)
+                    userExists = User.objects.filter(username=password, password=password)
+                    if not userExists:
+                        if len(email) > 30:
+                            user = User.objects.create_user(email, email, password)
+                        else:
+                            email = email[:30]
+                            user = User.objects.create_user(email, email, password)
 
                     if invite_token:
                         if ThreadInvite.objects.filter(token=invite_token):
@@ -209,12 +214,15 @@ def signup(request):
                             OrgMember.objects.create(org=org, account=account)
                             invitation.used = False
                             invitation.save()
-                            # add_to_welcome(org_id=org.id, account_id=account.id, inviter_id=invitation.token)
+                            add_to_welcome(org_id=org.id, account_id=account.id)
 
                     if org_username and org_name:
                         org = Org.objects.create(name=org_name, username=org_username,
                                                  actor=account)
                         OrgMember.objects.create(account=account, org=org)
+                        Thread.objects.create(name='welcome', account=account, owner=account, org=org,
+                                              purpose='To welcome new members to the team.')
+                        add_to_welcome(org_id=org.id, account_id=account.id)
 
                     login(request)
 

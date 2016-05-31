@@ -96,7 +96,7 @@ def new_thread(request):
 
 # @login_required
 # @csrf_exempt
-def handle_thread(request, thread_id):
+def update_purpose(request, thread_id):
     # """Retrieve and update thread information."""
 
     thread = Thread.objects.get(id=thread_id)

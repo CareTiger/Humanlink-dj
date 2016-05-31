@@ -4950,6 +4950,7 @@ angular
          * @return {String}
          */
         function accountName(accountId) {
+            console.log(accountId)
             var profile = vm.members[accountId].profile;
             return AccountService.accountName(profile);
         }
