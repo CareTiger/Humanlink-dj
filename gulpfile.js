@@ -58,6 +58,7 @@ gulp.task('cv', function () {
         'bower_components/underscore/underscore-min.js',
         'bower_components/moment/moment.js',
         'bower_components/pusher-websocket-iso/dist/web/pusher.js',
+        'bower_components/angular-cookies/angular-cookies.js'
     ], 'vendor.js', false);
 });
 

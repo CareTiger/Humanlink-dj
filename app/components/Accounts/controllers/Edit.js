@@ -24,11 +24,14 @@
 
         init();
         function init() {
+            console.log('Edit Init')
             vm.submitBusy = true;
             AccountRepo.me().then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.profile = data.data.response;
+                    console.log(vm.profile)
+                    console.log(vm.submitBusy)
                 },
                 function (data) {
                     vm.submitBusy = false;

@@ -25,18 +25,16 @@ import time
 def get_threads(request):
     # """Get list of all the threads for the account."""
 
-    account = request.user
+    account = Account.objects.get(email=request.user.username)
 
     all_threads = []
     all_members = ThreadMember.objects.all()
-    threadCount = 0
     for member in all_members:
         if member.account.email == account.email:
             thread = Thread.objects.get(id=member.thread.id)
 
             threads_members = []
             all_thread_members = ThreadMember.objects.filter(thread=thread)
-            count = 0
             for threadMember in all_thread_members:
                 memberObject = {
                     'id': threadMember.id,
@@ -47,7 +45,6 @@ def get_threads(request):
                     }
                 }
                 threads_members.append(memberObject)
-                count += 1
 
             threadObject = {
                 "id": thread.id,
@@ -60,8 +57,6 @@ def get_threads(request):
                 "members": threads_members
             }
             all_threads.append(threadObject)
-            threadCount += 1
-
 
     threads = {"threads": all_threads}
     return composeJsonResponse(200, "", threads)
@@ -80,17 +75,14 @@ def new_thread(request):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            thread.org = cleaned_data['org_id']
-            thread.name = cleaned_data['name']
-            # thread.purpose = cleaned_data['purpose']
-            thread.privacy = cleaned_data['privacy']
-            thread.account = account
-            thread.owner = account
-            thread.save()
+
+            purpose = cleaned_data['purpose']
+
+            thread = Thread.objects.create(org=cleaned_data['org_id'], name=cleaned_data['name'],
+                                           privacy=cleaned_data['privacy'], account=account, owner=account,
+                                           purpose=cleaned_data['purpose'])
 
             ThreadMember.objects.create(thread=thread, account=account)
-    else:
-        form = NewThread()
 
     context = {"name": thread.name,
                "owner": {
@@ -99,7 +91,6 @@ def new_thread(request):
                 }
                }
     return composeJsonResponse(200, "", context)
-
 
 # @login_required
 # @csrf_exempt
@@ -123,10 +114,6 @@ def handle_thread(request, thread_id):
         else:
             context = {"message": form.errors}
             return composeJsonResponse(200, "", context)
-    else:
-        context = {"thread": thread}
-        return composeJsonResponse(200, "", context)
-
 
 # @login_required
 def send(request, thread_id):
@@ -134,6 +121,7 @@ def send(request, thread_id):
 
     account = Account.objects.get(email=request.user.username)
     thread = Thread.objects.get(id=thread_id)
+    chatObject = {}
 
     if request.method == "POST":
         form = NewChat(requestPost(request))
@@ -155,8 +143,8 @@ def send(request, thread_id):
 
             # broadcast(threadchat.id)
 
-            context = {"threadchat": chatObject}
-            return composeJsonResponse(200, "", context)
+    context = {"threadchat": chatObject}
+    return composeJsonResponse(200, "", context)
 
 
 # @login_required
@@ -171,7 +159,6 @@ def history(request, thread_id):
 
         form = ThreadHistory(requestPost(request))
 
-
         if form.is_valid():
             cleaned_data = form.cleaned_data
             ts = cleaned_data['ts']
@@ -183,7 +170,6 @@ def history(request, thread_id):
             return composeJsonResponse(200, "", context)
         else:
             all_chats = []
-
 
             all_chats_list = ThreadChat.objects.filter(thread=thread)
 
@@ -227,8 +213,6 @@ def add_member(request, thread_id):
                 thread_invite = ThreadInvite.objects.create(actor=account, thread=thread, token=token,
                                              email=cleaned_data['email'], name=cleaned_data['name'])
 
-                # TO-DO = Create email to send, previous author never did it.
-
                 # Send Email
                 md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                 t = thread_invite.token.replace(' ', '+')
@@ -249,7 +233,8 @@ def add_member(request, thread_id):
                         }
                     ],
                     'to': [
-                        {'email': cleaned_data['email']},
+                        # {'email': cleaned_data['email']},
+                        {'email': 'tim@millcreeksoftware.biz'},
                     ],
                 }
                 message['from_name'] = message.get('from_name', 'Humanlink')
@@ -272,7 +257,7 @@ def add_member(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-def accept_thread_invite(request, token):
+def accept_thread_invite(token):
     try:
         invite = ThreadInvite.objects.get(token=token)
     except:
@@ -288,8 +273,6 @@ def accept_thread_invite(request, token):
 
     invite_dict['thread_name'] = thread.name
 
-    y = urllib.quote_plus((json.dumps(invite_dict)))
-
     url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
 
     return redirect(url)
@@ -300,7 +283,7 @@ def thread_invite(request, token):
     thread = Thread.objects.get(name=threadInvite.thread.name)
 
     context = {
-        'thread': 'OKIE DOKIE DOKIE'
+        'thread_invite': threadInvite
     }
 
     return composeJsonResponse(200, '', context)
@@ -325,7 +308,7 @@ def remove(request, thread_id, member_id):
 
     if request.method == "POST":
         thread = Thread.objects.get(id=thread_id)
-        member = ThreadMember.objects.filter(thread=thread, id=member_id)
+        member = ThreadMember.objects.get(thread=thread, id=member_id)
 
         member.delete()
 

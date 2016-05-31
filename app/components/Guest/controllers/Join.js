@@ -36,6 +36,7 @@
 
         function init() {
             if ($stateParams.invite) {
+                console.log('yippy skippy')
                 vm.signup.invite = $stateParams.invite;
             }
             CommonService.broadcast(CommonEvents.viewReady);

@@ -10,9 +10,14 @@
             'app.common',
             'app.core',
             'app.repo',
-            'ui.bootstrap'
+            'ui.bootstrap',
+            'ngCookies',
         ])
-        .config(Config);
+        .config(Config)
+        // .run(['$cookies', '$http', function ($rootScope, $http, $cookies) {
+        //     // set the CSRF token here
+        //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+        // }])
 
     /** ngInject */
     function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
@@ -109,7 +114,7 @@
                         },
                         'login@auth.threadAccept': {
                             templateUrl: '/static/templates/home/partials/thread/thread.accept.login.html'
-                        }
+                        },
                     }
                 });
 

@@ -123,13 +123,20 @@ def login(request):
                         account = Account.objects.get(email=email, password=password)
 
                         if cleaned_data['invite']:
-
                             token = cleaned_data['invite']
+                        elif cleaned_data['token']:
+                            token = cleaned_data['token']
+                        else:
+                            token = False
+
+                        if token:
                             if ThreadInvite.objects.filter(token=token):
                                 threadInvite = ThreadInvite.objects.get(token=token)
                                 thread = Thread.objects.get(id=threadInvite.thread.id)
-                                ThreadMember.objects.create(account=account,
-                                                            thread=thread)
+                                threadmember = ThreadMember.objects.filter(account=account, thread=thread)
+                                if not threadmember:
+                                    ThreadMember.objects.create(account=account,
+                                                                thread=thread)
                             elif OrgInvite.objects.filter(token=token):
                                 orgInvite = OrgInvite.objects.get(token=token)
                                 if orgInvite.used:
@@ -147,6 +154,7 @@ def login(request):
                                     invite.used = False
                             else:
                                 raise Exception("Invitation token is invalid.")
+
 
                         context = {
                             'message': form.errors,
@@ -225,7 +233,7 @@ def signup(request):
                                 'email': 'tim@millcreeksoftware.biz',
                             },
                         ],
-                        'subject': 'You are invited to join {}'.format(org.name),
+                        'subject': 'Welcome to Human Link',
                     }
                     message['from_name'] = message.get('from_name', 'Humanlink')
                     message['from_email'] = message.get('from_email',
@@ -378,7 +386,6 @@ def profile(request, account_id):
     }
 
     return composeJsonResponse(200, "", context)
-
 
 # @login_required
 def caregiver_info(request, account_id):

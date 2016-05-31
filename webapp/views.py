@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -9,6 +10,7 @@ from account.views import logout, verify, invite_accept_redirect, requestPost
 from api_helpers import composeJsonResponse
 from django.template import RequestContext
 import settings
+from message.views import accept_thread_invite
 from org.models import Org
 from pusher.pusher import Pusher
 from django.views.decorators.csrf import csrf_exempt
@@ -44,17 +46,24 @@ def home(request):
 # @login_required
 def app(request):
 	account = Account.objects.get(email=request.user.email)
-	org = Org.objects.get(actor=account)
+	try:
+		accountId = account.id
+		org = Org.objects.filter(actor=account.id)
+		org = org[0].name.lower()
+	except Exception, e:
+		logging.error(e)
+		org = []
+
 	context = {
 		'userdata': {
 			'id': account.id
 		},
-        'user_data': {
-            'gravatar_url': account.gravatar_url(),
-            'name': account.username,
-            'email': account.email,
-            'org': org.name.lower()
-        }
+		'user_data': {
+			'gravatar_url': account.gravatar_url(),
+			'name': account.username,
+			'email': account.email,
+			'org': org
+		}
 	}
 	return render(request, "dashboard/index.html", context)
 
@@ -99,6 +108,11 @@ def invite_accept(request, token):
 	""" -Redirects user after successful invite """
 
 	return invite_accept_redirect(token)
+
+def thread_invite_accept_redirect(request, token):
+	""" -Redirects user after successful thread invite"""
+
+	return accept_thread_invite(token)
 
 @csrf_exempt
 def pusher_auth(request):

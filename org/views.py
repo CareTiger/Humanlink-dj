@@ -63,7 +63,7 @@ def _orgs_get(request):
 
 def _orgs_post(request):
 	# """Create a new organization."""
-	account = get_current_user(request)
+	account = Account.objects.get(email=request.user.username)
 	org = Org()
 
 	form = NewOrg(request.POST)
@@ -75,13 +75,10 @@ def _orgs_post(request):
 		if username:
 			raise Exception('Username is already taken.')
 
-		org.actor_id = account.id
-		org.name = cleaned_data['name']
-		org.username = cleaned_data['username']
-		org.description = cleaned_data['description']
-		org.is_public = cleaned_data['is_public']
-		org.add_members(account.id)
-		org.save()
+		OrgMember.objects.create(account=account)
+
+		Org.objects.create(name=cleaned_data['name'], username=cleaned_data['username'], description=cleaned_data['description'],
+						   is_public=cleaned_data['is_public'], actor_id=account.id)
 
 		new_thread = Thread(org_id=org.id, name='welcome', purpose='Welcome to Humanlink!', privacy=PRIVACY_CHOICES(3))
 		new_thread.save()
