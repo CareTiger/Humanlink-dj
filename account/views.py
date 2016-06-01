@@ -24,7 +24,6 @@ import ast
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
-from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -86,8 +85,6 @@ def requestPost(request):
 
     return postdata
 
-
-@csrf_exempt
 def login(request):
     if request.is_ajax():
         if request.method == "POST":
@@ -170,8 +167,6 @@ def login(request):
 def logout_user(request):
     logout(request)
 
-
-@csrf_exempt
 def signup(request):
     # """Register a new account with a new org."""
     if request.is_ajax():
@@ -335,8 +330,7 @@ def me(request):
     return composeJsonResponse(200, "", context)
 
 
-# @login_required
-@csrf_exempt
+@login_required
 def update(request):
     # """ - Update Account Information """
 
@@ -359,7 +353,7 @@ def update(request):
             return composeJsonResponse(200, "", context)
 
 
-# @login_required
+@login_required
 def update_caregiver(request):
     # """ -Updates Account's Caregiver Information. """
 
@@ -395,7 +389,7 @@ def profile(request, account_id):
 
     return composeJsonResponse(200, "", context)
 
-# @login_required
+@login_required
 def caregiver_info(request, account_id):
     # """ -Retrieve Caregiver Details for an Account """
 

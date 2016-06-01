@@ -4,18 +4,17 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.http import HttpResponse
 
 from account.models import Account
 from api_helpers import composeJsonResponse
 from org.forms import NewOrg, OrgInviteEmail
 from org.models import Org, OrgMember, OrgInvite
-from account.views import get_current_user, requestPost
+from account.views import requestPost
 from message.models import Thread, PRIVACY_CHOICES
 import mandrill
 
 
-# @login_required
+@login_required
 def orgs(request):
 	if request.method == "GET":
 		return _orgs_get(request)

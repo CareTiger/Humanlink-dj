@@ -4,24 +4,19 @@ import urllib
 
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
-from django.http import HttpResponse
-from django.shortcuts import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 import datetime
 
 import mandrill
 from account.models import Account
 from api_helpers import composeJsonResponse
-from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember, RemoveMember
+from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
-from account.views import broadcast, generate_token, get_current_user, requestPost
+from account.views import broadcast, generate_token, requestPost
 from django.conf import settings
-from django.core.mail import EmailMessage
-from django.views.decorators.csrf import csrf_exempt
-import time
 
 
-# @login_required
+@login_required
 def get_threads(request):
     # """Get list of all the threads for the account."""
 
@@ -64,7 +59,7 @@ def get_threads(request):
     return composeJsonResponse(200, "", threads)
 
 
-# @login_required
+@login_required
 def new_thread(request):
     # """Create a new thread."""
 
@@ -94,8 +89,7 @@ def new_thread(request):
                }
     return composeJsonResponse(200, "", context)
 
-# @login_required
-# @csrf_exempt
+@login_required
 def update_purpose(request, thread_id):
     # """Retrieve and update thread information."""
 
@@ -117,7 +111,7 @@ def update_purpose(request, thread_id):
             context = {"message": form.errors}
             return composeJsonResponse(200, "", context)
 
-# @login_required
+@login_required
 def send(request, thread_id):
     # """Send a message to the thread."""
 
@@ -149,7 +143,7 @@ def send(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-# @login_required
+@login_required
 def history(request, thread_id):
     # """Retrieve messages history for the thread up until `ts`."""
 
@@ -304,7 +298,7 @@ def leave(request, thread_id):
 
     return composeJsonResponse(200, "", context)
 
-# @login_required
+@login_required
 def remove(request, thread_id, member_id):
     # """Remove a user from the thread."""
 

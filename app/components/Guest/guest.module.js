@@ -14,10 +14,10 @@
             'ngCookies',
         ])
         .config(Config)
-        // .run(['$cookies', '$http', function ($rootScope, $http, $cookies) {
-        //     // set the CSRF token here
-        //     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
-        // }])
+        .run(['$http', '$cookies', function ($http, $cookies) {
+            // set the CSRF token here
+            $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+        }])
 
     /** ngInject */
     function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
