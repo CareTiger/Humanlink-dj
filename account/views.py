@@ -327,11 +327,11 @@ def me(request):
 
 
 @login_required
+@csrf_exempt
 def update(request):
     # """ - Update Account Information """
 
     account = Account.objects.get(email=request.user.email)
-
     if request.method == "POST":
         form = BasicInfo(requestPost(request))
         if form.is_valid():

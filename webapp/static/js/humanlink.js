@@ -99,45 +99,6 @@
         }
 })();
 /**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
-})();
-/**
  * A module that has common directives, services, constants, etc.
  */
 (function () {
@@ -291,101 +252,118 @@
 
 })();
 /**
- * Dashboard module.
+ * Admin module.
  */
 (function () {
-    'use strict';
-
-    Config.$inject = ["$locationProvider", "$stateProvider", "$urlRouterProvider", "$httpProvider"];
-    Run.$inject = ["$rootScope", "$log", "$state", "MessageFormatter"];
-    rootResolve.$inject = ["DashboardHelper"];
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
     angular
-        .module('app.dashboard', [
-            'app.core',
-            'app.repo',
-            'app.dashboard.team',
-            'app.dashboard.thread'
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
         ])
-        .config(Config)
-        .run(Run);
+        .config(Config);
 
     /** ngInject */
-    function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
-
-        $locationProvider.html5Mode(true);
-        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    function Config($stateProvider, $urlRouterProvider) {
 
         $urlRouterProvider.otherwise('/');
 
         $stateProvider
-            .state('dashboard', {
+            .state('admin', {
                 abstract: true,
-                url: '/',
-                views: {
-                    'sidebar': {
-                        templateUrl: '/static/templates/dashboard/partials/sidebar.html',
-                        controller: 'Sidebar',
-                        controllerAs: 'sidebar'
-                    },
-                    '': {
-                        template: '<div ui-view></div>',
-                        controller: 'Base',
-                        controllerAs: 'base'
-                    }
-                },
-                resolve: {
-                    ready: rootResolve
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
                 }
             })
-            .state('dashboard.default', {
-                url: '',
-                templateUrl: '/static/templates/dashboard/partials/welcome.html',
-                controller: 'Welcome',
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Dashboard';} }
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
             })
-            .state('dashboard.new_thread', {
-                url: 'new',
-                templateUrl: '/static/templates/dashboard/partials/create.html',
-                controller: 'CreateThread',
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Create Channel';} }
-            })
-            .state('state-error', {
-                templateUrl: '/static/templates/dashboard/partials/state-error.html',
-                params: {error: null},
-                controller: /** ngInject */ ["$stateParams", function ($stateParams) {
-                    var vm = this;
-                    vm.error = $stateParams.error;
-                    vm.showError = false;
-                }],
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Error!!!';} }
-            })
-    }
-
-    /** ngInject */
-    function Run($rootScope, $log, $state, MessageFormatter) {
-        $rootScope.$on('$stateChangeError',
-            function (event, toState, toParams, fromState, fromParams, error) {
-                event.preventDefault();
-                $log.error(error);
-                $state.go('state-error', {error: error});
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
             });
-
-        // Register formatters that are used for rendering message body.
-        MessageFormatter.formatters.push(hl.markdown);
     }
-
-    /** ngInject */
-    function rootResolve(DashboardHelper) {
-        return DashboardHelper.initialize();
-    }
-
 
 })();
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
+
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/static/templates/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/static/templates/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/static/templates/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/static/templates/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/static/templates/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
 /**
  * Guest module.
  */
@@ -513,80 +491,6 @@
     }
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/static/templates/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/static/templates/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/static/templates/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/static/templates/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/static/templates/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
 /**
  * Repository module that communicates with the backend APIs.
  */
@@ -705,6 +609,102 @@ function Config($stateProvider, $urlRouterProvider){
 //     }
 //
 // })();
+/**
+ * Dashboard module.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$locationProvider", "$stateProvider", "$urlRouterProvider", "$httpProvider"];
+    Run.$inject = ["$rootScope", "$log", "$state", "MessageFormatter"];
+    rootResolve.$inject = ["DashboardHelper"];
+    angular
+        .module('app.dashboard', [
+            'app.core',
+            'app.repo',
+            'app.dashboard.team',
+            'app.dashboard.thread'
+        ])
+        .config(Config)
+        .run(Run);
+
+    /** ngInject */
+    function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
+
+        $locationProvider.html5Mode(true);
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('dashboard', {
+                abstract: true,
+                url: '/',
+                views: {
+                    'sidebar': {
+                        templateUrl: '/static/templates/dashboard/partials/sidebar.html',
+                        controller: 'Sidebar',
+                        controllerAs: 'sidebar'
+                    },
+                    '': {
+                        template: '<div ui-view></div>',
+                        controller: 'Base',
+                        controllerAs: 'base'
+                    }
+                },
+                resolve: {
+                    ready: rootResolve
+                }
+            })
+            .state('dashboard.default', {
+                url: '',
+                templateUrl: '/static/templates/dashboard/partials/welcome.html',
+                controller: 'Welcome',
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Dashboard';} }
+            })
+            .state('dashboard.new_thread', {
+                url: 'new',
+                templateUrl: '/static/templates/dashboard/partials/create.html',
+                controller: 'CreateThread',
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Create Channel';} }
+            })
+            .state('state-error', {
+                templateUrl: '/static/templates/dashboard/partials/state-error.html',
+                params: {error: null},
+                controller: /** ngInject */ ["$stateParams", function ($stateParams) {
+                    var vm = this;
+                    vm.error = $stateParams.error;
+                    vm.showError = false;
+                }],
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Error!!!';} }
+            })
+    }
+
+    /** ngInject */
+    function Run($rootScope, $log, $state, MessageFormatter) {
+        $rootScope.$on('$stateChangeError',
+            function (event, toState, toParams, fromState, fromParams, error) {
+                event.preventDefault();
+                $log.error(error);
+                $state.go('state-error', {error: error});
+            });
+
+        // Register formatters that are used for rendering message body.
+        MessageFormatter.formatters.push(hl.markdown);
+    }
+
+    /** ngInject */
+    function rootResolve(DashboardHelper) {
+        return DashboardHelper.initialize();
+    }
+
+
+})();
 /**
  * Team management and settings module.
  */
@@ -1698,85 +1698,6 @@ window.HL = window.HL || {};
     }
 
 })();
-/**
- * Dashboard helper/bootstraper.
- */
-(function () {
-    'use strict';
-
-    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('DashboardHelper', DashboardHelper);
-
-    /** ngInject */
-    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
-                             MessagesService, Session) {
-
-        return {
-            initialize: init
-        };
-
-        /**
-         * Bootstraps the Dashboard module, specifically:
-         *   - Fetches org summary
-         *   - Fetches thread messages
-         *   - Binds pusher events.
-         */
-        function init() {
-            var threadsPr = MessagesService.getThreads().then(function (threads) {
-                // Asynchronously fetch thread histories.
-                // TODO: Delay won't be necessary once all templates are in one place.
-                $timeout(function () {fetchThreads(threads)}, 100);
-                return threads;
-            });
-            var pusherPr = bindPusher();
-            return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
-        }
-
-        /**
-         * Fetches history for all the threads in the org.
-         *
-         * TODO: only fetch recent 3-5 threads.
-         */
-        function fetchThreads(threads) {
-            threads[0].forEach(function (thread) {
-                if (thread.is_archived) {
-                    return;
-                }
-                MessagesService.getHistory(thread.id);
-            });
-        }
-
-        /**
-         * Subscribes to user's Pusher channel and binds callback events.
-         */
-        function bindPusher() {
-            var defer = $q.defer();
-
-            var channelName = 'public-account-' + Session.account.id;
-            // In the future, this will need to be private
-            var channel = $pusher.client.subscribe(channelName);
-
-            channel.bind('pusher:subscription_succeeded', function (data) {
-                $log.debug('Pusher subscribed: ' + channel.name);
-                PushListener.bindAndListen(channel);
-                defer.resolve(data);
-            });
-            channel.bind('pusher:subscription_error', function (status) {
-                if (status === 403) {
-                    var msg = 'Pusher channel not authorized.';
-                    $log.warn(msg);
-                    defer.reject(msg);
-                }
-            });
-
-            return defer.promise;
-        }
-    }
-
-})();
 (function () {
     'use strict';
 
@@ -1906,7 +1827,7 @@ window.HL = window.HL || {};
          * @returns {Promise}
          */
         function save(model) {
-            return AbstractRepo.post('/accounts/update/', model)
+            return AbstractRepo.post('accounts/update/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -2322,6 +2243,85 @@ window.HL = window.HL || {};
 
 })();
 /**
+ * Dashboard helper/bootstraper.
+ */
+(function () {
+    'use strict';
+
+    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('DashboardHelper', DashboardHelper);
+
+    /** ngInject */
+    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
+                             MessagesService, Session) {
+
+        return {
+            initialize: init
+        };
+
+        /**
+         * Bootstraps the Dashboard module, specifically:
+         *   - Fetches org summary
+         *   - Fetches thread messages
+         *   - Binds pusher events.
+         */
+        function init() {
+            var threadsPr = MessagesService.getThreads().then(function (threads) {
+                // Asynchronously fetch thread histories.
+                // TODO: Delay won't be necessary once all templates are in one place.
+                $timeout(function () {fetchThreads(threads)}, 100);
+                return threads;
+            });
+            var pusherPr = bindPusher();
+            return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
+        }
+
+        /**
+         * Fetches history for all the threads in the org.
+         *
+         * TODO: only fetch recent 3-5 threads.
+         */
+        function fetchThreads(threads) {
+            threads[0].forEach(function (thread) {
+                if (thread.is_archived) {
+                    return;
+                }
+                MessagesService.getHistory(thread.id);
+            });
+        }
+
+        /**
+         * Subscribes to user's Pusher channel and binds callback events.
+         */
+        function bindPusher() {
+            var defer = $q.defer();
+
+            var channelName = 'public-account-' + Session.account.id;
+            // In the future, this will need to be private
+            var channel = $pusher.client.subscribe(channelName);
+
+            channel.bind('pusher:subscription_succeeded', function (data) {
+                $log.debug('Pusher subscribed: ' + channel.name);
+                PushListener.bindAndListen(channel);
+                defer.resolve(data);
+            });
+            channel.bind('pusher:subscription_error', function (status) {
+                if (status === 403) {
+                    var msg = 'Pusher channel not authorized.';
+                    $log.warn(msg);
+                    defer.reject(msg);
+                }
+            });
+
+            return defer.promise;
+        }
+    }
+
+})();
+/**
  * Parent controller of the account module.
  */
 (function () {
@@ -2383,8 +2383,6 @@ window.HL = window.HL || {};
                 function (data) {
                     vm.submitBusy = false;
                     vm.profile = data.data.response;
-                    console.log(vm.profile)
-                    console.log(vm.submitBusy)
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -2393,7 +2391,6 @@ window.HL = window.HL || {};
         }
 
         function update(model) {
-            console.log(model);
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
@@ -3311,95 +3308,6 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -3747,6 +3655,1270 @@ angular
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Main landing page.
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('LandingCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+        $scope.gotoInvite = gotoInvite;
+        $scope.contact = {
+            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
+        };
+
+        function gotoInvite() {
+            $location.path('/');
+            $location.hash('invite');
+            $anchorScroll();
+        }
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                    gotoInvite();
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * About Us controller
+ */
+angular
+    .module('Home')
+    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            console.log("Hello");
+            $window.location.href = '/home/join';
+        };
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = '/home/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('faqCtrl', ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('homeBaseCtrl', ['$scope', '$http',
+        function ($scope, $http) {
+                // bring in userSession if this controller ever gets used.
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Interest controller
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('interestCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Preview provider profile controller
+ */
+angular
+    .module('app.guest')
+    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            
+            var provider_id = $stateParams.account_id;
+            $scope.profile = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/caregiver_profile?account_id=' + provider_id)
+                    .then(function (response) {
+                        $scope.profile = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: provider_id,
+                            message: "I want to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('app.guest')
+    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            // bring in alternative to userSession
+            var seeker_id = $stateParams.account_id;
+            $scope.aboutMe = {};
+            // $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/seeker_profile?account_id=' + seeker_id)
+                    .then(function (response) {
+                        $scope.aboutMe = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: seeker_id,
+                            message: "I would like to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Pricing controller
+ */
+angular
+    .module('Home')
+    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Privacy controller
+ */
+angular
+    .module('Home')
+    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+Search.$inject = ['$scope', '$http', 'SiteAlert', 'AccountRepo']
+angular
+    .module('app.guest')
+    .controller('searchCtrl', Search)
+
+    function Search ($scope, $http, SiteAlert, AccountRepo) {
+
+        // find replacement for userSession
+
+        $scope.searchModel = {};
+        $scope.searchCaregiverResults = {};
+
+        var init = function () {
+            AccountRepo.get_caregivers()
+                .then(function (response) {
+                $scope.searchCaregiverResults = response.data;
+                console.log($scope.searchCaregiverResults)
+
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            })
+
+            AccountRepo.get_seekers()
+                .then(function (response) {
+                $scope.searchSeekerResults = response.data;
+                console.log($scope.searchSeekerResults)
+
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            })
+
+            $scope.auth.viewReady = true;
+
+        };
+        init();
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+        $scope.find = function (model) {
+            $http({
+                url: '/search_caregivers',
+                method: "GET",
+                params: {search_string: model.search_string}
+            }).then(function (response) {
+                $scope.searchCaregiverResults = response.data;
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            });
+        };
+
+    };
+'use strict';
+
+/**
+ * Terms controller
+ */
+angular
+    .module('Home')
+    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Controller for the accept view.
+ */
+(function () {
+    'use strict';
+
+    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Accept', Accept);
+
+    /** @ngInject */
+    function Accept($log, $state, $stateParams, $location, $anchorScroll,
+                    AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var views = {
+            default: 'default',
+            invalid: 'invalid',
+            used: 'used'
+        };
+
+        vm.messages = {
+            signup: null,
+            login: null
+        };
+        vm.spinners = {
+            signup: false,
+            login: false
+        };
+        vm.view = views.default;
+        vm.invite = null;
+        vm.signupModel = null;
+        vm.loginModel = null;
+
+        vm.signup = signup;
+        vm.login = login;
+
+        vm.gotoLogin = gotoLogin;
+
+        init();
+
+        function init() {
+            console.log('Accept Init')
+            console.log(angular.fromJson($stateParams.data))
+            // Pre-fetched data can come as a URL parameter (`data`).
+
+            var data = angular.fromJson($stateParams.data);
+
+            // Delete `data` parameter from URL.
+            // $state.go('.', {data: null}, {location: 'replace'});
+
+            // Impossible token.
+            if ($stateParams.token.length > 16) {
+                return ready();
+            }
+
+            if (data) {
+                return ready(data);
+            }
+
+            AccountRepo.invite($stateParams.token).then(ready, ready);
+
+            function ready(invite) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.invite = invite;
+
+                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
+                    vm.view = views.invalid;
+                    return;
+                }
+                if (vm.invite.used) {
+                    vm.view = views.used;
+                    return;
+                }
+                vm.signupModel = {email: vm.invite.email};
+                vm.loginModel = {email: vm.invite.email};
+            }
+        }
+
+        function signup(model) {
+            vm.spinners.signup = true;
+            vm.messages.signup = null;
+            AccountRepo.join(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.signup = false;
+                    vm.messages.signup = data;
+                    $location.hash('signup-view');
+                    $anchorScroll();
+                }
+            );
+        }
+
+        function login(model) {
+            vm.spinners.login = true;
+            vm.messages.login = null;
+            AccountRepo.login(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.login = false;
+                    vm.messages.login = data;
+                    gotoLogin();
+                }
+            );
+        }
+
+        function withToken(model) {
+            return angular.extend(model, {token: vm.invite.token});
+        }
+
+        function gotoLogin() {
+            $location.hash('login-view');
+            $anchorScroll();
+        }
+    }
+
+})();
+
+/**
+ * Base controller of the auth state.
+ */
+(function () {
+    'use strict';
+
+    Auth.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Auth', Auth);
+
+    /** @ngInject */
+    function Auth(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+/**
+ * Controller for the join view.
+ */
+(function () {
+    'use strict';
+
+    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Join', Join);
+
+    /** @ngInject */
+    function Join($log, $anchorScroll, $state, $stateParams,
+                  AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var defaultModel = {
+            email: '',
+            password: '',
+            password_confirm: '',
+            invite: '',
+            org_name: '',
+            org_username: ''
+        };
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.signup = angular.copy(defaultModel);
+
+        vm.cancel = cancel;
+        vm.next = next;
+        vm.previous = previous;
+        vm.join = join;
+
+        init();
+
+        function init() {
+            if ($stateParams.invite) {
+                console.log('yippy skippy')
+                vm.signup.invite = $stateParams.invite;
+            }
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function join(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            AccountRepo.join(model).then(
+                function (data) {
+                    CommonService.hardRedirect('/accounts#/edit');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                    $anchorScroll('join-view');
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+
+        /**
+         * Go to next section of registration.
+         */
+        function next(model) {
+            // TODO: maybe perform email verification (HTTP call) here.
+            $state.go('auth.join.team');
+        }
+
+        /**
+         * Go to previous section of registration.
+         */
+        function previous() {
+            $state.go('auth.join.personal');
+        }
+
+    }
+
+})();
+/**
+ * Controller for the login view.
+ */
+(function () {
+    'use strict';
+
+    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Login', Login);
+
+    /** @ngInject */
+    function Login($log, $anchorScroll, $stateParams,
+                  AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var next = null;
+        var defaultAuth = {
+            email: '',
+            password: '',
+        };
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.auth = angular.copy(defaultAuth);
+        vm.login = login;
+
+        init();
+
+        function init() {
+            CommonService.broadcast(CommonEvents.viewReady);
+            next = $stateParams.next;
+        }
+
+        function login(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+            AccountRepo.login(model).then(
+                function (data) {
+                    CommonService.hardRedirect(next || '/app');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                    $anchorScroll('login-view');
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/13/16.
+ */
+
+/**
+ * Controller for the accept view.
+ */
+(function () {
+    'use strict';
+
+    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('ThreadAccept', Accept);
+
+    /** @ngInject */
+    function Accept($log, $state, $stateParams, $location, $anchorScroll,
+                    AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var views = {
+            default: 'default',
+            invalid: 'invalid',
+            used: 'used'
+        };
+
+        vm.messages = {
+            signup: null,
+            login: null
+        };
+        vm.spinners = {
+            signup: false,
+            login: false
+        };
+        vm.view = views.default;
+        vm.invite = null;
+        vm.signupModel = null;
+        vm.loginModel = null;
+
+        vm.signup = signup;
+        vm.login = login;
+
+        vm.gotoLogin = gotoLogin;
+
+        init();
+
+        function init() {
+            console.log('ThreadAccept Init')
+            console.log(angular.fromJson($stateParams.data))
+            // Pre-fetched data can come as a URL parameter (`data`).
+
+            var data = angular.fromJson($stateParams.data);
+
+            // Delete `data` parameter from URL.
+            // $state.go('.', {data: null}, {location: 'replace'});
+
+            // Impossible token.
+            if ($stateParams.token.length > 8) {
+                return ready();
+            }
+
+            if (data) {
+                return ready(data);
+            }
+
+            AccountRepo.threadInvite($stateParams.token).then(ready, ready);
+
+            function ready(invite) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.invite = invite;
+
+                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
+                    vm.view = views.invalid;
+                    return;
+                }
+                if (vm.invite.used) {
+                    vm.view = views.used;
+                    return;
+                }
+                vm.signupModel = {email: vm.invite.email};
+                vm.loginModel = {email: vm.invite.email};
+            }
+        }
+
+        function signup(model) {
+            vm.spinners.signup = true;
+            vm.messages.signup = null;
+            console.log(withToken(model))
+            AccountRepo.join(withToken(model)).then(
+                function (data) {
+                    console.log(data)
+                    return CommonService.hardRedirect('/accounts#/edit');
+                },
+                function (data) {
+                    vm.spinners.signup = false;
+                    vm.messages.signup = data;
+                    $location.hash('signup-view');
+                    $anchorScroll();
+                }
+            );
+        }
+
+        function login(model) {
+            vm.spinners.login = true;
+            vm.messages.login = null;
+            AccountRepo.login(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.login = false;
+                    vm.messages.login = data;
+                    gotoLogin();
+                }
+            );
+        }
+
+        function withToken(model) {
+            return angular.extend(model, {invite: vm.invite.token});
+        }
+
+        function gotoLogin() {
+            $location.hash('login-view');
+            $anchorScroll();
+        }
+    }
+
+})();
+/**
+ * Parent controller of the settings module.
+ */
+(function () {
+    'use strict';
+
+    Base.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.settings')
+        .controller('Base', Base);
+
+    /* @ngInject */
+    function Base(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+(function () {
+    'use strict';
+
+    Notifications.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.settings')
+        .controller('Notifications', Notifications);
+
+    /** @ngInject */
+    function Notifications($scope, SettingsRepo,
+                           CommonService, CommonEvents, SiteAlert) {
+        var vm = this;
+        vm.settings = null;
+        vm.updateSMSSettings = updateSMSSettings;
+        vm.updateEmailSettings = updateEmailSettings;
+
+        vm.errorMessageSMSSettings = null;
+        vm.errorMessageEmailSettings = null;
+        vm.submitBusy = {
+            sms_spinner: false,
+            email_spinner: false
+        };
+
+        init();
+        function init() {
+            console.log('Notifications Init')
+            load();
+        }
+
+        function load() {
+            SettingsRepo.getSettings().then(function (data) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.notifications = data.notifications;
+            });
+        }
+
+        function updateSMSSettings(notifications) {
+            vm.submitBusy.sms_spinner = true;
+            SettingsRepo.updateNotifications(notifications).then(
+                function (data) {
+                    vm.submitBusy.sms_spinner = false;
+                    SiteAlert.success("SMS Settings were updated successfully.");
+                },
+                function (data) {
+                    vm.submitBusy.sms_spinner = false;
+                    vm.errorMessageSMSSettings = data;
+                });
+        }
+
+        function updateEmailSettings(notifications) {
+            vm.submitBusy.email_spinner = true;
+            SettingsRepo.updateNotifications(notifications).then(
+                function (data) {
+                    vm.submitBusy.email_spinner = false;
+                    SiteAlert.success("Email Settings were updated successfully.");
+                },
+                function (data) {
+                    vm.submitBusy.email_spinner = false;
+                    vm.errorMessageEmailSettings = data;
+                });
+        }
+
+    }
+
+})();
+(function () {
+    'use strict';
+
+    Payments.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.settings')
+        .controller('Payments', Payments);
+
+    /* @ngInject */
+    function Payments($scope, SettingsRepo,
+                      CommonService, CommonEvents) {
+        var vm = this;
+        vm.settings = null;
+        vm.deletePayment = deletePayment;
+        vm.addPayment = addPayment;
+
+        vm.saveIsDisabled = false;
+
+        init();
+        function init() {
+            console.log('Payments Init')
+            load();
+        }
+
+        function load() {
+            SettingsRepo.getSettings().then(function (data) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.payment = data.payment;
+            });
+        }
+
+        function deletePayment() {
+            SettingsRepo.deletePayment().then(function (data) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.payment = "";
+            });
+        }
+
+        function addPayment(paymentMethod) {
+            vm.saveIsDisabled = true;
+            SettingsRepo.addPayment(paymentMethod).then(function (data) {
+                vm.payment = data.payment;
+                vm.saveIsDisabled = false;
+            });
+        }
+
+    }
+
+})();
+(function () {
+    'use strict';
+
+    Security.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.settings')
+        .controller('Security', Security);
+
+    /* @ngInject */
+    function Security($scope, SettingsRepo,
+                      CommonService, CommonEvents, SiteAlert) {
+        var vm = this;
+        vm.settings = null;
+        vm.changePassword = changePassword;
+        vm.closeAccount = closeAccount;
+        vm.password = {};
+
+        vm.errorMessagePasswordChange = null;
+        vm.errorMessageAccountClose = null;
+        vm.submitBusy = false;
+
+        vm.reasons = [
+            {"value": 0, "name": "Duplicate", "description": "I have a duplicate account"},
+            {"value": 1, "name": "Dontneed", "description": "I don't need the services anymore."},
+            {"value": 2, "name": "Different", "description": "I am using a different professional service."},
+            {"value": 3, "name": "Other", "description": "Other Reasons"}
+        ];
+
+        init();
+        function init() {
+            load();
+        }
+
+        function load() {
+            SettingsRepo.getSettings().then(function (data) {
+                CommonService.broadcast(CommonEvents.viewReady);
+            });
+        }
+
+        function changePassword(oldpwd, newpwd) {
+            vm.submitBusy = true;
+            vm.errorMessagePasswordChange = null;
+            var model = {oldvalue: oldpwd, newValue: newpwd};
+
+            SettingsRepo.changePassword(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your password has been changed.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessagePasswordChange = data;
+                });
+        }
+
+        function closeAccount(reason) {
+            if (window.confirm("Do you really want to close your account?")) {
+                vm.submitBusy = true;
+                vm.errorMessageAccountClose = null;
+                SettingsRepo.closeAccount(reason).then(
+                    function (data) {
+                        SiteAlert.success("Your account is now closed.");
+                        CommonService.hardRedirect('/logout');
+                    },
+                    function (data) {
+                        vm.submitBusy = false;
+                        vm.errorMessageAccountClose = data;
+                    });
+            }
+        }
+
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Notifications controller
+ */
+angular
+    .module('app.settings')
+    .controller('notificationsCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.notificationModel = {};
+            $scope.errorModel = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+
+            var init = function () {
+                $http.get('/get_settings_notifications?account_id=' + account_id)
+                    .then(function (response) {
+                        $scope.notificationModel = response.data;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+            };
+            init();
+
+            $scope.updateNotifications = function (model) {
+                //add the usr object
+                model = angular.extend(model, {'account_id': account_id});
+                $http.post('/post_settings_notifications', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+        }]);
+'use strict';
+
+/**
+ * Payments controller
+ */
+angular
+    .module('app.settings')
+    .controller('paymentsCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.paymentModel = {};
+            $scope.usr = userSession;
+            var account_id = $scope.usr.userdata.account_id;
+
+            var init = function () {
+                $http.get('/get_settings_payments?account_id=' + account_id)
+                    .success(function (response) {
+                        $scope.paymentModel = response;
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+            };
+            init();
+
+            $scope.updatePayments = function (model) {
+                model = angular.extend(model, {'account_id': account_id});
+                $http.post('/post_settings_payments', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Security controller
+ */
+angular
+    .module('app.settings')
+    .controller('securityCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.paymentModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            var validate = function (model) {
+                if (!model.password || !model.password_confirm) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "All fields are required.";
+                }
+                if (model.password !== model.password_confirm) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = "Password does not match the confirmation.";
+                }
+                return true;
+            };
+
+            $scope.updatePassword = function (model) {
+                if (!validate(model)) {
+                    return false;
+                }
+                model = angular.extend(model, {'email': account_email});
+                $http.post('/post_settings_security', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your password was updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+            };
+
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the settings module.
+ */
+angular
+    .module('app.settings')
+    .controller('settingsBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        // CtrlHelper that is shared between the parent and all children.
+        $scope.ctrlHelper = new HL.CtrlHelper();
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+    }]);
 /**
  * Parent controller of the dashboard module.
  */
@@ -5247,1178 +6419,3 @@ angular
     }
 
 })();
-/**
- * Controller for the accept view.
- */
-(function () {
-    'use strict';
-
-    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Accept', Accept);
-
-    /** @ngInject */
-    function Accept($log, $state, $stateParams, $location, $anchorScroll,
-                    AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var views = {
-            default: 'default',
-            invalid: 'invalid',
-            used: 'used'
-        };
-
-        vm.messages = {
-            signup: null,
-            login: null
-        };
-        vm.spinners = {
-            signup: false,
-            login: false
-        };
-        vm.view = views.default;
-        vm.invite = null;
-        vm.signupModel = null;
-        vm.loginModel = null;
-
-        vm.signup = signup;
-        vm.login = login;
-
-        vm.gotoLogin = gotoLogin;
-
-        init();
-
-        function init() {
-            console.log('Accept Init')
-            console.log(angular.fromJson($stateParams.data))
-            // Pre-fetched data can come as a URL parameter (`data`).
-
-            var data = angular.fromJson($stateParams.data);
-
-            // Delete `data` parameter from URL.
-            // $state.go('.', {data: null}, {location: 'replace'});
-
-            // Impossible token.
-            if ($stateParams.token.length > 16) {
-                return ready();
-            }
-
-            if (data) {
-                return ready(data);
-            }
-
-            AccountRepo.invite($stateParams.token).then(ready, ready);
-
-            function ready(invite) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.invite = invite;
-
-                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
-                    vm.view = views.invalid;
-                    return;
-                }
-                if (vm.invite.used) {
-                    vm.view = views.used;
-                    return;
-                }
-                vm.signupModel = {email: vm.invite.email};
-                vm.loginModel = {email: vm.invite.email};
-            }
-        }
-
-        function signup(model) {
-            vm.spinners.signup = true;
-            vm.messages.signup = null;
-            AccountRepo.join(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.signup = false;
-                    vm.messages.signup = data;
-                    $location.hash('signup-view');
-                    $anchorScroll();
-                }
-            );
-        }
-
-        function login(model) {
-            vm.spinners.login = true;
-            vm.messages.login = null;
-            AccountRepo.login(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.login = false;
-                    vm.messages.login = data;
-                    gotoLogin();
-                }
-            );
-        }
-
-        function withToken(model) {
-            return angular.extend(model, {token: vm.invite.token});
-        }
-
-        function gotoLogin() {
-            $location.hash('login-view');
-            $anchorScroll();
-        }
-    }
-
-})();
-
-/**
- * Base controller of the auth state.
- */
-(function () {
-    'use strict';
-
-    Auth.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Auth', Auth);
-
-    /** @ngInject */
-    function Auth(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-/**
- * Controller for the join view.
- */
-(function () {
-    'use strict';
-
-    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Join', Join);
-
-    /** @ngInject */
-    function Join($log, $anchorScroll, $state, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var defaultModel = {
-            email: '',
-            password: '',
-            password_confirm: '',
-            invite: '',
-            org_name: '',
-            org_username: ''
-        };
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-        vm.signup = angular.copy(defaultModel);
-
-        vm.cancel = cancel;
-        vm.next = next;
-        vm.previous = previous;
-        vm.join = join;
-
-        init();
-
-        function init() {
-            if ($stateParams.invite) {
-                console.log('yippy skippy')
-                vm.signup.invite = $stateParams.invite;
-            }
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function join(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            AccountRepo.join(model).then(
-                function (data) {
-                    CommonService.hardRedirect('/accounts#/edit');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                    $anchorScroll('join-view');
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-
-        /**
-         * Go to next section of registration.
-         */
-        function next(model) {
-            // TODO: maybe perform email verification (HTTP call) here.
-            $state.go('auth.join.team');
-        }
-
-        /**
-         * Go to previous section of registration.
-         */
-        function previous() {
-            $state.go('auth.join.personal');
-        }
-
-    }
-
-})();
-/**
- * Controller for the login view.
- */
-(function () {
-    'use strict';
-
-    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Login', Login);
-
-    /** @ngInject */
-    function Login($log, $anchorScroll, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var next = null;
-        var defaultAuth = {
-            email: '',
-            password: '',
-        };
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-        vm.auth = angular.copy(defaultAuth);
-        vm.login = login;
-
-        init();
-
-        function init() {
-            CommonService.broadcast(CommonEvents.viewReady);
-            next = $stateParams.next;
-        }
-
-        function login(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-            AccountRepo.login(model).then(
-                function (data) {
-                    CommonService.hardRedirect(next || '/app');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                    $anchorScroll('login-view');
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/13/16.
- */
-
-/**
- * Controller for the accept view.
- */
-(function () {
-    'use strict';
-
-    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('ThreadAccept', Accept);
-
-    /** @ngInject */
-    function Accept($log, $state, $stateParams, $location, $anchorScroll,
-                    AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var views = {
-            default: 'default',
-            invalid: 'invalid',
-            used: 'used'
-        };
-
-        vm.messages = {
-            signup: null,
-            login: null
-        };
-        vm.spinners = {
-            signup: false,
-            login: false
-        };
-        vm.view = views.default;
-        vm.invite = null;
-        vm.signupModel = null;
-        vm.loginModel = null;
-
-        vm.signup = signup;
-        vm.login = login;
-
-        vm.gotoLogin = gotoLogin;
-
-        init();
-
-        function init() {
-            console.log('ThreadAccept Init')
-            console.log(angular.fromJson($stateParams.data))
-            // Pre-fetched data can come as a URL parameter (`data`).
-
-            var data = angular.fromJson($stateParams.data);
-
-            // Delete `data` parameter from URL.
-            // $state.go('.', {data: null}, {location: 'replace'});
-
-            // Impossible token.
-            if ($stateParams.token.length > 8) {
-                return ready();
-            }
-
-            if (data) {
-                return ready(data);
-            }
-
-            AccountRepo.threadInvite($stateParams.token).then(ready, ready);
-
-            function ready(invite) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.invite = invite;
-
-                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
-                    vm.view = views.invalid;
-                    return;
-                }
-                if (vm.invite.used) {
-                    vm.view = views.used;
-                    return;
-                }
-                vm.signupModel = {email: vm.invite.email};
-                vm.loginModel = {email: vm.invite.email};
-            }
-        }
-
-        function signup(model) {
-            vm.spinners.signup = true;
-            vm.messages.signup = null;
-            console.log(withToken(model))
-            AccountRepo.join(withToken(model)).then(
-                function (data) {
-                    console.log(data)
-                    return CommonService.hardRedirect('/accounts#/edit');
-                },
-                function (data) {
-                    vm.spinners.signup = false;
-                    vm.messages.signup = data;
-                    $location.hash('signup-view');
-                    $anchorScroll();
-                }
-            );
-        }
-
-        function login(model) {
-            vm.spinners.login = true;
-            vm.messages.login = null;
-            AccountRepo.login(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.login = false;
-                    vm.messages.login = data;
-                    gotoLogin();
-                }
-            );
-        }
-
-        function withToken(model) {
-            return angular.extend(model, {invite: vm.invite.token});
-        }
-
-        function gotoLogin() {
-            $location.hash('login-view');
-            $anchorScroll();
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Main landing page.
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('LandingCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-        $scope.gotoInvite = gotoInvite;
-        $scope.contact = {
-            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
-        };
-
-        function gotoInvite() {
-            $location.path('/');
-            $location.hash('invite');
-            $anchorScroll();
-        }
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                    gotoInvite();
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * About Us controller
- */
-angular
-    .module('Home')
-    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            console.log("Hello");
-            $window.location.href = '/home/join';
-        };
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = '/home/join';
-        };
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('faqCtrl', ['$scope', '$window', '$http',
-        function ($scope, $window, $http) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('homeBaseCtrl', ['$scope', '$http',
-        function ($scope, $http) {
-                // bring in userSession if this controller ever gets used.
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Interest controller
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('interestCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('Home')
-    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Preview provider profile controller
- */
-angular
-    .module('app.guest')
-    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
-        function ($scope, $window, $stateParams, $http) {
-            
-            var provider_id = $stateParams.account_id;
-            $scope.profile = {};
-            $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/caregiver_profile?account_id=' + provider_id)
-                    .then(function (response) {
-                        $scope.profile = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: provider_id,
-                            message: "I want to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('app.guest')
-    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
-        function ($scope, $window, $stateParams, $http) {
-            // bring in alternative to userSession
-            var seeker_id = $stateParams.account_id;
-            $scope.aboutMe = {};
-            // $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/seeker_profile?account_id=' + seeker_id)
-                    .then(function (response) {
-                        $scope.aboutMe = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: seeker_id,
-                            message: "I would like to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Pricing controller
- */
-angular
-    .module('Home')
-    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Privacy controller
- */
-angular
-    .module('Home')
-    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-Search.$inject = ['$scope', '$http', 'SiteAlert', 'AccountRepo']
-angular
-    .module('app.guest')
-    .controller('searchCtrl', Search)
-
-    function Search ($scope, $http, SiteAlert, AccountRepo) {
-
-        // find replacement for userSession
-
-        $scope.searchModel = {};
-        $scope.searchCaregiverResults = {};
-
-        var init = function () {
-            AccountRepo.get_caregivers()
-                .then(function (response) {
-                $scope.searchCaregiverResults = response.data;
-                console.log($scope.searchCaregiverResults)
-
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            })
-
-            AccountRepo.get_seekers()
-                .then(function (response) {
-                $scope.searchSeekerResults = response.data;
-                console.log($scope.searchSeekerResults)
-
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            })
-
-            $scope.auth.viewReady = true;
-
-        };
-        init();
-
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
-
-        $scope.find = function (model) {
-            $http({
-                url: '/search_caregivers',
-                method: "GET",
-                params: {search_string: model.search_string}
-            }).then(function (response) {
-                $scope.searchCaregiverResults = response.data;
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            });
-        };
-
-    };
-'use strict';
-
-/**
- * Terms controller
- */
-angular
-    .module('Home')
-    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Parent controller of the settings module.
- */
-(function () {
-    'use strict';
-
-    Base.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.settings')
-        .controller('Base', Base);
-
-    /* @ngInject */
-    function Base(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-(function () {
-    'use strict';
-
-    Notifications.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents", "SiteAlert"];
-    angular
-        .module('app.settings')
-        .controller('Notifications', Notifications);
-
-    /** @ngInject */
-    function Notifications($scope, SettingsRepo,
-                           CommonService, CommonEvents, SiteAlert) {
-        var vm = this;
-        vm.settings = null;
-        vm.updateSMSSettings = updateSMSSettings;
-        vm.updateEmailSettings = updateEmailSettings;
-
-        vm.errorMessageSMSSettings = null;
-        vm.errorMessageEmailSettings = null;
-        vm.submitBusy = {
-            sms_spinner: false,
-            email_spinner: false
-        };
-
-        init();
-        function init() {
-            console.log('Notifications Init')
-            load();
-        }
-
-        function load() {
-            SettingsRepo.getSettings().then(function (data) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.notifications = data.notifications;
-            });
-        }
-
-        function updateSMSSettings(notifications) {
-            vm.submitBusy.sms_spinner = true;
-            SettingsRepo.updateNotifications(notifications).then(
-                function (data) {
-                    vm.submitBusy.sms_spinner = false;
-                    SiteAlert.success("SMS Settings were updated successfully.");
-                },
-                function (data) {
-                    vm.submitBusy.sms_spinner = false;
-                    vm.errorMessageSMSSettings = data;
-                });
-        }
-
-        function updateEmailSettings(notifications) {
-            vm.submitBusy.email_spinner = true;
-            SettingsRepo.updateNotifications(notifications).then(
-                function (data) {
-                    vm.submitBusy.email_spinner = false;
-                    SiteAlert.success("Email Settings were updated successfully.");
-                },
-                function (data) {
-                    vm.submitBusy.email_spinner = false;
-                    vm.errorMessageEmailSettings = data;
-                });
-        }
-
-    }
-
-})();
-(function () {
-    'use strict';
-
-    Payments.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.settings')
-        .controller('Payments', Payments);
-
-    /* @ngInject */
-    function Payments($scope, SettingsRepo,
-                      CommonService, CommonEvents) {
-        var vm = this;
-        vm.settings = null;
-        vm.deletePayment = deletePayment;
-        vm.addPayment = addPayment;
-
-        vm.saveIsDisabled = false;
-
-        init();
-        function init() {
-            console.log('Payments Init')
-            load();
-        }
-
-        function load() {
-            SettingsRepo.getSettings().then(function (data) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.payment = data.payment;
-            });
-        }
-
-        function deletePayment() {
-            SettingsRepo.deletePayment().then(function (data) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.payment = "";
-            });
-        }
-
-        function addPayment(paymentMethod) {
-            vm.saveIsDisabled = true;
-            SettingsRepo.addPayment(paymentMethod).then(function (data) {
-                vm.payment = data.payment;
-                vm.saveIsDisabled = false;
-            });
-        }
-
-    }
-
-})();
-(function () {
-    'use strict';
-
-    Security.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents", "SiteAlert"];
-    angular
-        .module('app.settings')
-        .controller('Security', Security);
-
-    /* @ngInject */
-    function Security($scope, SettingsRepo,
-                      CommonService, CommonEvents, SiteAlert) {
-        var vm = this;
-        vm.settings = null;
-        vm.changePassword = changePassword;
-        vm.closeAccount = closeAccount;
-        vm.password = {};
-
-        vm.errorMessagePasswordChange = null;
-        vm.errorMessageAccountClose = null;
-        vm.submitBusy = false;
-
-        vm.reasons = [
-            {"value": 0, "name": "Duplicate", "description": "I have a duplicate account"},
-            {"value": 1, "name": "Dontneed", "description": "I don't need the services anymore."},
-            {"value": 2, "name": "Different", "description": "I am using a different professional service."},
-            {"value": 3, "name": "Other", "description": "Other Reasons"}
-        ];
-
-        init();
-        function init() {
-            load();
-        }
-
-        function load() {
-            SettingsRepo.getSettings().then(function (data) {
-                CommonService.broadcast(CommonEvents.viewReady);
-            });
-        }
-
-        function changePassword(oldpwd, newpwd) {
-            vm.submitBusy = true;
-            vm.errorMessagePasswordChange = null;
-            var model = {oldvalue: oldpwd, newValue: newpwd};
-
-            SettingsRepo.changePassword(model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your password has been changed.");
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessagePasswordChange = data;
-                });
-        }
-
-        function closeAccount(reason) {
-            if (window.confirm("Do you really want to close your account?")) {
-                vm.submitBusy = true;
-                vm.errorMessageAccountClose = null;
-                SettingsRepo.closeAccount(reason).then(
-                    function (data) {
-                        SiteAlert.success("Your account is now closed.");
-                        CommonService.hardRedirect('/logout');
-                    },
-                    function (data) {
-                        vm.submitBusy = false;
-                        vm.errorMessageAccountClose = data;
-                    });
-            }
-        }
-
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Notifications controller
- */
-angular
-    .module('app.settings')
-    .controller('notificationsCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.notificationModel = {};
-            $scope.errorModel = {};
-            $scope.usr = userSession;
-            var account_id = $scope.usr.userdata.account_id;
-
-            var init = function () {
-                $http.get('/get_settings_notifications?account_id=' + account_id)
-                    .then(function (response) {
-                        $scope.notificationModel = response.data;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-            };
-            init();
-
-            $scope.updateNotifications = function (model) {
-                //add the usr object
-                model = angular.extend(model, {'account_id': account_id});
-                $http.post('/post_settings_notifications', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-            };
-
-        }]);
-'use strict';
-
-/**
- * Payments controller
- */
-angular
-    .module('app.settings')
-    .controller('paymentsCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.paymentModel = {};
-            $scope.usr = userSession;
-            var account_id = $scope.usr.userdata.account_id;
-
-            var init = function () {
-                $http.get('/get_settings_payments?account_id=' + account_id)
-                    .success(function (response) {
-                        $scope.paymentModel = response;
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-            };
-            init();
-
-            $scope.updatePayments = function (model) {
-                model = angular.extend(model, {'account_id': account_id});
-                $http.post('/post_settings_payments', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Security controller
- */
-angular
-    .module('app.settings')
-    .controller('securityCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.paymentModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            var validate = function (model) {
-                if (!model.password || !model.password_confirm) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = "All fields are required.";
-                }
-                if (model.password !== model.password_confirm) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = "Password does not match the confirmation.";
-                }
-                return true;
-            };
-
-            $scope.updatePassword = function (model) {
-                if (!validate(model)) {
-                    return false;
-                }
-                model = angular.extend(model, {'email': account_email});
-                $http.post('/post_settings_security', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your password was updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-            };
-
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the settings module.
- */
-angular
-    .module('app.settings')
-    .controller('settingsBaseCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        // CtrlHelper that is shared between the parent and all children.
-        $scope.ctrlHelper = new HL.CtrlHelper();
-
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
-
-    }]);

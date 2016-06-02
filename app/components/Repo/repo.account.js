@@ -57,7 +57,7 @@
          * @returns {Promise}
          */
         function save(model) {
-            return AbstractRepo.post('/accounts/update/', model)
+            return AbstractRepo.post('accounts/update/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 

@@ -30,8 +30,6 @@
                 function (data) {
                     vm.submitBusy = false;
                     vm.profile = data.data.response;
-                    console.log(vm.profile)
-                    console.log(vm.submitBusy)
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -40,7 +38,6 @@
         }
 
         function update(model) {
-            console.log(model);
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
