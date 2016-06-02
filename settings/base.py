@@ -69,6 +69,8 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+CSRF_COOKIE_HTTPONLY = False
+
 IGNORABLE_404_URLS = (
 	re.compile(r'\.(php|cgi)$'),
 	re.compile(r'^/phpmyadmin/'),

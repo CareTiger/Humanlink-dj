@@ -404,9 +404,8 @@
         .config(Config)
         .run(['$http', '$cookies', function ($http, $cookies) {
             // set the CSRF token here
-            $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
-            $cookies.put('myFavorite', 'oatmeal')
-            console.log($cookies.getAll())
+            $http.defaults.headers.post['X-CSRFToken'] = $cookies.get('csrftoken');
+            console.log($http.defaults.headers.post['X-CSRFToken'])
         }])
 
     /** ngInject */
