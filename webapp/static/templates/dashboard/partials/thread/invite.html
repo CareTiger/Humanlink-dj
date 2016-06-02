@@ -11,22 +11,21 @@
     {{ vm.errorMessage }}
   </div>
 
-  <form name="form">
+  <form class="form-horizontal" name="form">
     <div class="form-group vmargin10">
-      <div class="row">
-        <div class="col-sm-12 col-xs-12">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email"
-                 class="form-control"
-                 placeholder="For example ... name@example.com"
-                 ng-model="vm.invite.email"
-                 required
-                 hl-focus/>
+      <label class="col-sm-3 control-label" for="email">Email Address</label>
 
-          <div class="has-warning" ng-if="form.email.$dirty">
-            <div class="help-block" ng-messages="form.email.$error">
-              <div ng-message="email">Please enter a valid email address.</div>
-            </div>
+      <div class="col-sm-9">
+        <input type="email" id="email" name="email"
+               class="form-control"
+               placeholder="For example ... name@example.com"
+               ng-model="vm.invite.email"
+               required
+               hl-focus/>
+
+        <div class="has-warning" ng-if="form.email.$dirty">
+          <div class="help-block" ng-messages="form.email.$error">
+            <div ng-message="email">Please enter a valid email address.</div>
           </div>
         </div>
       </div>
@@ -34,26 +33,27 @@
 
 
     <div class="form-group vmargin10">
-      <div class="row">
-        <div class="col-sm-12 col-xs-12">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name"
-                 class="form-control"
-                 placeholder="Optional"
-                 maxlength="70"
-                 ng-model="vm.invite.name"
-                 hl-capitalize/>
-        </div>
+      <label class="col-sm-3 control-label" for="name">Name</label>
+
+      <div class="col-sm-9">
+        <input type="text" id="name" name="name"
+               class="form-control"
+               placeholder="Optional"
+               maxlength="70"
+               ng-model="vm.invite.name"
+               hl-capitalize/>
       </div>
     </div>
 
     <div class="form-group vmargin10">
+      <div class="col-md-offset-3 col-md-9">
       <p>You can track all your invitations in the
         <a ui-sref="dashboard.messages.pending" href>Pending Invitations</a> section.</p>
+      </div>
     </div>
 
     <div class="form-group row vmargin10">
-      <div class="col-md-12">
+      <div class="col-md-offset-3 col-md-9">
         <div class="row col-xs-3">
           <button type="submit" class="btn btn-block btn-secondary"
                   ng-click="vm.sendInvite(vm.invite)"

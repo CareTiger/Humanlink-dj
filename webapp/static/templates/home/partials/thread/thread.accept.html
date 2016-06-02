@@ -2,7 +2,7 @@
 
   <div ng-switch-default>
     <h2 class="text-center">
-      Channel {{ vm.invite.thread_name }}
+      Channel <strong>{{ vm.invite.thread_name }}</strong>
       has sent you an invitation!
     </h2>
 
@@ -29,3 +29,4 @@
   </div>
 
 </div>
+<pre> {{ vm.invite | json }}</pre>
