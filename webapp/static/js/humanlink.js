@@ -2340,7 +2340,7 @@ window.HL = window.HL || {};
         init();
 
         function init() {
-            console.log('Base Init')
+            console.log('Base Init');
             CommonService.on('$stateChangeStart', function () {
                 vm.viewReady = false;
             });
@@ -2377,7 +2377,7 @@ window.HL = window.HL || {};
 
         init();
         function init() {
-            console.log('Edit Init')
+            console.log('Edit Init');
             vm.submitBusy = true;
             AccountRepo.me().then(
                 function (data) {

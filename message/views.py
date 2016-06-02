@@ -167,7 +167,7 @@ def history(request, thread_id):
         else:
             all_chats = []
 
-            all_chats_list = ThreadChat.objects.filter(thread=thread)
+            all_chats_list = ThreadChat.objects.filter(thread=thread).order_by('-created_on')
 
             for chat in all_chats_list:
                 chatObject = {

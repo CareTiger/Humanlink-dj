@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 from itsdangerous import URLSafeTimedSerializer
 from django.conf import settings
 import json
@@ -16,7 +18,7 @@ from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver, CareSeeker
 from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
-import pusher
+from pusher import pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
 from django.http import QueryDict
@@ -45,11 +47,6 @@ def index(request):
 def broadcast(chat_id=None):
     # """Sends out push notifications to thread members about chat message. """
 
-    def chunks(li, n):
-        """Yields n-sized chunks from the list."""
-        for i in xrange(0, len(li), n):
-            yield li[i:i + n]
-
     chat = ThreadChat.objects.get(id=chat_id)
     thread = Thread.objects.get(id=chat.thread.id)
 
@@ -58,9 +55,8 @@ def broadcast(chat_id=None):
 
     all_members = ThreadMember.objects.filter(thread=thread)
 
-    partition = chunks(all_members, 10)
-    for part in partition:
-        channels = ['private-account-{}'.format(m.account.id) for m in part]
+    for member in all_members:
+        channels = ['public-account-{}'.format(member.account.id)]
         pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
@@ -75,7 +71,7 @@ def add_to_welcome(org_id, account_id):
                                          text=account.email + ' has joined ',
                                          kind=0, inviter=2, remover=3)
 
-        # broadcast(chat_id=chat.id)
+        broadcast(chat_id=chat.id)
 
 
 # Converts AJAX JSON into query dictionary for the view to process.
