@@ -212,7 +212,7 @@ def add_member(request, thread_id):
                 # Send Email
                 md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                 t = thread_invite.token.replace(' ', '+')
-                url = "http://localhost:8000/home/thread/{}".format(t)
+                url = "https://humanlink.webfactional.com/home/thread/{}".format(t)
                 message = {
                     'global_merge_vars': [
                         {
