@@ -138,6 +138,79 @@
 
 })();
 /**
+ * A module that has common directives, services, constants, etc.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.common', []);
+
+})();
+
+'use strict';
+
+/**
+ * A module that is common to all other site modules.
+ */
+(function () {
+    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
+    Config.$inject = ["$compileProvider"];
+    Ctrl.$inject = ["$scope"];
+    angular
+        .module('Common', ['ui.router'])
+        .run(Run)
+        .config(Config)
+        .controller('commonCtrl', Ctrl);
+
+    /** @ngInject */
+    function Run($rootScope, $location, $state, userSession) {
+        // Broadcasted when the state of the module changes.
+        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
+
+        // siteAlert is global.
+        $rootScope.siteAlert = {};
+
+        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
+            if (toState.data && angular.isDefined(toState.data.role)) {
+                var accessRole = toState.data.role;
+                var userRole = userSession.getRole();
+                // Guest is redirected account page.
+                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('settings.profile');
+                    return;
+                }
+                // User is redirected to login.
+                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('login',
+                        {next: $location.absUrl()},
+                        {notify: false}
+                    );
+                    return;
+                }
+            }
+            // No need to update userSession on page load.
+            if (!fromState.abstract) {
+                userSession.update();
+            }
+        }
+    }
+
+    /** @ngInject */
+    function Config($compileProvider) {
+        if (HL.helpers.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+        }
+    }
+
+    /** @ngInject */
+    function Ctrl($scope) {
+        // Empty.
+    }
+
+})();
+/**
  * Core module that bootstrap most of the dependencies and configuration.
  */
 (function () {
@@ -632,79 +705,6 @@ function Config($stateProvider, $urlRouterProvider){
 //     }
 //
 // })();
-/**
- * A module that has common directives, services, constants, etc.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.common', []);
-
-})();
-
-'use strict';
-
-/**
- * A module that is common to all other site modules.
- */
-(function () {
-    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
-    Config.$inject = ["$compileProvider"];
-    Ctrl.$inject = ["$scope"];
-    angular
-        .module('Common', ['ui.router'])
-        .run(Run)
-        .config(Config)
-        .controller('commonCtrl', Ctrl);
-
-    /** @ngInject */
-    function Run($rootScope, $location, $state, userSession) {
-        // Broadcasted when the state of the module changes.
-        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
-
-        // siteAlert is global.
-        $rootScope.siteAlert = {};
-
-        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
-            if (toState.data && angular.isDefined(toState.data.role)) {
-                var accessRole = toState.data.role;
-                var userRole = userSession.getRole();
-                // Guest is redirected account page.
-                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('settings.profile');
-                    return;
-                }
-                // User is redirected to login.
-                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('login',
-                        {next: $location.absUrl()},
-                        {notify: false}
-                    );
-                    return;
-                }
-            }
-            // No need to update userSession on page load.
-            if (!fromState.abstract) {
-                userSession.update();
-            }
-        }
-    }
-
-    /** @ngInject */
-    function Config($compileProvider) {
-        if (HL.helpers.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-        }
-    }
-
-    /** @ngInject */
-    function Ctrl($scope) {
-        // Empty.
-    }
-
-})();
 /**
  * Team management and settings module.
  */
@@ -1386,107 +1386,41 @@ angular
     'use strict';
 
     angular
-        .module('app.core')
-        .constant('Config', getConfig());
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
 
-    function getConfig() {
-
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
         return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
         };
     }
 
 })();
 /**
- * Dashboard helper/bootstraper.
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
  */
 (function () {
     'use strict';
 
-    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    $pusher.$inject = ["Config"];
     angular
-        .module('app.dashboard')
-        .factory('DashboardHelper', DashboardHelper);
+        .module('app.common')
+        .factory('$pusher', $pusher);
 
     /** ngInject */
-    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
-                             MessagesService, Session) {
+    function $pusher(Config) {
+        var self = this;
+        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
 
         return {
-            initialize: init
+            client: self.client
         };
-
-        /**
-         * Bootstraps the Dashboard module, specifically:
-         *   - Fetches org summary
-         *   - Fetches thread messages
-         *   - Binds pusher events.
-         */
-        function init() {
-            var threadsPr = MessagesService.getThreads().then(function (threads) {
-                // Asynchronously fetch thread histories.
-                // TODO: Delay won't be necessary once all templates are in one place.
-                $timeout(function () {fetchThreads(threads)}, 100);
-                return threads;
-            });
-            var pusherPr = bindPusher();
-            return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
-        }
-
-        /**
-         * Fetches history for all the threads in the org.
-         *
-         * TODO: only fetch recent 3-5 threads.
-         */
-        function fetchThreads(threads) {
-            threads[0].forEach(function (thread) {
-                if (thread.is_archived) {
-                    return;
-                }
-                MessagesService.getHistory(thread.id);
-            });
-        }
-
-        /**
-         * Subscribes to user's Pusher channel and binds callback events.
-         */
-        function bindPusher() {
-            var defer = $q.defer();
-
-            var channelName = 'public-account-' + Session.account.id;
-            // In the future, this will need to be private
-            var channel = $pusher.client.subscribe(channelName);
-
-            channel.bind('pusher:subscription_succeeded', function (data) {
-                $log.debug('Pusher subscribed: ' + channel.name);
-                PushListener.bindAndListen(channel);
-                defer.resolve(data);
-            });
-            channel.bind('pusher:subscription_error', function (status) {
-                if (status === 403) {
-                    var msg = 'Pusher channel not authorized.';
-                    $log.warn(msg);
-                    defer.reject(msg);
-                }
-            });
-
-            return defer.promise;
-        }
     }
 
 })();
@@ -1735,6 +1669,114 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+/**
+ * Dashboard helper/bootstraper.
+ */
+(function () {
+    'use strict';
+
+    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('DashboardHelper', DashboardHelper);
+
+    /** ngInject */
+    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
+                             MessagesService, Session) {
+
+        return {
+            initialize: init
+        };
+
+        /**
+         * Bootstraps the Dashboard module, specifically:
+         *   - Fetches org summary
+         *   - Fetches thread messages
+         *   - Binds pusher events.
+         */
+        function init() {
+            var threadsPr = MessagesService.getThreads().then(function (threads) {
+                // Asynchronously fetch thread histories.
+                // TODO: Delay won't be necessary once all templates are in one place.
+                $timeout(function () {fetchThreads(threads)}, 100);
+                return threads;
+            });
+            var pusherPr = bindPusher();
+            return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
+        }
+
+        /**
+         * Fetches history for all the threads in the org.
+         *
+         * TODO: only fetch recent 3-5 threads.
+         */
+        function fetchThreads(threads) {
+            threads[0].forEach(function (thread) {
+                if (thread.is_archived) {
+                    return;
+                }
+                MessagesService.getHistory(thread.id);
+            });
+        }
+
+        /**
+         * Subscribes to user's Pusher channel and binds callback events.
+         */
+        function bindPusher() {
+            var defer = $q.defer();
+
+            var channelName = 'public-account-' + Session.account.id;
+            // In the future, this will need to be private
+            var channel = $pusher.client.subscribe(channelName);
+
+            channel.bind('pusher:subscription_succeeded', function (data) {
+                $log.debug('Pusher subscribed: ' + channel.name);
+                PushListener.bindAndListen(channel);
+                defer.resolve(data);
+            });
+            channel.bind('pusher:subscription_error', function (status) {
+                if (status === 403) {
+                    var msg = 'Pusher channel not authorized.';
+                    $log.warn(msg);
+                    defer.reject(msg);
+                }
+            });
+
+            return defer.promise;
+        }
+    }
+
+})();
 (function () {
     'use strict';
 
@@ -2277,48 +2319,6 @@ window.HL = window.HL || {};
 
         return text;
     };
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    $pusher.$inject = ["Config"];
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher(Config) {
-        var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
-
-        return {
-            client: self.client
-        };
-    }
 
 })();
 /**
@@ -3396,6 +3396,357 @@ angular
             };
         }]);
 
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+/**
+ * Keeps track of the current logged in user.
+ */
+(function () {
+    angular
+        .module('Common')
+        .provider('userSession', function () {
+
+            getUserSession.$inject = ["apiService"];
+            var roles = {
+                GUEST: 0,
+                AUTHORIZED: 1
+            };
+
+            return {
+                // This is here because it us used in `angular.config()`.
+                roles: roles,
+                $get: getUserSession
+            };
+
+            /** ngInject */
+            function getUserSession(apiService) {
+                var userdata = null;
+                var ctrlHelper = new HL.CtrlHelper();
+
+                // Initial page load.
+                if (window.HL.userdata) {
+                    userdata = window.HL.userdata;
+                }
+
+                return {
+                    roles: roles,
+                    userdata: userdata,
+                    setAccount: setAccount,
+                    unsetAccount: unsetAccount,
+                    isAuthorized: isAuthorized,
+                    update: update,
+                    getRole: getRole
+                };
+
+                function setAccount(account) {
+                    userdata = account;
+                }
+
+                function unsetAccount() {
+                    userdata = null;
+                }
+
+                function isAuthorized() {
+                    return userdata !== null;
+                }
+
+                function update() {
+                    ctrlHelper.success = function (data, status, headers, config) {
+                        userdata = data;
+                    };
+                    ctrlHelper.error = function () {
+                        unsetAccount();
+                    };
+                    apiService.Accounts.userdata({}, ctrlHelper);
+                }
+
+                /**
+                 * Returns roles.GUEST or roles.AUTHORIZED.
+                 * In the future, this should be used for checking account type as well.
+                 */
+                function getRole() {
+                    return isAuthorized() ? roles.AUTHORIZED : roles.GUEST;
+                }
+            }
+        });
+
+})();
+/**
+ * Service that keeps track of the current logged in user.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .provider('Session', Session);
+
+    function Session() {
+
+        SessionService.$inject = ["AccountRepo"];
+        var roles = {
+            GUEST: 0,
+            AUTHORIZED: 1
+        };
+
+        return {
+            roles: roles,
+            $get: SessionService
+        };
+
+        function SessionService(AccountRepo) {
+            var self = this;
+
+            // Initial page load.
+            // TODO: Rename this to window.hl.account
+            self.account = window.HL.userdata;
+
+            return {
+                roles: roles,
+                account: self.account,
+                isAuthorized: isAuthorized,
+                update: update
+            };
+
+            /**
+             * Refreshes the user information from the server.
+             * @return {Promise}
+             */
+            function update() {
+                return AccountRepo.me().then(
+                    function (data) {
+                        self.account = data;
+                    },
+                    function (error) {
+                        self.account = null;
+                    }
+                );
+            }
+
+            /**
+             * Returns whether or not the current user is logged in.
+             * @return {boolean}
+             */
+            function isAuthorized() {
+                return angular.isObject(self.account);
+            }
+        }
+
+    }
+
+})();
+/**
+ * Service that controls the site alert that is attached to the root scope.
+ *
+ * Site alerts are alert messages that are displayed at the top of the website.
+ * They are useful for displaying one-time (flash) messages.
+ *
+ * Future enhancements:
+ *  - Inject HTML
+ *  - Auto-dismiss
+ */
+
+(function () {
+    'use strict';
+
+    SiteAlert.$inject = ["$rootScope"];
+    angular
+        .module('app.common')
+        .factory('SiteAlert', SiteAlert);
+
+    /** ngInject */
+    function SiteAlert($rootScope) {
+
+        $rootScope.siteAlert = {};
+
+        var alertBox = $rootScope.siteAlert;
+
+        return {
+            clear: clear,
+            success: success,
+            error: danger,
+            danger: danger,
+            warning: warning,
+            info: info,
+            check: checkAlert,
+        };
+
+        function checkAlert(){
+            console.log(alertBox)
+        }
+
+        function clear() {
+            addAlert(null, null);
+        }
+
+        function success(content) {
+            addAlert('success', content);
+        }
+
+        function danger(content) {
+            addAlert('danger', content);
+        }
+
+        function warning(content) {
+            addAlert('warning', content);
+        }
+
+        function info(content) {
+            addAlert('info', content);
+        }
+
+        function addAlert(type, content) {
+            alertBox.type = type;
+            alertBox.message = content;
+        }
+    }
+
+})();
+/**
+ * API Service that talks to the backend.
+ */
+angular
+    .module('Common')
+    .factory('apiService', ['$http', function ($http) {
+
+        // Google Cloud Endpoints URL.
+        var getGceBase = function () {
+            var host = window.location.host;
+            // GCE doesn't work with custom domains.
+            if (host.indexOf('humanlink.co') === 0) {
+                host = 'care-tiger.appspot.com';
+            }
+            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
+            return protocol + host + '/_ah/api/humanlink/v1/';
+        };
+
+        var GCE_BASE = getGceBase();
+
+        var Accounts = {
+            caregiver: {},
+            patients: {}
+        };
+        var Connections = {};
+        var Home = {};
+
+        /**
+         * Base method to communicate with the APIs.
+         *
+         * @param method : 'GET' or 'POST'
+         * @param uri : relative path to the base URL or GCE URL
+         * @param data : request data
+         * @param ctrlHelper : CtrlHelper with callbacks
+         * @param useEndpoints : whether this is a GCE API or not.
+         */
+        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
+            ctrlHelper.isLoading = true;
+            ctrlHelper.isValid = true;
+            ctrlHelper.errors = [];
+
+            // Use endpoints by default.
+            if (!angular.isDefined(useEndpoints)) {
+                useEndpoints = true;
+            }
+
+            $http({
+                method: method,
+                url: (useEndpoints ? GCE_BASE : '/') + uri,
+                data: data
+            })
+                .success(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.success)) {
+                        ctrlHelper.success(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.failure)) {
+                        ctrlHelper.failure(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                });
+        };
+
+        Accounts.login = function (data, ctrlHelper) {
+            apiRequest('POST', 'login.json', data, ctrlHelper, false);
+        };
+
+        Accounts.signup = function (data, ctrlHelper) {
+            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
+        };
+
+        Accounts.userdata = function (data, ctrlHelper) {
+            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
+        };
+
+        Accounts.get = function (id, ctrlHelper) {
+            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
+        };
+
+        Accounts.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.get = function (accountId, ctrlHelper) {
+            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.list = function (ctrlHelper) {
+            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
+        };
+
+        Accounts.patients.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.remove = function (patient_id, ctrlHelper) {
+            var data = {patient_id: patient_id};
+            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
+        };
+
+        Home.contact = function (data, ctrlHelper) {
+            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
+        };
+
+        Connections.my = function (data, ctrlHelper) {
+            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
+        };
+
+        Home.search = function (data, ctrlHelper) {
+            apiRequest('GET', 'home/search', data, ctrlHelper, false);
+        };
+
+        // Public methods.
+        return {
+            Accounts: Accounts,
+            Connections: Connections,
+            Home: Home
+        };
+
+    }]);
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
 /**
  * Parent controller of the dashboard module.
  */
@@ -6071,354 +6422,3 @@ angular
         };
 
     }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-/**
- * Keeps track of the current logged in user.
- */
-(function () {
-    angular
-        .module('Common')
-        .provider('userSession', function () {
-
-            getUserSession.$inject = ["apiService"];
-            var roles = {
-                GUEST: 0,
-                AUTHORIZED: 1
-            };
-
-            return {
-                // This is here because it us used in `angular.config()`.
-                roles: roles,
-                $get: getUserSession
-            };
-
-            /** ngInject */
-            function getUserSession(apiService) {
-                var userdata = null;
-                var ctrlHelper = new HL.CtrlHelper();
-
-                // Initial page load.
-                if (window.HL.userdata) {
-                    userdata = window.HL.userdata;
-                }
-
-                return {
-                    roles: roles,
-                    userdata: userdata,
-                    setAccount: setAccount,
-                    unsetAccount: unsetAccount,
-                    isAuthorized: isAuthorized,
-                    update: update,
-                    getRole: getRole
-                };
-
-                function setAccount(account) {
-                    userdata = account;
-                }
-
-                function unsetAccount() {
-                    userdata = null;
-                }
-
-                function isAuthorized() {
-                    return userdata !== null;
-                }
-
-                function update() {
-                    ctrlHelper.success = function (data, status, headers, config) {
-                        userdata = data;
-                    };
-                    ctrlHelper.error = function () {
-                        unsetAccount();
-                    };
-                    apiService.Accounts.userdata({}, ctrlHelper);
-                }
-
-                /**
-                 * Returns roles.GUEST or roles.AUTHORIZED.
-                 * In the future, this should be used for checking account type as well.
-                 */
-                function getRole() {
-                    return isAuthorized() ? roles.AUTHORIZED : roles.GUEST;
-                }
-            }
-        });
-
-})();
-/**
- * Service that keeps track of the current logged in user.
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .provider('Session', Session);
-
-    function Session() {
-
-        SessionService.$inject = ["AccountRepo"];
-        var roles = {
-            GUEST: 0,
-            AUTHORIZED: 1
-        };
-
-        return {
-            roles: roles,
-            $get: SessionService
-        };
-
-        function SessionService(AccountRepo) {
-            var self = this;
-
-            // Initial page load.
-            // TODO: Rename this to window.hl.account
-            self.account = window.HL.userdata;
-
-            return {
-                roles: roles,
-                account: self.account,
-                isAuthorized: isAuthorized,
-                update: update
-            };
-
-            /**
-             * Refreshes the user information from the server.
-             * @return {Promise}
-             */
-            function update() {
-                return AccountRepo.me().then(
-                    function (data) {
-                        self.account = data;
-                    },
-                    function (error) {
-                        self.account = null;
-                    }
-                );
-            }
-
-            /**
-             * Returns whether or not the current user is logged in.
-             * @return {boolean}
-             */
-            function isAuthorized() {
-                return angular.isObject(self.account);
-            }
-        }
-
-    }
-
-})();
-/**
- * Service that controls the site alert that is attached to the root scope.
- *
- * Site alerts are alert messages that are displayed at the top of the website.
- * They are useful for displaying one-time (flash) messages.
- *
- * Future enhancements:
- *  - Inject HTML
- *  - Auto-dismiss
- */
-
-(function () {
-    'use strict';
-
-    SiteAlert.$inject = ["$rootScope"];
-    angular
-        .module('app.common')
-        .factory('SiteAlert', SiteAlert);
-
-    /** ngInject */
-    function SiteAlert($rootScope) {
-
-        $rootScope.siteAlert = {};
-
-        var alertBox = $rootScope.siteAlert;
-
-        return {
-            clear: clear,
-            success: success,
-            error: danger,
-            danger: danger,
-            warning: warning,
-            info: info,
-            check: checkAlert,
-        };
-
-        function checkAlert(){
-            console.log(alertBox)
-        }
-
-        function clear() {
-            addAlert(null, null);
-        }
-
-        function success(content) {
-            addAlert('success', content);
-        }
-
-        function danger(content) {
-            addAlert('danger', content);
-        }
-
-        function warning(content) {
-            addAlert('warning', content);
-        }
-
-        function info(content) {
-            addAlert('info', content);
-        }
-
-        function addAlert(type, content) {
-            alertBox.type = type;
-            alertBox.message = content;
-        }
-    }
-
-})();
-/**
- * API Service that talks to the backend.
- */
-angular
-    .module('Common')
-    .factory('apiService', ['$http', function ($http) {
-
-        // Google Cloud Endpoints URL.
-        var getGceBase = function () {
-            var host = window.location.host;
-            // GCE doesn't work with custom domains.
-            if (host.indexOf('humanlink.co') === 0) {
-                host = 'care-tiger.appspot.com';
-            }
-            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
-            return protocol + host + '/_ah/api/humanlink/v1/';
-        };
-
-        var GCE_BASE = getGceBase();
-
-        var Accounts = {
-            caregiver: {},
-            patients: {}
-        };
-        var Connections = {};
-        var Home = {};
-
-        /**
-         * Base method to communicate with the APIs.
-         *
-         * @param method : 'GET' or 'POST'
-         * @param uri : relative path to the base URL or GCE URL
-         * @param data : request data
-         * @param ctrlHelper : CtrlHelper with callbacks
-         * @param useEndpoints : whether this is a GCE API or not.
-         */
-        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
-            ctrlHelper.isLoading = true;
-            ctrlHelper.isValid = true;
-            ctrlHelper.errors = [];
-
-            // Use endpoints by default.
-            if (!angular.isDefined(useEndpoints)) {
-                useEndpoints = true;
-            }
-
-            $http({
-                method: method,
-                url: (useEndpoints ? GCE_BASE : '/') + uri,
-                data: data
-            })
-                .success(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.success)) {
-                        ctrlHelper.success(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                })
-                .error(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.failure)) {
-                        ctrlHelper.failure(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                });
-        };
-
-        Accounts.login = function (data, ctrlHelper) {
-            apiRequest('POST', 'login.json', data, ctrlHelper, false);
-        };
-
-        Accounts.signup = function (data, ctrlHelper) {
-            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
-        };
-
-        Accounts.userdata = function (data, ctrlHelper) {
-            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
-        };
-
-        Accounts.get = function (id, ctrlHelper) {
-            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
-        };
-
-        Accounts.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.get = function (accountId, ctrlHelper) {
-            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.list = function (ctrlHelper) {
-            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
-        };
-
-        Accounts.patients.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.remove = function (patient_id, ctrlHelper) {
-            var data = {patient_id: patient_id};
-            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
-        };
-
-        Home.contact = function (data, ctrlHelper) {
-            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
-        };
-
-        Connections.my = function (data, ctrlHelper) {
-            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
-        };
-
-        Home.search = function (data, ctrlHelper) {
-            apiRequest('GET', 'home/search', data, ctrlHelper, false);
-        };
-
-        // Public methods.
-        return {
-            Accounts: Accounts,
-            Connections: Connections,
-            Home: Home
-        };
-
-    }]);
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
