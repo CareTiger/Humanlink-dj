@@ -229,8 +229,8 @@ def add_member(request, thread_id):
                         }
                     ],
                     'to': [
-                        # {'email': cleaned_data['email']},
-                        {'email': 'tim@millcreeksoftware.biz'},
+                        {'email': cleaned_data['email']},
+                        # {'email': 'tim@millcreeksoftware.biz'},
                     ],
                 }
                 message['from_name'] = message.get('from_name', 'Humanlink')
