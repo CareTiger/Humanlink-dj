@@ -6800,6 +6800,14 @@ body {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.form-control {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.btn-sharp {
+  border-radius: 0;
+}
 .btn-secondary {
   color: #fff;
   background-color: #0093d0;
