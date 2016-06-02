@@ -24,7 +24,7 @@
 
         init();
         function init() {
-            console.log('Edit Init')
+            console.log('Edit Init');
             vm.submitBusy = true;
             AccountRepo.me().then(
                 function (data) {
