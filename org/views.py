@@ -4,6 +4,7 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 from account.models import Account
 from api_helpers import composeJsonResponse
@@ -59,7 +60,7 @@ def _orgs_get(request):
 	context = {"all_orgs": all_orgs}
 	return composeJsonResponse(200, "", context)
 
-
+@csrf_exempt
 def _orgs_post(request):
 	# """Create a new organization."""
 	account = Account.objects.get(email=request.user.username)
@@ -89,6 +90,7 @@ def _orgs_post(request):
 
 
 @login_required
+@csrf_exempt
 def invite_by_email(request, org_id):
 	# """Invite a new member by email address to org."""
 

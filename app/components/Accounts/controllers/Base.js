@@ -17,7 +17,7 @@
         init();
 
         function init() {
-            console.log('Base Init')
+            console.log('Base Init');
             CommonService.on('$stateChangeStart', function () {
                 vm.viewReady = false;
             });

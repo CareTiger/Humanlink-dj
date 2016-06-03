@@ -7,6 +7,8 @@ from django.forms.models import model_to_dict
 from django.shortcuts import redirect
 import datetime
 
+from django.views.decorators.csrf import csrf_exempt
+
 import mandrill
 from account.models import Account
 from api_helpers import composeJsonResponse
@@ -60,6 +62,7 @@ def get_threads(request):
 
 
 @login_required
+@csrf_exempt
 def new_thread(request):
     # """Create a new thread."""
 
@@ -90,6 +93,7 @@ def new_thread(request):
     return composeJsonResponse(200, "", context)
 
 @login_required
+@csrf_exempt
 def update_purpose(request, thread_id):
     # """Retrieve and update thread information."""
 
@@ -112,6 +116,7 @@ def update_purpose(request, thread_id):
             return composeJsonResponse(200, "", context)
 
 @login_required
+@csrf_exempt
 def send(request, thread_id):
     # """Send a message to the thread."""
 
@@ -144,6 +149,7 @@ def send(request, thread_id):
 
 
 @login_required
+@csrf_exempt
 def history(request, thread_id):
     # """Retrieve messages history for the thread up until `ts`."""
 
@@ -187,7 +193,7 @@ def history(request, thread_id):
             }
             return composeJsonResponse(200, "", context)
 
-
+@csrf_exempt
 def add_member(request, thread_id):
     # """Add a member to the thread."""
 
@@ -299,6 +305,7 @@ def leave(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 @login_required
+@csrf_exempt
 def remove(request, thread_id, member_id):
     # """Remove a user from the thread."""
 

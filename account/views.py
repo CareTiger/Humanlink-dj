@@ -81,6 +81,7 @@ def requestPost(request):
 
     return postdata
 
+@csrf_exempt
 def login(request):
     if request.is_ajax():
         if request.method == "POST":
@@ -163,6 +164,7 @@ def login(request):
 def logout_user(request):
     logout(request)
 
+@csrf_exempt
 def signup(request):
     # """Register a new account with a new org."""
     if request.is_ajax():
@@ -257,7 +259,7 @@ def signup(request):
                     User.objects.filter(username=email[:30], password=password).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
 
-
+@csrf_exempt
 def accept_invite(request):
     # """ -Create a new account and accept an org member invitation."""
 
@@ -327,11 +329,11 @@ def me(request):
 
 
 @login_required
+@csrf_exempt
 def update(request):
     # """ - Update Account Information """
 
     account = Account.objects.get(email=request.user.email)
-
     if request.method == "POST":
         form = BasicInfo(requestPost(request))
         if form.is_valid():
@@ -350,6 +352,7 @@ def update(request):
 
 
 @login_required
+@csrf_exempt
 def update_caregiver(request):
     # """ -Updates Account's Caregiver Information. """
 
@@ -479,7 +482,7 @@ def get_current_user(request):
 
     return account
 
-
+@csrf_exempt
 def get_caregivers(request):
     # Returns all caregivers, based on search or no search
     caregiver_list = []
