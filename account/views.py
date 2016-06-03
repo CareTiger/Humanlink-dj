@@ -186,7 +186,7 @@ def signup(request):
 
                 try:
                     account = Account.objects.create(email=email, password=password)
-                    userExists = User.objects.filter(username=password, password=password)
+                    userExists = User.objects.filter(username=email[:30], password=password)
                     if not userExists:
                         if len(email) > 30:
                             user = User.objects.create_user(email, email, password)
