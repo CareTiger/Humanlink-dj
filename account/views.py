@@ -71,7 +71,7 @@ def add_to_welcome(org_id, account_id):
                                          text=account.email + ' has joined ',
                                          kind=0, inviter=2, remover=3)
 
-        broadcast(chat_id=chat.id)
+        # broadcast(chat_id=chat.id)
 
 
 # Converts AJAX JSON into query dictionary for the view to process.
@@ -186,9 +186,10 @@ def signup(request):
 
                 try:
                     account = Account.objects.create(email=email, password=password)
-                    userExists = User.objects.filter(username=email[:30], password=password)
+                    x = email[:30]
+                    userExists = User.objects.filter(username=email[:30])
                     if not userExists:
-                        if len(email) > 30:
+                        if len(email) < 30:
                             user = User.objects.create_user(email, email, password)
                         else:
                             email = email[:30]
@@ -256,7 +257,7 @@ def signup(request):
                 except Exception, e:
                     logging.error(e)
                     Account.objects.filter(email=email, password=password).delete()
-                    User.objects.filter(username=email[:30], password=password).delete()
+                    User.objects.filter(username=email[:30]).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
 
 @csrf_exempt
