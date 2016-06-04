@@ -11,7 +11,7 @@
   <div class="info-item-div" ng-click="showChannelInfo = !showChannelInfo">
     <h4>
       <div class="fill-div">
-        <i class="material-icons md-24">info_outline</i>&nbsp;Channel Information
+        <i class="material-icons md-24">info_outline</i>&nbsp;Channel purpose
         <i class="material-icons md-24 pull-right fa fa-chevron-right"
            ng-show="!showChannelInfo"></i>
         <i class="material-icons md-24 pull-right"
@@ -22,9 +22,9 @@
 
   <div ng-show="showChannelInfo">
     <div ng-if="vm.thread.purpose">
-      <p>Purpose: {{ vm.thread.purpose }}</p>
+      <p><strong>Purpose</strong>: {{ vm.thread.purpose }}</p>
 
-      <p>Update channel information
+      <p>Update channel purpose
         <a ui-sref-active-eq="active"
            ui-sref="dashboard.messages.update"><strong>here.</strong></a>
       </p>
