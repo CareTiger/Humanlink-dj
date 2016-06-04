@@ -1906,7 +1906,7 @@ window.HL = window.HL || {};
          * @returns {Promise}
          */
         function save(model) {
-            return AbstractRepo.post('/accounts/update/', model)
+            return AbstractRepo.post('accounts/update/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -2340,7 +2340,7 @@ window.HL = window.HL || {};
         init();
 
         function init() {
-            console.log('Base Init')
+            console.log('Base Init');
             CommonService.on('$stateChangeStart', function () {
                 vm.viewReady = false;
             });
@@ -2377,14 +2377,12 @@ window.HL = window.HL || {};
 
         init();
         function init() {
-            console.log('Edit Init')
+            console.log('Edit Init');
             vm.submitBusy = true;
             AccountRepo.me().then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.profile = data.data.response;
-                    console.log(vm.profile)
-                    console.log(vm.submitBusy)
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -2393,7 +2391,6 @@ window.HL = window.HL || {};
         }
 
         function update(model) {
-            console.log(model);
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
@@ -5486,14 +5483,14 @@ angular
 (function () {
     'use strict';
 
-    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
     angular
         .module('app.guest')
         .controller('Login', Login);
 
     /** @ngInject */
     function Login($log, $anchorScroll, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
         var vm = this;
 
         var next = null;

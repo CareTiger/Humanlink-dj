@@ -6,6 +6,9 @@
         <h2 class="text-center">Welcome back!</h2>
         <h4 class="text-center">Sign in to your account.</h4>
 
+        <div class="alert alert-danger" ng-if="vm.errorMessage">
+          {{ vm.errorMessage }}
+        </div>
         <div class="form-group">
           <label for="email" class="col-sm-3 control-label"><h4>Email</h4></label>
 
