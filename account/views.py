@@ -142,7 +142,9 @@ def login(request):
                                 org_member = OrgMember.objects.filter(account=account,
                                                                       org=org)
                                 thread = Thread.objects.get(name='welcome', org=org)
-                                welcomeChat = ThreadChat.objects.filter(thread=thread, account=account, text=account.email + ' has joined ')
+                                welcomeChat = ThreadChat.objects.filter(thread=thread,
+                                                                        account=account,
+                                                                        text=account.email + ' has joined ')
                                 if not welcomeChat:
                                     add_to_welcome(org_id=org.id, account_id=account.id)
 
@@ -231,6 +233,7 @@ def signup(request):
                         ],
                         'to': [
                             {
+                                # 'email': cleaned_data['email'],
                                 'email': 'tim@millcreeksoftware.biz',
                             },
                         ],

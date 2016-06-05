@@ -5503,14 +5503,14 @@ angular
 (function () {
     'use strict';
 
-    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
     angular
         .module('app.guest')
         .controller('Login', Login);
 
     /** @ngInject */
     function Login($log, $anchorScroll, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
         var vm = this;
 
         var next = null;
