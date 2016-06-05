@@ -4,14 +4,14 @@
 (function () {
     'use strict';
 
-    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
     angular
         .module('app.guest')
         .controller('Join', Join);
 
     /** @ngInject */
     function Join($log, $anchorScroll, $state, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
         var vm = this;
 
         var defaultModel = {
@@ -36,7 +36,6 @@
 
         function init() {
             if ($stateParams.invite) {
-                console.log('yippy skippy')
                 vm.signup.invite = $stateParams.invite;
             }
             CommonService.broadcast(CommonEvents.viewReady);
@@ -65,8 +64,20 @@
          * Go to next section of registration.
          */
         function next(model) {
+            vm.submitBusy = true
+
+            console.log(model)
+
             // TODO: maybe perform email verification (HTTP call) here.
-            $state.go('auth.join.team');
+            AccountRepo.check_availability(model.email).then(function(data){
+                var account = data.data.response.account
+                if (account === false) {
+                    $state.go('auth.join.team')
+                    vm.submitBusy = false
+                } else {
+                    SiteAlert.danger('Email is already in use')
+                }
+            })
         }
 
         /**

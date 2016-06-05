@@ -1868,6 +1868,7 @@ window.HL = window.HL || {};
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
+            check_availability: check_availability,
         };
 
         /**
@@ -1906,7 +1907,7 @@ window.HL = window.HL || {};
          * @returns {Promise}
          */
         function save(model) {
-            return AbstractRepo.post('/accounts/update/', model)
+            return AbstractRepo.post('accounts/update/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -1932,6 +1933,14 @@ window.HL = window.HL || {};
          */
         function get_seekers() {
             return AbstractRepo.get('/accounts/search_seekers/');
+        }
+
+        /**
+         * Retrieve all seekers.
+         * @returns {*}
+         */
+        function check_availability(account_id) {
+            return AbstractRepo.get('accounts/availability/' + account_id);
         }
 
         /**
@@ -2340,7 +2349,7 @@ window.HL = window.HL || {};
         init();
 
         function init() {
-            console.log('Base Init')
+            console.log('Base Init');
             CommonService.on('$stateChangeStart', function () {
                 vm.viewReady = false;
             });
@@ -2377,14 +2386,12 @@ window.HL = window.HL || {};
 
         init();
         function init() {
-            console.log('Edit Init')
+            console.log('Edit Init');
             vm.submitBusy = true;
             AccountRepo.me().then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.profile = data.data.response;
-                    console.log(vm.profile)
-                    console.log(vm.submitBusy)
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -2393,7 +2400,6 @@ window.HL = window.HL || {};
         }
 
         function update(model) {
-            console.log(model);
             vm.submitBusy = true;
             AccountRepo.save(model).then(
                 function (data) {
@@ -3400,13 +3406,6 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
 /**
  * Keeps track of the current logged in user.
  */
@@ -3480,6 +3479,13 @@ angular
         });
 
 })();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
 /**
  * Service that keeps track of the current logged in user.
  */
@@ -5405,14 +5411,14 @@ angular
 (function () {
     'use strict';
 
-    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents"];
+    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
     angular
         .module('app.guest')
         .controller('Join', Join);
 
     /** @ngInject */
     function Join($log, $anchorScroll, $state, $stateParams,
-                  AccountRepo, CommonService, CommonEvents) {
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
         var vm = this;
 
         var defaultModel = {
@@ -5437,7 +5443,6 @@ angular
 
         function init() {
             if ($stateParams.invite) {
-                console.log('yippy skippy')
                 vm.signup.invite = $stateParams.invite;
             }
             CommonService.broadcast(CommonEvents.viewReady);
@@ -5466,8 +5471,20 @@ angular
          * Go to next section of registration.
          */
         function next(model) {
+            vm.submitBusy = true
+
+            console.log(model)
+
             // TODO: maybe perform email verification (HTTP call) here.
-            $state.go('auth.join.team');
+            AccountRepo.check_availability(model.email).then(function(data){
+                var account = data.data.response.account
+                if (account === false) {
+                    $state.go('auth.join.team')
+                    vm.submitBusy = false
+                } else {
+                    SiteAlert.danger('Email is already in use')
+                }
+            })
         }
 
         /**

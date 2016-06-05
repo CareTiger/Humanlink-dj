@@ -16,6 +16,7 @@ urlpatterns = [
 	url(r'^caregivers/', views.caregivers, name="caregivers"),
 	url(r'^pusher/auth', views.pusher_auth, name="pusher_auth"),
 	url(r'^home/accept/(?P<token>\w+)?$', views.invite_accept, name="invite_accept"),
+	url(r'^home/accounts/availability/(?P<email>.*)', views.check_availability, name="invite_accept"),
 	url(r'^home/thread/(?P<token>\w+)?$', views.thread_invite_accept_redirect, name="invite_accept"),
 	url(r'^home/', views.home, name="home"),
 	url(r'^app/', views.app, name="app"),

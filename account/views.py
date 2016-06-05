@@ -186,7 +186,6 @@ def signup(request):
 
                 try:
                     account = Account.objects.create(email=email, password=password)
-                    x = email[:30]
                     userExists = User.objects.filter(username=email[:30])
                     if not userExists:
                         if len(email) < 30:
@@ -259,6 +258,19 @@ def signup(request):
                     Account.objects.filter(email=email, password=password).delete()
                     User.objects.filter(username=email[:30]).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
+
+def check_account_availability(email):
+    account = Account.objects.filter(email=email)
+    if account:
+        context = {
+            'account': True
+        }
+    else:
+        context = {
+            'account': False
+        }
+
+    return composeJsonResponse(200, '', context)
 
 @csrf_exempt
 def accept_invite(request):
