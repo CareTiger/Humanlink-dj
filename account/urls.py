@@ -13,6 +13,5 @@ urlpatterns = [
     url(r'^(?P<account_id>\d+)/caregiver/', views.caregiver_info, name="caregiver_info"),
     url(r'^invite/(?P<token>\w+)/?$', views.invite, name="invite"),
     url(r'^search_caregivers/', views.get_caregivers, name="get_caregivers"),
-    url(r'^search_seekers/', views.get_careseekers, name="get_careseekers")
-]
+    url(r'^search_seekers/', views.get_careseekers, name="get_careseekers"),]
 

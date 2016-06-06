@@ -69,6 +69,8 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+MIGRATON_MODULES = {'reversion': 'third_party.reversion.migrations'}
+
 CSRF_COOKIE_HTTPONLY = False
 
 IGNORABLE_404_URLS = (

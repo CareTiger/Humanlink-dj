@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from account.models import Account
-from account.views import logout, verify, invite_accept_redirect, requestPost
+from account.views import logout, verify, invite_accept_redirect, requestPost, check_account_availability
 from api_helpers import composeJsonResponse
 from django.template import RequestContext
 import settings
@@ -22,6 +22,10 @@ def index(request):
 def caregivers(request):
 
 	return render(request, "home/caregivers.html")
+
+def check_availability(request, email):
+	data = check_account_availability(email)
+	return data
 
 def home(request):
 	if request.user.is_active:

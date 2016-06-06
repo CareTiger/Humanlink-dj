@@ -81,7 +81,6 @@ def requestPost(request):
 
     return postdata
 
-
 @csrf_exempt
 def login(request):
     if request.is_ajax():
@@ -129,8 +128,7 @@ def login(request):
                             if ThreadInvite.objects.filter(token=token):
                                 threadInvite = ThreadInvite.objects.get(token=token)
                                 thread = Thread.objects.get(id=threadInvite.thread.id)
-                                threadmember = ThreadMember.objects.filter(
-                                    account=account, thread=thread)
+                                threadmember = ThreadMember.objects.filter(account=account, thread=thread)
                                 if not threadmember:
                                     ThreadMember.objects.create(account=account,
                                                                 thread=thread)
@@ -156,6 +154,7 @@ def login(request):
                             else:
                                 raise Exception("Invitation token is invalid.")
 
+
                         context = {
                             'message': form.errors,
                             'next': '/app/',
@@ -166,7 +165,6 @@ def login(request):
 
 def logout_user(request):
     logout(request)
-
 
 @csrf_exempt
 def signup(request):
@@ -190,7 +188,6 @@ def signup(request):
 
                 try:
                     account = Account.objects.create(email=email, password=password)
-                    x = email[:30]
                     userExists = User.objects.filter(username=email[:30])
                     if not userExists:
                         if len(email) < 30:
@@ -218,8 +215,7 @@ def signup(request):
                         org = Org.objects.create(name=org_name, username=org_username,
                                                  actor=account)
                         OrgMember.objects.create(account=account, org=org)
-                        Thread.objects.create(name='welcome', account=account,
-                                              owner=account, org=org,
+                        Thread.objects.create(name='welcome', account=account, owner=account, org=org,
                                               purpose='To welcome new members to the team.')
                         add_to_welcome(org_id=org.id, account_id=account.id)
 
@@ -227,10 +223,7 @@ def signup(request):
 
                     md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                     t = invite_token.replace(' ', '+')
-                    # url = "https://localhost:8000/verify/{}".format(t)
-                    url = "http://humanlink.webfactional.com/verify/{}".format(t)
-                    print '############'
-                    print email
+                    url = "https://localhost:8000/verify/{}".format(t)
                     message = {
                         'global_merge_vars': [
                             {
@@ -240,8 +233,8 @@ def signup(request):
                         ],
                         'to': [
                             {
-                                'email': cleaned_data['email'],
-                                #'email': 'tim@millcreeksoftware.biz',
+                                # 'email': cleaned_data['email'],
+                                'email': 'tim@millcreeksoftware.biz',
                             },
                         ],
                         'subject': 'Welcome to Human Link',
@@ -249,7 +242,6 @@ def signup(request):
                     message['from_name'] = message.get('from_name', 'Humanlink')
                     message['from_email'] = message.get('from_email',
                                                         'support@humanlink.co')
-
                     try:
                         md.messages.send_template(
                             template_name='humanlink-welcome', message=message,
@@ -270,6 +262,18 @@ def signup(request):
                     User.objects.filter(username=email[:30]).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
 
+def check_account_availability(email):
+    account = Account.objects.filter(email=email)
+    if account:
+        context = {
+            'account': True
+        }
+    else:
+        context = {
+            'account': False
+        }
+
+    return composeJsonResponse(200, '', context)
 
 @csrf_exempt
 def accept_invite(request):
@@ -400,7 +404,6 @@ def profile(request, account_id):
 
     return composeJsonResponse(200, "", context)
 
-
 @login_required
 def caregiver_info(request, account_id):
     # """ -Retrieve Caregiver Details for an Account """
@@ -494,7 +497,6 @@ def get_current_user(request):
     account = Account.objects.get(username=user.username)
 
     return account
-
 
 @csrf_exempt
 def get_caregivers(request):

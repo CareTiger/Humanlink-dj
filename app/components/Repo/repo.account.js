@@ -19,6 +19,7 @@
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
+            check_availability: check_availability,
         };
 
         /**
@@ -83,6 +84,14 @@
          */
         function get_seekers() {
             return AbstractRepo.get('/accounts/search_seekers/');
+        }
+
+        /**
+         * Retrieve all seekers.
+         * @returns {*}
+         */
+        function check_availability(account_id) {
+            return AbstractRepo.get('accounts/availability/' + account_id);
         }
 
         /**
