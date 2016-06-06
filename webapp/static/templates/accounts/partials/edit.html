@@ -1,10 +1,31 @@
 <div class="settings-profile">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Account Information</h2>
+      <h2 class="panel-title">Basic Profile</h2>
     </div>
     <form class="form-horizontal" name="form" ng-submit="vm.update(vm.profile)">
       <div class="panel-body">
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">
+            Email Address</label>
+
+          <div class="col-sm-7">
+            <p class="form-control-static">
+              <strong> {{ vm.profile.email }} </strong>
+                            <span uib-tooltip="Email cannot be modified at this time"
+                                  tooltip-placement="top"
+                                  class="glyphicon glyphicon-question-sign"></span>
+                            <span ng-show="vm.profile.email_verified === true">
+                                (Verified)
+                            </span>
+                            <span ng-show="vm.profile.email_verified === false">
+                                (Not verified)
+                            </span>
+            </p>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="profile-username" class="col-sm-3 control-label">
             Username</label>
@@ -28,8 +49,8 @@
               </div>
             </div>
           </div>
-
         </div>
+
         <div class="form-group">
           <label for="profile-name" class="col-sm-3 control-label">
             Name</label>
@@ -59,26 +80,7 @@
             <span class="help-block">Last name</span>
           </div>
         </div>
-        <div class="form-group">
-          <label class="col-sm-3 control-label">
-            Email Address</label>
 
-          <div class="col-sm-7">
-            <p class="form-control-static">
-              <strong> {{ vm.profile.email }} </strong>
-                            <span uib-tooltip="Email cannot be modified at this time"
-                                  tooltip-placement="top"
-                                  class="glyphicon glyphicon-question-sign"></span>
-                            <span ng-show="vm.profile.email_verified === true">
-                                (Verified)
-                            </span>
-                            <span ng-show="vm.profile.email_verified === false">
-                                (Not verified)
-                            </span>
-            </p>
-          </div>
-
-        </div>
         <div class="form-group">
           <label for="profile-phone" class="col-sm-3 control-label">
             Phone Number</label>
@@ -98,22 +100,20 @@
           </div>
         </div>
 
-      </div>
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="row">
-            <div class="col-sm-12">
-              <button type="submit" class="btn btn-secondary btn-sharp"
-                      ng-disabled="!form.firstName.$valid || !form.lastName.$valid
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-3">
+            <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                    ng-disabled="!form.firstName.$valid || !form.lastName.$valid
                         || vm.submitBusy">
-                Save Changes
-              </button>
-            </div>
+              Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+            </button>
           </div>
         </div>
+
       </div>
-      <br>
+
     </form>
   </div>
 </div>

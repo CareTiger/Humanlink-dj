@@ -32,6 +32,12 @@
                 controller: 'Edit',
                 controllerAs: 'vm'
             })
+            .state('account.team', {
+                url: '/team',
+                templateUrl: '/static/templates/accounts/partials/team.html',
+                controller: 'Team',
+                controllerAs: 'vm'
+            })
             .state('account.security', {
                 url: '/security',
                 templateUrl: '/static/templates/accounts/partials/security.html',
