@@ -32,6 +32,12 @@
                 controller: 'Edit',
                 controllerAs: 'vm'
             })
+            .state('account.team', {
+                url: '/team',
+                templateUrl: '/static/templates/accounts/partials/team.html',
+                controller: 'Team',
+                controllerAs: 'vm'
+            })
             .state('account.security', {
                 url: '/security',
                 templateUrl: '/static/templates/accounts/partials/security.html',
@@ -2546,6 +2552,60 @@ angular
 
         }]);
 /**
+ * Controller for the account Team profile view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$scope", "$window", "CommonService", "Session", "AccountRepo", "SiteAlert", "underscore"];
+    angular
+        .module('app.account')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($scope, $window, CommonService, Session, AccountRepo, SiteAlert,
+                  underscore) {
+
+        var userData = Session.account;
+        var profile = underscore.pick(userData, ['username', 'first', 'last', 'email',
+            'phone_number', 'email_verified']);
+
+        var vm = this;
+        vm.profile = profile;
+        vm.submitBusy = false;
+        vm.update = update;
+
+        init();
+        function init() {
+            console.log('Edit Init');
+            vm.submitBusy = true;
+            AccountRepo.me().then(
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.profile = data.data.response;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function update(model) {
+            vm.submitBusy = true;
+            AccountRepo.save(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your account has been updated.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+    }
+
+})();
+/**
  * Created by timothybaney on 5/16/16.
  */
 
@@ -3406,6 +3466,13 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
 /**
  * Keeps track of the current logged in user.
  */
@@ -3479,13 +3546,6 @@ angular
         });
 
 })();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
 /**
  * Service that keeps track of the current logged in user.
  */
