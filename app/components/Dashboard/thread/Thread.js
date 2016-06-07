@@ -4,7 +4,6 @@
 (function () {
     'use strict';
 
-    Thread.$inject = ["$log", "$state", "$stateParams", "SidepanelState"];
     angular
         .module('app.dashboard')
         .controller('Thread', Thread);
@@ -25,8 +24,6 @@
 
             if (SidepanelState.isOpen) {
                 return openSidepanel();
-            } else {
-                return closeSidepanel()
             }
         }
 
@@ -35,13 +32,11 @@
         }
 
         function openSidepanel() {
-            vm.sidepanel.open()
             var st = SidepanelState.state;
             return $state.go(st || 'dashboard.messages.default.sidepanel.default');
         }
 
         function closeSidepanel() {
-            vm.sidepanel.close()
             SidepanelState.close();
             return $state.go('dashboard.messages.default');
         }

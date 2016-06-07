@@ -1,38 +1,24 @@
 /**
- * Factory that manages the state of the thread sidepanel.
+ * Controller for the sidepanel in the thread view.
  */
 (function () {
     'use strict';
 
     angular
-        .module('app.dashboard.thread')
-        .factory('SidepanelState', SidepanelState);
+        .module('app.dashboard')
+        .controller('Sidepanel', Sidepanel);
 
-    /** ngInject */
-    function SidepanelState() {
+    /** @ngInject */
+    function Sidepanel($log, $state, SidepanelState) {
+        var vm = this;
 
-        var sidepanel = {
-            isOpen: false,
-            state: '',
-            close: close,
-            open: open,
-            setState: setState
-        };
+        init();
 
-        return sidepanel;
-
-        function open() {
-            sidepanel.isOpen = true;
+        function init() {
+            $log.debug('sidepanel init');
+            SidepanelState.setState($state.current.name);
+            SidepanelState.open();
         }
-
-        function close() {
-            sidepanel.isOpen = false;
-        }
-
-        function setState(stateName) {
-            sidepanel.state = stateName;
-        }
-
     }
 
 })();
