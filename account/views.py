@@ -57,11 +57,11 @@ def broadcast(chat_id=None):
 
     all_members = ThreadMember.objects.filter(thread=thread)
 
-    pusher = Pusher(app_id='199731', key='feea095554f736862bf4', secret="9550fb09aacce399eeb6")
+    pusher = Pusher(app_id='199731', key='feea095554f736862bf4', secret="9550fb09aacce399eeb6", cluster='AP1')
 
     for member in all_members:
         channels = ['public-account-{}'.format(member.account.id)]
-        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+        x = pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
 def add_to_welcome(org_id, account_id):

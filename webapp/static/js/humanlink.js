@@ -1,43 +1,4 @@
 /**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
-})();
-/**
  * Account module.
  */
 (function () {
@@ -142,6 +103,45 @@
                 controller: 'settingsVerificationCtrl'
             });
         }
+})();
+/**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
 })();
 /**
  * A module that has common directives, services, constants, etc.
@@ -392,6 +392,80 @@
 
 
 })();
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
+
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/static/templates/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/static/templates/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/static/templates/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/static/templates/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/static/templates/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
 /**
  * Guest module.
  */
@@ -519,80 +593,6 @@
     }
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/static/templates/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/static/templates/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/static/templates/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/static/templates/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/static/templates/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
 /**
  * Repository module that communicates with the backend APIs.
  */
@@ -1738,6 +1738,7 @@ window.HL = window.HL || {};
             });
             var pusherPr = bindPusher();
             return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
         }
 
         /**
@@ -3472,13 +3473,6 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
 /**
  * Keeps track of the current logged in user.
  */
@@ -3552,273 +3546,6 @@ angular
         });
 
 })();
-/**
- * Service that keeps track of the current logged in user.
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .provider('Session', Session);
-
-    function Session() {
-
-        SessionService.$inject = ["AccountRepo"];
-        var roles = {
-            GUEST: 0,
-            AUTHORIZED: 1
-        };
-
-        return {
-            roles: roles,
-            $get: SessionService
-        };
-
-        function SessionService(AccountRepo) {
-            var self = this;
-
-            // Initial page load.
-            // TODO: Rename this to window.hl.account
-            self.account = window.HL.userdata;
-
-            return {
-                roles: roles,
-                account: self.account,
-                isAuthorized: isAuthorized,
-                update: update
-            };
-
-            /**
-             * Refreshes the user information from the server.
-             * @return {Promise}
-             */
-            function update() {
-                return AccountRepo.me().then(
-                    function (data) {
-                        self.account = data;
-                    },
-                    function (error) {
-                        self.account = null;
-                    }
-                );
-            }
-
-            /**
-             * Returns whether or not the current user is logged in.
-             * @return {boolean}
-             */
-            function isAuthorized() {
-                return angular.isObject(self.account);
-            }
-        }
-
-    }
-
-})();
-/**
- * Service that controls the site alert that is attached to the root scope.
- *
- * Site alerts are alert messages that are displayed at the top of the website.
- * They are useful for displaying one-time (flash) messages.
- *
- * Future enhancements:
- *  - Inject HTML
- *  - Auto-dismiss
- */
-
-(function () {
-    'use strict';
-
-    SiteAlert.$inject = ["$rootScope"];
-    angular
-        .module('app.common')
-        .factory('SiteAlert', SiteAlert);
-
-    /** ngInject */
-    function SiteAlert($rootScope) {
-
-        $rootScope.siteAlert = {};
-
-        var alertBox = $rootScope.siteAlert;
-
-        return {
-            clear: clear,
-            success: success,
-            error: danger,
-            danger: danger,
-            warning: warning,
-            info: info,
-            check: checkAlert,
-        };
-
-        function checkAlert(){
-            console.log(alertBox)
-        }
-
-        function clear() {
-            addAlert(null, null);
-        }
-
-        function success(content) {
-            addAlert('success', content);
-        }
-
-        function danger(content) {
-            addAlert('danger', content);
-        }
-
-        function warning(content) {
-            addAlert('warning', content);
-        }
-
-        function info(content) {
-            addAlert('info', content);
-        }
-
-        function addAlert(type, content) {
-            alertBox.type = type;
-            alertBox.message = content;
-        }
-    }
-
-})();
-/**
- * API Service that talks to the backend.
- */
-angular
-    .module('Common')
-    .factory('apiService', ['$http', function ($http) {
-
-        // Google Cloud Endpoints URL.
-        var getGceBase = function () {
-            var host = window.location.host;
-            // GCE doesn't work with custom domains.
-            if (host.indexOf('humanlink.co') === 0) {
-                host = 'care-tiger.appspot.com';
-            }
-            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
-            return protocol + host + '/_ah/api/humanlink/v1/';
-        };
-
-        var GCE_BASE = getGceBase();
-
-        var Accounts = {
-            caregiver: {},
-            patients: {}
-        };
-        var Connections = {};
-        var Home = {};
-
-        /**
-         * Base method to communicate with the APIs.
-         *
-         * @param method : 'GET' or 'POST'
-         * @param uri : relative path to the base URL or GCE URL
-         * @param data : request data
-         * @param ctrlHelper : CtrlHelper with callbacks
-         * @param useEndpoints : whether this is a GCE API or not.
-         */
-        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
-            ctrlHelper.isLoading = true;
-            ctrlHelper.isValid = true;
-            ctrlHelper.errors = [];
-
-            // Use endpoints by default.
-            if (!angular.isDefined(useEndpoints)) {
-                useEndpoints = true;
-            }
-
-            $http({
-                method: method,
-                url: (useEndpoints ? GCE_BASE : '/') + uri,
-                data: data
-            })
-                .success(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.success)) {
-                        ctrlHelper.success(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                })
-                .error(function (data, status, headers, config) {
-                    ctrlHelper.isLoading = false;
-                    if (angular.isFunction(ctrlHelper.failure)) {
-                        ctrlHelper.failure(data, status, headers, config);
-                    }
-                    if (angular.isFunction(ctrlHelper.always)) {
-                        ctrlHelper.always(data, status, headers, config);
-                    }
-                });
-        };
-
-        Accounts.login = function (data, ctrlHelper) {
-            apiRequest('POST', 'login.json', data, ctrlHelper, false);
-        };
-
-        Accounts.signup = function (data, ctrlHelper) {
-            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
-        };
-
-        Accounts.userdata = function (data, ctrlHelper) {
-            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
-        };
-
-        Accounts.get = function (id, ctrlHelper) {
-            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
-        };
-
-        Accounts.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.get = function (accountId, ctrlHelper) {
-            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
-        };
-
-        Accounts.caregiver.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.list = function (ctrlHelper) {
-            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
-        };
-
-        Accounts.patients.update = function (data, ctrlHelper) {
-            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
-        };
-
-        Accounts.patients.remove = function (patient_id, ctrlHelper) {
-            var data = {patient_id: patient_id};
-            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
-        };
-
-        Home.contact = function (data, ctrlHelper) {
-            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
-        };
-
-        Connections.my = function (data, ctrlHelper) {
-            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
-        };
-
-        Home.search = function (data, ctrlHelper) {
-            apiRequest('GET', 'home/search', data, ctrlHelper, false);
-        };
-
-        // Public methods.
-        return {
-            Accounts: Accounts,
-            Connections: Connections,
-            Home: Home
-        };
-
-    }]);
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
 /**
  * Parent controller of the dashboard module.
  */
@@ -4063,114 +3790,6 @@ angular
         };
 
     }]);
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  *
  */
@@ -4502,8 +4121,11 @@ angular
          */
         function newMessage(threadId, chat) {
             if (!displayOk() || chat.kind !== 0 || AccountService.isAccountMe(chat.account_id)) {
+                console.log('MWAHHH')
                 return;
             }
+
+            console.log('WAHHH ?')
             var thread = MessagesService.getThreadInfo(threadId);
             var account = thread.membersIndexed[chat.account_id];
             var title = thread.name;
@@ -4659,6 +4281,1192 @@ angular
 
 })();
 
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Main landing page.
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('LandingCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+        $scope.gotoInvite = gotoInvite;
+        $scope.contact = {
+            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
+        };
+
+        function gotoInvite() {
+            $location.path('/');
+            $location.hash('invite');
+            $anchorScroll();
+        }
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                    gotoInvite();
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * About Us controller
+ */
+angular
+    .module('Home')
+    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Caregiver controller
+ */
+angular
+    .module('Home')
+    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
+
+        $scope.SignUp = function (){
+            console.log("Hello");
+            $window.location.href = '/home/join';
+        };
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Careseeker controller
+ */
+angular
+    .module('Home')
+    .controller('careseekerCtrl', ['$scope', '$window',
+        function ($scope, $window) {
+
+        $scope.SignUp = function () {
+            $window.location.href = '/home/join';
+        };
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('faqCtrl', ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Home')
+    .controller('homeBaseCtrl', ['$scope', '$http',
+        function ($scope, $http) {
+                // bring in userSession if this controller ever gets used.
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Interest controller
+ */
+(function () {
+    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
+    angular
+        .module('Home')
+        .controller('interestCtrl', Ctrl);
+
+    /** @ngInject */
+    function Ctrl($scope, $http, $location, $anchorScroll) {
+        $scope.showInvite = true;
+        $scope.invite = invite;
+
+        function invite(contact) {
+            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
+                return;
+            }
+            $http.post('/submit_contact', contact)
+                .success(function (data, status) {
+                    $scope.showInvite = false;
+                })
+                .error(function () {
+                    // Dang.
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('Home')
+    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Preview provider profile controller
+ */
+angular
+    .module('app.guest')
+    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            
+            var provider_id = $stateParams.account_id;
+            $scope.profile = {};
+            $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/caregiver_profile?account_id=' + provider_id)
+                    .then(function (response) {
+                        $scope.profile = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: provider_id,
+                            message: "I want to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Press controller
+ */
+angular
+    .module('app.guest')
+    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
+        function ($scope, $window, $stateParams, $http) {
+            // bring in alternative to userSession
+            var seeker_id = $stateParams.account_id;
+            $scope.aboutMe = {};
+            // $scope.usr = userSession;
+
+            var init = function () {
+                $http.get('/seeker_profile?account_id=' + seeker_id)
+                    .then(function (response) {
+                        $scope.aboutMe = response.data;
+                    });
+            };
+            init();
+
+            $scope.connect = function () {
+                if ($scope.usr.userdata !== null) {
+                    var account_id = $scope.usr.userdata.account_id;
+                    $http({
+                        url: '/post_connection_request',
+                        method: "POST",
+                        params: {
+                            from_id: account_id,
+                            to_id: seeker_id,
+                            message: "I would like to connect with you."
+                        }
+                    }).then(function (response) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = response.data.message;
+                    }, function (response) {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                    });
+                }
+                else {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Please Sign-In");
+                }
+            }
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Pricing controller
+ */
+angular
+    .module('Home')
+    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Privacy controller
+ */
+angular
+    .module('Home')
+    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+Search.$inject = ['$scope', '$http', 'SiteAlert', 'AccountRepo']
+angular
+    .module('app.guest')
+    .controller('searchCtrl', Search)
+
+    function Search ($scope, $http, SiteAlert, AccountRepo) {
+
+        // find replacement for userSession
+
+        $scope.searchModel = {};
+        $scope.searchCaregiverResults = {};
+
+        var init = function () {
+            AccountRepo.get_caregivers()
+                .then(function (response) {
+                $scope.searchCaregiverResults = response.data;
+                console.log($scope.searchCaregiverResults)
+
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            })
+
+            AccountRepo.get_seekers()
+                .then(function (response) {
+                $scope.searchSeekerResults = response.data;
+                console.log($scope.searchSeekerResults)
+
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            })
+
+            $scope.auth.viewReady = true;
+
+        };
+        init();
+
+        /**
+         * Go back to the previous page/view.
+         * @return void
+         */
+        $scope.previous = function () {
+            $window.history.back();
+        };
+
+        $scope.find = function (model) {
+            $http({
+                url: '/search_caregivers',
+                method: "GET",
+                params: {search_string: model.search_string}
+            }).then(function (response) {
+                $scope.searchCaregiverResults = response.data;
+            }, function (response) {
+                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
+            });
+        };
+
+    };
+'use strict';
+
+/**
+ * Terms controller
+ */
+angular
+    .module('Home')
+    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
+
+
+    }]);
+/**
+ * Service that keeps track of the current logged in user.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .provider('Session', Session);
+
+    function Session() {
+
+        SessionService.$inject = ["AccountRepo"];
+        var roles = {
+            GUEST: 0,
+            AUTHORIZED: 1
+        };
+
+        return {
+            roles: roles,
+            $get: SessionService
+        };
+
+        function SessionService(AccountRepo) {
+            var self = this;
+
+            // Initial page load.
+            // TODO: Rename this to window.hl.account
+            self.account = window.HL.userdata;
+
+            return {
+                roles: roles,
+                account: self.account,
+                isAuthorized: isAuthorized,
+                update: update
+            };
+
+            /**
+             * Refreshes the user information from the server.
+             * @return {Promise}
+             */
+            function update() {
+                return AccountRepo.me().then(
+                    function (data) {
+                        self.account = data;
+                    },
+                    function (error) {
+                        self.account = null;
+                    }
+                );
+            }
+
+            /**
+             * Returns whether or not the current user is logged in.
+             * @return {boolean}
+             */
+            function isAuthorized() {
+                return angular.isObject(self.account);
+            }
+        }
+
+    }
+
+})();
+/**
+ * Service that controls the site alert that is attached to the root scope.
+ *
+ * Site alerts are alert messages that are displayed at the top of the website.
+ * They are useful for displaying one-time (flash) messages.
+ *
+ * Future enhancements:
+ *  - Inject HTML
+ *  - Auto-dismiss
+ */
+
+(function () {
+    'use strict';
+
+    SiteAlert.$inject = ["$rootScope"];
+    angular
+        .module('app.common')
+        .factory('SiteAlert', SiteAlert);
+
+    /** ngInject */
+    function SiteAlert($rootScope) {
+
+        $rootScope.siteAlert = {};
+
+        var alertBox = $rootScope.siteAlert;
+
+        return {
+            clear: clear,
+            success: success,
+            error: danger,
+            danger: danger,
+            warning: warning,
+            info: info,
+            check: checkAlert,
+        };
+
+        function checkAlert(){
+            console.log(alertBox)
+        }
+
+        function clear() {
+            addAlert(null, null);
+        }
+
+        function success(content) {
+            addAlert('success', content);
+        }
+
+        function danger(content) {
+            addAlert('danger', content);
+        }
+
+        function warning(content) {
+            addAlert('warning', content);
+        }
+
+        function info(content) {
+            addAlert('info', content);
+        }
+
+        function addAlert(type, content) {
+            alertBox.type = type;
+            alertBox.message = content;
+        }
+    }
+
+})();
+/**
+ * API Service that talks to the backend.
+ */
+angular
+    .module('Common')
+    .factory('apiService', ['$http', function ($http) {
+
+        // Google Cloud Endpoints URL.
+        var getGceBase = function () {
+            var host = window.location.host;
+            // GCE doesn't work with custom domains.
+            if (host.indexOf('humanlink.co') === 0) {
+                host = 'care-tiger.appspot.com';
+            }
+            var protocol = host.indexOf('localhost') === 0 ? 'http://' : 'https://';
+            return protocol + host + '/_ah/api/humanlink/v1/';
+        };
+
+        var GCE_BASE = getGceBase();
+
+        var Accounts = {
+            caregiver: {},
+            patients: {}
+        };
+        var Connections = {};
+        var Home = {};
+
+        /**
+         * Base method to communicate with the APIs.
+         *
+         * @param method : 'GET' or 'POST'
+         * @param uri : relative path to the base URL or GCE URL
+         * @param data : request data
+         * @param ctrlHelper : CtrlHelper with callbacks
+         * @param useEndpoints : whether this is a GCE API or not.
+         */
+        var apiRequest = function (method, uri, data, ctrlHelper, useEndpoints) {
+            ctrlHelper.isLoading = true;
+            ctrlHelper.isValid = true;
+            ctrlHelper.errors = [];
+
+            // Use endpoints by default.
+            if (!angular.isDefined(useEndpoints)) {
+                useEndpoints = true;
+            }
+
+            $http({
+                method: method,
+                url: (useEndpoints ? GCE_BASE : '/') + uri,
+                data: data
+            })
+                .success(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.success)) {
+                        ctrlHelper.success(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    ctrlHelper.isLoading = false;
+                    if (angular.isFunction(ctrlHelper.failure)) {
+                        ctrlHelper.failure(data, status, headers, config);
+                    }
+                    if (angular.isFunction(ctrlHelper.always)) {
+                        ctrlHelper.always(data, status, headers, config);
+                    }
+                });
+        };
+
+        Accounts.login = function (data, ctrlHelper) {
+            apiRequest('POST', 'login.json', data, ctrlHelper, false);
+        };
+
+        Accounts.signup = function (data, ctrlHelper) {
+            apiRequest('POST', 'signup.json', data, ctrlHelper, false);
+        };
+
+        Accounts.userdata = function (data, ctrlHelper) {
+            apiRequest('GET', 'accounts/userdata.json', data, ctrlHelper, false);
+        };
+
+        Accounts.get = function (id, ctrlHelper) {
+            apiRequest('GET', 'accounts/' + id, {}, ctrlHelper, true);
+        };
+
+        Accounts.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/update', data, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.get = function (accountId, ctrlHelper) {
+            apiRequest('GET', 'accounts/caregiver', {}, ctrlHelper, true);
+        };
+
+        Accounts.caregiver.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/caregiver/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.list = function (ctrlHelper) {
+            apiRequest('GET', 'accounts/patients/list', {}, ctrlHelper, true);
+        };
+
+        Accounts.patients.update = function (data, ctrlHelper) {
+            apiRequest('POST', 'accounts/patients/update', data, ctrlHelper, true);
+        };
+
+        Accounts.patients.remove = function (patient_id, ctrlHelper) {
+            var data = {patient_id: patient_id};
+            apiRequest('POST', 'accounts/patients/remove', data, ctrlHelper, true);
+        };
+
+        Home.contact = function (data, ctrlHelper) {
+            apiRequest('POST', 'contact.json', data, ctrlHelper, false);
+        };
+
+        Connections.my = function (data, ctrlHelper) {
+            apiRequest('GET', 'connections/my', data, ctrlHelper, true);
+        };
+
+        Home.search = function (data, ctrlHelper) {
+            apiRequest('GET', 'home/search', data, ctrlHelper, false);
+        };
+
+        // Public methods.
+        return {
+            Accounts: Accounts,
+            Connections: Connections,
+            Home: Home
+        };
+
+    }]);
+
+angular
+    .module('Common')
+    .constant('Constants', window.HL.constants);
+/**
+ * Controller for the accept view.
+ */
+(function () {
+    'use strict';
+
+    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Accept', Accept);
+
+    /** @ngInject */
+    function Accept($log, $state, $stateParams, $location, $anchorScroll,
+                    AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var views = {
+            default: 'default',
+            invalid: 'invalid',
+            used: 'used'
+        };
+
+        vm.messages = {
+            signup: null,
+            login: null
+        };
+        vm.spinners = {
+            signup: false,
+            login: false
+        };
+        vm.view = views.default;
+        vm.invite = null;
+        vm.signupModel = null;
+        vm.loginModel = null;
+
+        vm.signup = signup;
+        vm.login = login;
+
+        vm.gotoLogin = gotoLogin;
+
+        init();
+
+        function init() {
+            console.log('Accept Init')
+            console.log(angular.fromJson($stateParams.data))
+            // Pre-fetched data can come as a URL parameter (`data`).
+
+            var data = angular.fromJson($stateParams.data);
+
+            // Delete `data` parameter from URL.
+            // $state.go('.', {data: null}, {location: 'replace'});
+
+            // Impossible token.
+            if ($stateParams.token.length > 16) {
+                return ready();
+            }
+
+            if (data) {
+                return ready(data);
+            }
+
+            AccountRepo.invite($stateParams.token).then(ready, ready);
+
+            function ready(invite) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.invite = invite;
+
+                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
+                    vm.view = views.invalid;
+                    return;
+                }
+                if (vm.invite.used) {
+                    vm.view = views.used;
+                    return;
+                }
+                vm.signupModel = {email: vm.invite.email};
+                vm.loginModel = {email: vm.invite.email};
+            }
+        }
+
+        function signup(model) {
+            vm.spinners.signup = true;
+            vm.messages.signup = null;
+            AccountRepo.join(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.signup = false;
+                    vm.messages.signup = data;
+                    $location.hash('signup-view');
+                    $anchorScroll();
+                }
+            );
+        }
+
+        function login(model) {
+            vm.spinners.login = true;
+            vm.messages.login = null;
+            AccountRepo.login(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.login = false;
+                    vm.messages.login = data;
+                    gotoLogin();
+                }
+            );
+        }
+
+        function withToken(model) {
+            return angular.extend(model, {token: vm.invite.token});
+        }
+
+        function gotoLogin() {
+            $location.hash('login-view');
+            $anchorScroll();
+        }
+    }
+
+})();
+
+/**
+ * Base controller of the auth state.
+ */
+(function () {
+    'use strict';
+
+    Auth.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('Auth', Auth);
+
+    /** @ngInject */
+    function Auth(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+/**
+ * Controller for the join view.
+ */
+(function () {
+    'use strict';
+
+    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.guest')
+        .controller('Join', Join);
+
+    /** @ngInject */
+    function Join($log, $anchorScroll, $state, $stateParams,
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
+        var vm = this;
+
+        var defaultModel = {
+            email: '',
+            password: '',
+            password_confirm: '',
+            invite: '',
+            org_name: '',
+            org_username: ''
+        };
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.signup = angular.copy(defaultModel);
+
+        vm.cancel = cancel;
+        vm.next = next;
+        vm.previous = previous;
+        vm.join = join;
+
+        init();
+
+        function init() {
+            if ($stateParams.invite) {
+                vm.signup.invite = $stateParams.invite;
+            }
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function join(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            AccountRepo.join(model).then(
+                function (data) {
+                    CommonService.hardRedirect('/accounts#/edit');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                    $anchorScroll('join-view');
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+
+        /**
+         * Go to next section of registration.
+         */
+        function next(model) {
+            vm.submitBusy = true
+
+            console.log(model)
+
+            // TODO: maybe perform email verification (HTTP call) here.
+            AccountRepo.check_availability(model.email).then(function(data){
+                var account = data.data.response.account
+                if (account === false) {
+                    $state.go('auth.join.team')
+                    vm.submitBusy = false
+                } else {
+                    SiteAlert.danger('Email is already in use')
+                }
+            })
+        }
+
+        /**
+         * Go to previous section of registration.
+         */
+        function previous() {
+            $state.go('auth.join.personal');
+        }
+
+    }
+
+})();
+/**
+ * Controller for the login view.
+ */
+(function () {
+    'use strict';
+
+    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.guest')
+        .controller('Login', Login);
+
+    /** @ngInject */
+    function Login($log, $anchorScroll, $stateParams,
+                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
+        var vm = this;
+
+        var next = null;
+        var defaultAuth = {
+            email: '',
+            password: '',
+        };
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.auth = angular.copy(defaultAuth);
+        vm.login = login;
+
+        init();
+
+        function init() {
+            CommonService.broadcast(CommonEvents.viewReady);
+            next = $stateParams.next;
+        }
+
+        function login(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+            AccountRepo.login(model).then(
+                function (data) {
+                    CommonService.hardRedirect(next || '/app');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                    $anchorScroll('login-view');
+                });
+        }
+    }
+
+})();
+/**
+ * Created by timothybaney on 5/13/16.
+ */
+
+/**
+ * Controller for the accept view.
+ */
+(function () {
+    'use strict';
+
+    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
+    angular
+        .module('app.guest')
+        .controller('ThreadAccept', Accept);
+
+    /** @ngInject */
+    function Accept($log, $state, $stateParams, $location, $anchorScroll,
+                    AccountRepo, CommonService, CommonEvents) {
+        var vm = this;
+
+        var views = {
+            default: 'default',
+            invalid: 'invalid',
+            used: 'used'
+        };
+
+        vm.messages = {
+            signup: null,
+            login: null
+        };
+        vm.spinners = {
+            signup: false,
+            login: false
+        };
+        vm.view = views.default;
+        vm.invite = null;
+        vm.signupModel = null;
+        vm.loginModel = null;
+
+        vm.signup = signup;
+        vm.login = login;
+
+        vm.gotoLogin = gotoLogin;
+
+        init();
+
+        function init() {
+            console.log('ThreadAccept Init')
+            console.log(angular.fromJson($stateParams.data))
+            // Pre-fetched data can come as a URL parameter (`data`).
+
+            var data = angular.fromJson($stateParams.data);
+
+            // Delete `data` parameter from URL.
+            // $state.go('.', {data: null}, {location: 'replace'});
+
+            // Impossible token.
+            if ($stateParams.token.length > 8) {
+                return ready();
+            }
+
+            if (data) {
+                return ready(data);
+            }
+
+            AccountRepo.threadInvite($stateParams.token).then(ready, ready);
+
+            function ready(invite) {
+                CommonService.broadcast(CommonEvents.viewReady);
+                vm.invite = invite;
+
+                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
+                    vm.view = views.invalid;
+                    return;
+                }
+                if (vm.invite.used) {
+                    vm.view = views.used;
+                    return;
+                }
+                vm.signupModel = {email: vm.invite.email};
+                vm.loginModel = {email: vm.invite.email};
+            }
+        }
+
+        function signup(model) {
+            vm.spinners.signup = true;
+            vm.messages.signup = null;
+            console.log(withToken(model))
+            AccountRepo.join(withToken(model)).then(
+                function (data) {
+                    console.log(data)
+                    return CommonService.hardRedirect('/accounts#/edit');
+                },
+                function (data) {
+                    vm.spinners.signup = false;
+                    vm.messages.signup = data;
+                    $location.hash('signup-view');
+                    $anchorScroll();
+                }
+            );
+        }
+
+        function login(model) {
+            vm.spinners.login = true;
+            vm.messages.login = null;
+            AccountRepo.login(withToken(model)).then(
+                function () {
+                    return CommonService.hardRedirect('/app');
+                },
+                function (data) {
+                    vm.spinners.login = false;
+                    vm.messages.login = data;
+                    gotoLogin();
+                }
+            );
+        }
+
+        function withToken(model) {
+            return angular.extend(model, {invite: vm.invite.token});
+        }
+
+        function gotoLogin() {
+            $location.hash('login-view');
+            $anchorScroll();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
 /**
  *  Controller for the thread Archive.
  */
@@ -5228,8 +6036,6 @@ angular
         function init() {
             $log.debug('thread init');
 
-            vm.sidepanel.isOpen = false
-            
             if (SidepanelState.isOpen) {
                 return openSidepanel();
             } else {
@@ -5321,817 +6127,6 @@ angular
     }
 
 })();
-/**
- * Controller for the accept view.
- */
-(function () {
-    'use strict';
-
-    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Accept', Accept);
-
-    /** @ngInject */
-    function Accept($log, $state, $stateParams, $location, $anchorScroll,
-                    AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var views = {
-            default: 'default',
-            invalid: 'invalid',
-            used: 'used'
-        };
-
-        vm.messages = {
-            signup: null,
-            login: null
-        };
-        vm.spinners = {
-            signup: false,
-            login: false
-        };
-        vm.view = views.default;
-        vm.invite = null;
-        vm.signupModel = null;
-        vm.loginModel = null;
-
-        vm.signup = signup;
-        vm.login = login;
-
-        vm.gotoLogin = gotoLogin;
-
-        init();
-
-        function init() {
-            console.log('Accept Init')
-            console.log(angular.fromJson($stateParams.data))
-            // Pre-fetched data can come as a URL parameter (`data`).
-
-            var data = angular.fromJson($stateParams.data);
-
-            // Delete `data` parameter from URL.
-            // $state.go('.', {data: null}, {location: 'replace'});
-
-            // Impossible token.
-            if ($stateParams.token.length > 16) {
-                return ready();
-            }
-
-            if (data) {
-                return ready(data);
-            }
-
-            AccountRepo.invite($stateParams.token).then(ready, ready);
-
-            function ready(invite) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.invite = invite;
-
-                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
-                    vm.view = views.invalid;
-                    return;
-                }
-                if (vm.invite.used) {
-                    vm.view = views.used;
-                    return;
-                }
-                vm.signupModel = {email: vm.invite.email};
-                vm.loginModel = {email: vm.invite.email};
-            }
-        }
-
-        function signup(model) {
-            vm.spinners.signup = true;
-            vm.messages.signup = null;
-            AccountRepo.join(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.signup = false;
-                    vm.messages.signup = data;
-                    $location.hash('signup-view');
-                    $anchorScroll();
-                }
-            );
-        }
-
-        function login(model) {
-            vm.spinners.login = true;
-            vm.messages.login = null;
-            AccountRepo.login(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.login = false;
-                    vm.messages.login = data;
-                    gotoLogin();
-                }
-            );
-        }
-
-        function withToken(model) {
-            return angular.extend(model, {token: vm.invite.token});
-        }
-
-        function gotoLogin() {
-            $location.hash('login-view');
-            $anchorScroll();
-        }
-    }
-
-})();
-
-/**
- * Base controller of the auth state.
- */
-(function () {
-    'use strict';
-
-    Auth.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('Auth', Auth);
-
-    /** @ngInject */
-    function Auth(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-/**
- * Controller for the join view.
- */
-(function () {
-    'use strict';
-
-    Join.$inject = ["$log", "$anchorScroll", "$state", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
-    angular
-        .module('app.guest')
-        .controller('Join', Join);
-
-    /** @ngInject */
-    function Join($log, $anchorScroll, $state, $stateParams,
-                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
-        var vm = this;
-
-        var defaultModel = {
-            email: '',
-            password: '',
-            password_confirm: '',
-            invite: '',
-            org_name: '',
-            org_username: ''
-        };
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-        vm.signup = angular.copy(defaultModel);
-
-        vm.cancel = cancel;
-        vm.next = next;
-        vm.previous = previous;
-        vm.join = join;
-
-        init();
-
-        function init() {
-            if ($stateParams.invite) {
-                vm.signup.invite = $stateParams.invite;
-            }
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function join(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            AccountRepo.join(model).then(
-                function (data) {
-                    CommonService.hardRedirect('/accounts#/edit');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                    $anchorScroll('join-view');
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-
-        /**
-         * Go to next section of registration.
-         */
-        function next(model) {
-            vm.submitBusy = true
-
-            console.log(model)
-
-            // TODO: maybe perform email verification (HTTP call) here.
-            AccountRepo.check_availability(model.email).then(function(data){
-                var account = data.data.response.account
-                if (account === false) {
-                    $state.go('auth.join.team')
-                    vm.submitBusy = false
-                } else {
-                    SiteAlert.danger('Email is already in use')
-                }
-            })
-        }
-
-        /**
-         * Go to previous section of registration.
-         */
-        function previous() {
-            $state.go('auth.join.personal');
-        }
-
-    }
-
-})();
-/**
- * Controller for the login view.
- */
-(function () {
-    'use strict';
-
-    Login.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
-    angular
-        .module('app.guest')
-        .controller('Login', Login);
-
-    /** @ngInject */
-    function Login($log, $anchorScroll, $stateParams,
-                  AccountRepo, CommonService, CommonEvents, SiteAlert) {
-        var vm = this;
-
-        var next = null;
-        var defaultAuth = {
-            email: '',
-            password: '',
-        };
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-        vm.auth = angular.copy(defaultAuth);
-        vm.login = login;
-
-        init();
-
-        function init() {
-            CommonService.broadcast(CommonEvents.viewReady);
-            next = $stateParams.next;
-        }
-
-        function login(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-            AccountRepo.login(model).then(
-                function (data) {
-                    CommonService.hardRedirect(next || '/app');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                    $anchorScroll('login-view');
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/13/16.
- */
-
-/**
- * Controller for the accept view.
- */
-(function () {
-    'use strict';
-
-    Accept.$inject = ["$log", "$state", "$stateParams", "$location", "$anchorScroll", "AccountRepo", "CommonService", "CommonEvents"];
-    angular
-        .module('app.guest')
-        .controller('ThreadAccept', Accept);
-
-    /** @ngInject */
-    function Accept($log, $state, $stateParams, $location, $anchorScroll,
-                    AccountRepo, CommonService, CommonEvents) {
-        var vm = this;
-
-        var views = {
-            default: 'default',
-            invalid: 'invalid',
-            used: 'used'
-        };
-
-        vm.messages = {
-            signup: null,
-            login: null
-        };
-        vm.spinners = {
-            signup: false,
-            login: false
-        };
-        vm.view = views.default;
-        vm.invite = null;
-        vm.signupModel = null;
-        vm.loginModel = null;
-
-        vm.signup = signup;
-        vm.login = login;
-
-        vm.gotoLogin = gotoLogin;
-
-        init();
-
-        function init() {
-            console.log('ThreadAccept Init')
-            console.log(angular.fromJson($stateParams.data))
-            // Pre-fetched data can come as a URL parameter (`data`).
-
-            var data = angular.fromJson($stateParams.data);
-
-            // Delete `data` parameter from URL.
-            // $state.go('.', {data: null}, {location: 'replace'});
-
-            // Impossible token.
-            if ($stateParams.token.length > 8) {
-                return ready();
-            }
-
-            if (data) {
-                return ready(data);
-            }
-
-            AccountRepo.threadInvite($stateParams.token).then(ready, ready);
-
-            function ready(invite) {
-                CommonService.broadcast(CommonEvents.viewReady);
-                vm.invite = invite;
-
-                if (!vm.invite || (vm.invite && vm.invite.invalid)) {
-                    vm.view = views.invalid;
-                    return;
-                }
-                if (vm.invite.used) {
-                    vm.view = views.used;
-                    return;
-                }
-                vm.signupModel = {email: vm.invite.email};
-                vm.loginModel = {email: vm.invite.email};
-            }
-        }
-
-        function signup(model) {
-            vm.spinners.signup = true;
-            vm.messages.signup = null;
-            console.log(withToken(model))
-            AccountRepo.join(withToken(model)).then(
-                function (data) {
-                    console.log(data)
-                    return CommonService.hardRedirect('/accounts#/edit');
-                },
-                function (data) {
-                    vm.spinners.signup = false;
-                    vm.messages.signup = data;
-                    $location.hash('signup-view');
-                    $anchorScroll();
-                }
-            );
-        }
-
-        function login(model) {
-            vm.spinners.login = true;
-            vm.messages.login = null;
-            AccountRepo.login(withToken(model)).then(
-                function () {
-                    return CommonService.hardRedirect('/app');
-                },
-                function (data) {
-                    vm.spinners.login = false;
-                    vm.messages.login = data;
-                    gotoLogin();
-                }
-            );
-        }
-
-        function withToken(model) {
-            return angular.extend(model, {invite: vm.invite.token});
-        }
-
-        function gotoLogin() {
-            $location.hash('login-view');
-            $anchorScroll();
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Main landing page.
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('LandingCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-        $scope.gotoInvite = gotoInvite;
-        $scope.contact = {
-            interest: $location.absUrl().indexOf('/caregiver') >= 0 ? 1 : 2
-        };
-
-        function gotoInvite() {
-            $location.path('/');
-            $location.hash('invite');
-            $anchorScroll();
-        }
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                    gotoInvite();
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * About Us controller
- */
-angular
-    .module('Home')
-    .controller('aboutusCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Caregiver controller
- */
-angular
-    .module('Home')
-    .controller('caregiverCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        $scope.SignUp = function (){
-            console.log("Hello");
-            $window.location.href = '/home/join';
-        };
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Careseeker controller
- */
-angular
-    .module('Home')
-    .controller('careseekerCtrl', ['$scope', '$window',
-        function ($scope, $window) {
-
-        $scope.SignUp = function () {
-            $window.location.href = '/home/join';
-        };
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('faqCtrl', ['$scope', '$window', '$http',
-        function ($scope, $window, $http) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Home')
-    .controller('homeBaseCtrl', ['$scope', '$http',
-        function ($scope, $http) {
-                // bring in userSession if this controller ever gets used.
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Interest controller
- */
-(function () {
-    Ctrl.$inject = ["$scope", "$http", "$location", "$anchorScroll"];
-    angular
-        .module('Home')
-        .controller('interestCtrl', Ctrl);
-
-    /** @ngInject */
-    function Ctrl($scope, $http, $location, $anchorScroll) {
-        $scope.showInvite = true;
-        $scope.invite = invite;
-
-        function invite(contact) {
-            if (!contact.name || !contact.email || !contact.zipcode || !contact.interest) {
-                return;
-            }
-            $http.post('/submit_contact', contact)
-                .success(function (data, status) {
-                    $scope.showInvite = false;
-                })
-                .error(function () {
-                    // Dang.
-                });
-        }
-    }
-
-})();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('Home')
-    .controller('pressCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Preview provider profile controller
- */
-angular
-    .module('app.guest')
-    .controller('previewProviderProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
-        function ($scope, $window, $stateParams, $http) {
-            
-            var provider_id = $stateParams.account_id;
-            $scope.profile = {};
-            $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/caregiver_profile?account_id=' + provider_id)
-                    .then(function (response) {
-                        $scope.profile = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: provider_id,
-                            message: "I want to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Press controller
- */
-angular
-    .module('app.guest')
-    .controller('previewSeekerProfileCtrl', ['$scope', '$window', '$stateParams', '$http',
-        function ($scope, $window, $stateParams, $http) {
-            // bring in alternative to userSession
-            var seeker_id = $stateParams.account_id;
-            $scope.aboutMe = {};
-            // $scope.usr = userSession;
-
-            var init = function () {
-                $http.get('/seeker_profile?account_id=' + seeker_id)
-                    .then(function (response) {
-                        $scope.aboutMe = response.data;
-                    });
-            };
-            init();
-
-            $scope.connect = function () {
-                if ($scope.usr.userdata !== null) {
-                    var account_id = $scope.usr.userdata.account_id;
-                    $http({
-                        url: '/post_connection_request',
-                        method: "POST",
-                        params: {
-                            from_id: account_id,
-                            to_id: seeker_id,
-                            message: "I would like to connect with you."
-                        }
-                    }).then(function (response) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = response.data.message;
-                    }, function (response) {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                    });
-                }
-                else {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Please Sign-In");
-                }
-            }
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Pricing controller
- */
-angular
-    .module('Home')
-    .controller('pricingCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Privacy controller
- */
-angular
-    .module('Home')
-    .controller('privacyCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-Search.$inject = ['$scope', '$http', 'SiteAlert', 'AccountRepo']
-angular
-    .module('app.guest')
-    .controller('searchCtrl', Search)
-
-    function Search ($scope, $http, SiteAlert, AccountRepo) {
-
-        // find replacement for userSession
-
-        $scope.searchModel = {};
-        $scope.searchCaregiverResults = {};
-
-        var init = function () {
-            AccountRepo.get_caregivers()
-                .then(function (response) {
-                $scope.searchCaregiverResults = response.data;
-                console.log($scope.searchCaregiverResults)
-
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            })
-
-            AccountRepo.get_seekers()
-                .then(function (response) {
-                $scope.searchSeekerResults = response.data;
-                console.log($scope.searchSeekerResults)
-
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            })
-
-            $scope.auth.viewReady = true;
-
-        };
-        init();
-
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
-
-        $scope.find = function (model) {
-            $http({
-                url: '/search_caregivers',
-                method: "GET",
-                params: {search_string: model.search_string}
-            }).then(function (response) {
-                $scope.searchCaregiverResults = response.data;
-            }, function (response) {
-                SiteAlert.danger("Oops. " + response.status + " Error. Please try again.")
-            });
-        };
-
-    };
-'use strict';
-
-/**
- * Terms controller
- */
-angular
-    .module('Home')
-    .controller('termsCtrl', ['$scope', '$window', function ($scope, $window) {
-
-
-    }]);
 /**
  * Parent controller of the settings module.
  */

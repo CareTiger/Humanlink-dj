@@ -155,9 +155,6 @@ class Pusher(object):
         }
         if socket_id:
             params['socket_id'] = validate_socket_id(socket_id)
-        else:
-            x = Request(self, POST, "/apps/%s/events" % self.app_id, params)
-            print(x.path)
 
         return Request(self, POST, "/apps/%s/events" % self.app_id, params)
 
