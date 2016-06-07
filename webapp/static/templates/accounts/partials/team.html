@@ -1,0 +1,27 @@
+<form class="form-horizontal" name="form" ng-submit="vm.update(vm.profile)">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team profile</h2>
+    </div>
+    <div class="panel-body">
+      <div class="alert alert-danger" ng-if="vm.errorMessagePasswordChange">
+        {{ vm.errorMessagePasswordChange }}
+      </div>
+
+
+
+      <div class="form-group">
+        <div class="col-sm-4">
+          <button type="submit"
+                  ng-click="vm.changePassword(vm.password.old_password , vm.password.new_password)"
+                  ng-disabled="!changePasswordForm.$valid || vm.submitBusy"
+                  class="btn btn-block btn-secondary btn-sharp">Save Profile
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>
