@@ -51,6 +51,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 	'reversion',
 	'urllib3',
+	'ndg'
 	'classytags',
 	'pusher',
 	'mptt',
