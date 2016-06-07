@@ -52,6 +52,7 @@ INSTALLED_APPS = (
 	'reversion',
 	'urllib3',
 	'ndg',
+	'pyasn1',
 	'classytags',
 	'pusher',
 	'mptt',
