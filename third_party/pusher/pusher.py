@@ -119,7 +119,7 @@ class Pusher(object):
         
         return cls.from_url(val, **options)
 
-    @request_method
+    # @request_method
     def trigger(self, channels, event_name, data, socket_id=None):
         '''
         Trigger an event on one or more channels, see:
@@ -143,10 +143,7 @@ class Pusher(object):
         if len(event_name) > 200:
             raise ValueError("event_name too long")
 
-        if isinstance(data, six.string_types):
-            data = ensure_text(data, "data")
-        else:
-            data = json_filter.dumps(data, cls=self._json_encoder)
+        data = self._data_to_string(data)
 
         if len(data) > 10240:
             raise ValueError("Too much data")
@@ -158,8 +155,29 @@ class Pusher(object):
         }
         if socket_id:
             params['socket_id'] = validate_socket_id(socket_id)
+        else:
+            x = Request(self, POST, "/apps/%s/events" % self.app_id, params)
+            print(x.path)
 
         return Request(self, POST, "/apps/%s/events" % self.app_id, params)
+
+    @request_method
+    def trigger_batch(self, batch=[], already_encoded=False):
+        '''
+        Trigger multiple events with a single HTTP call.
+
+        http://pusher.com/docs/rest_api#method-post-batch-events
+        '''
+
+        if not already_encoded:
+            for event in batch:
+                event['data'] = self._data_to_string(event['data'])
+
+        params = {
+            'batch': batch
+        }
+
+        return Request(self, POST, "/apps/%s/batch_events" % self.app_id, params)
 
     @request_method
     def channels_info(self, prefix_filter=None, attributes=[]):
@@ -215,7 +233,7 @@ class Pusher(object):
         socket_id = validate_socket_id(socket_id)
 
         if custom_data:
-            custom_data = json_filter.dumps(custom_data, cls=self._json_encoder)
+            custom_data = json.dumps(custom_data, cls=self._json_encoder)
 
         string_to_sign = "%s:%s" % (socket_id, channel)
 
@@ -251,7 +269,7 @@ class Pusher(object):
             return None
 
         try:
-            body_data = json_filter.loads(body, cls=self._json_decoder)
+            body_data = json.loads(body, cls=self._json_decoder)
         except ValueError:
             return None
 
@@ -295,3 +313,11 @@ class Pusher(object):
     @property
     def scheme(self):
         return 'https' if self.ssl else 'http'
+
+    def _data_to_string(self, data):
+        if isinstance(data, six.string_types):
+            return ensure_text(data, "data")
+        else:
+            return json.dumps(data, cls=self._json_encoder)
+
+

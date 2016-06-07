@@ -1,3 +1,4 @@
+import pickle
 import urllib
 
 import codecs
@@ -18,7 +19,7 @@ from api_helpers import composeJsonResponse
 from account.models import Account, CareGiver, CareSeeker
 from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
-from pusher import pusher
+from pusher.pusher import Pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
 from django.contrib.auth import logout
 from django.http import QueryDict
@@ -26,7 +27,6 @@ import ast
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
-
 
 def index(request):
     # """ -Return Account Template """
@@ -49,11 +49,15 @@ def broadcast(chat_id=None):
 
     chat = ThreadChat.objects.get(id=chat_id)
     thread = Thread.objects.get(id=chat.thread.id)
+    chat = model_to_dict(chat)
+    chat = pickle.dumps(chat)
 
     if not chat or not thread:
         raise Exception("thread or chat not found")
 
     all_members = ThreadMember.objects.filter(thread=thread)
+
+    pusher = Pusher(app_id='199731', key='feea095554f736862bf4', secret="9550fb09aacce399eeb6")
 
     for member in all_members:
         channels = ['public-account-{}'.format(member.account.id)]
@@ -71,7 +75,7 @@ def add_to_welcome(org_id, account_id):
                                          text=account.email + ' has joined ',
                                          kind=0, inviter=2, remover=3)
 
-        # broadcast(chat_id=chat.id)
+        broadcast(chat_id=chat.id)
 
 
 # Converts AJAX JSON into query dictionary for the view to process.

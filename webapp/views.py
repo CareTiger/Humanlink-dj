@@ -139,7 +139,8 @@ def pusher_auth(request):
 
 		account = Account.objects.get(email=user.email)
 
-		pusher_client = Pusher(key='feea095554f736862bf4', cluster='mt1', ssl=True)
+		pusher_client = Pusher(app_id=199731, key='feea095554f736862bf4', secret="9550fb09aacce399eeb6",
+							   cluster='mt1', ssl=True)
 
 		auth = pusher_client.authenticate(channel=channel, socket_id=socket_id)
 

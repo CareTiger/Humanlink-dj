@@ -1,4 +1,43 @@
 /**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
+})();
+/**
  * Account module.
  */
 (function () {
@@ -97,45 +136,6 @@
                 controller: 'settingsVerificationCtrl'
             });
         }
-})();
-/**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
 })();
 /**
  * A module that has common directives, services, constants, etc.
@@ -1732,7 +1732,6 @@ window.HL = window.HL || {};
             });
             var pusherPr = bindPusher();
             return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
         }
 
         /**
@@ -2330,6 +2329,95 @@ window.HL = window.HL || {};
     };
 
 })();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
 /**
  * Parent controller of the account module.
  */
@@ -3317,91 +3405,9 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-'use strict';
-
-/**
- * Base controller for the home module.
- */
 angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
+    .module('Common')
+    .constant('Constants', window.HL.constants);
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -3479,13 +3485,6 @@ angular
         });
 
 })();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-angular
-    .module('Common')
-    .constant('Constants', window.HL.constants);
 /**
  * Service that keeps track of the current logged in user.
  */
@@ -3998,6 +3997,114 @@ angular
 
     }]);
 /**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
+/**
  *
  */
 (function () {
@@ -4485,114 +4592,6 @@ angular
 
 })();
 
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  *  Controller for the thread Archive.
  */
@@ -5162,6 +5161,8 @@ angular
         function init() {
             $log.debug('thread init');
 
+            vm.sidepanel.isOpen = false
+            
             if (SidepanelState.isOpen) {
                 return openSidepanel();
             } else {
