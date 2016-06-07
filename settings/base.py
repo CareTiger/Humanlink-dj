@@ -50,7 +50,7 @@ INSTALLED_APPS = (
 	'suit',
 	'django.contrib.admin',
 	'reversion',
-	'urllib3'
+	'urllib3',
 	'classytags',
 	'pusher',
 	'mptt',
