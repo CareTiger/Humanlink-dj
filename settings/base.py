@@ -53,6 +53,7 @@ INSTALLED_APPS = (
 	'urllib3',
 	'OpenSSL',
 	'ndg',
+	'cryptography',
 	'pyasn1',
 	'classytags',
 	'pusher',
