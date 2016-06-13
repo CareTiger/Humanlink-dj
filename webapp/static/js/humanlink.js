@@ -1689,7 +1689,7 @@ window.HL = window.HL || {};
 
             pusher: {
                 // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
+                key: '2676265f725e22f7e5d0',
                 options: {
                     encrypted: true
                     // auth: {
@@ -3981,31 +3981,6 @@ angular
 
 })();
 /**
- * Controller for the sidepanel in the thread view.
- */
-(function () {
-    'use strict';
-
-    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidepanel', Sidepanel);
-
-    /** @ngInject */
-    function Sidepanel($log, $state, SidepanelState) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('sidepanel init');
-            SidepanelState.setState($state.current.name);
-            SidepanelState.open();
-        }
-    }
-
-})();
-/**
  * Controller for the dashboard welcome state.
  */
 (function () {
@@ -4041,22 +4016,6 @@ angular
     }
 
 })();
-/**
- * Base controller for the dashboard module.
- */
-angular
-    .module('app.dashboard')
-    .controller('dashboardBaseCtrl', ['$scope', '$window', function ($scope, $window) {
-
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
-
-    }]);
 /**
  *
  */

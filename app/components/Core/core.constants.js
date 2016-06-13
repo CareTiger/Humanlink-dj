@@ -12,7 +12,7 @@
 
             pusher: {
                 // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
+                key: '2676265f725e22f7e5d0',
                 options: {
                     encrypted: true
                     // auth: {

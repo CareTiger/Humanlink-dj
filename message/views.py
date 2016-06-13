@@ -14,8 +14,10 @@ from account.models import Account
 from api_helpers import composeJsonResponse
 from message.forms import NewThread, UpdateThread, NewChat, ThreadHistory, AddMember
 from message.models import Thread, ThreadMember, ThreadChat, ThreadInvite, CHAT_CHOICES
-from account.views import broadcast, generate_token, requestPost
+from account.views import generate_token, requestPost
 from django.conf import settings
+import pickle
+from pusher.pusher import Pusher
 
 
 @login_required
@@ -78,8 +80,10 @@ def new_thread(request):
 
             purpose = cleaned_data['purpose']
 
-            thread = Thread.objects.create(org=cleaned_data['org_id'], name=cleaned_data['name'],
-                                           privacy=cleaned_data['privacy'], account=account, owner=account,
+            thread = Thread.objects.create(org=cleaned_data['org_id'],
+                                           name=cleaned_data['name'],
+                                           privacy=cleaned_data['privacy'],
+                                           account=account, owner=account,
                                            purpose=cleaned_data['purpose'])
 
             ThreadMember.objects.create(thread=thread, account=account)
@@ -88,9 +92,10 @@ def new_thread(request):
                "owner": {
                    "id": thread.owner.id,
                    "email": thread.owner.email
-                }
+               }
                }
     return composeJsonResponse(200, "", context)
+
 
 @login_required
 @csrf_exempt
@@ -115,6 +120,7 @@ def update_purpose(request, thread_id):
             context = {"message": form.errors}
             return composeJsonResponse(200, "", context)
 
+
 @login_required
 @csrf_exempt
 def send(request, thread_id):
@@ -129,7 +135,8 @@ def send(request, thread_id):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            threadchat = ThreadChat.objects.create(text=cleaned_data['message'], account=account, thread=thread)
+            threadchat = ThreadChat.objects.create(text=cleaned_data['message'],
+                                                   account=account, thread=thread)
 
             chatObject = {
                 'account': {
@@ -142,7 +149,7 @@ def send(request, thread_id):
                 'remover': threadchat.remover
             }
 
-            # broadcast(threadchat.id)
+            broadcast(threadchat.id)
 
     context = {"threadchat": chatObject}
     return composeJsonResponse(200, "", context)
@@ -166,14 +173,16 @@ def history(request, thread_id):
             ts = cleaned_data['ts']
             ts_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-            messages = ThreadChat.objects.filter(thread=thread.id, created_on__lte=ts_date)
+            messages = ThreadChat.objects.filter(thread=thread.id,
+                                                 created_on__lte=ts_date)
 
             context = {"messages": messages}
             return composeJsonResponse(200, "", context)
         else:
             all_chats = []
 
-            all_chats_list = ThreadChat.objects.filter(thread=thread).order_by('-created_on')
+            all_chats_list = ThreadChat.objects.filter(thread=thread).order_by(
+                '-created_on')
 
             for chat in all_chats_list:
                 chatObject = {
@@ -192,6 +201,7 @@ def history(request, thread_id):
                 'all_chats': all_chats
             }
             return composeJsonResponse(200, "", context)
+
 
 @csrf_exempt
 def add_member(request, thread_id):
@@ -212,8 +222,10 @@ def add_member(request, thread_id):
             elif cleaned_data['email']:
                 token = generate_token(8)
 
-                thread_invite = ThreadInvite.objects.create(actor=account, thread=thread, token=token,
-                                             email=cleaned_data['email'], name=cleaned_data['name'])
+                thread_invite = ThreadInvite.objects.create(actor=account, thread=thread,
+                                                            token=token,
+                                                            email=cleaned_data['email'],
+                                                            name=cleaned_data['name'])
 
                 # Send Email
                 md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
@@ -275,9 +287,11 @@ def accept_thread_invite(token):
 
     invite_dict['thread_name'] = thread.name
 
-    url = '/{}/{}/?data={}'.format(base, token, urllib.quote_plus(json.dumps(invite_dict)))
+    url = '/{}/{}/?data={}'.format(base, token,
+                                   urllib.quote_plus(json.dumps(invite_dict)))
 
     return redirect(url)
+
 
 def thread_invite(request, token):
     # """ Return Thread Invite Information """
@@ -292,6 +306,7 @@ def thread_invite(request, token):
 
 
 @login_required
+@csrf_exempt
 def leave(request, thread_id):
     # """Leave the thread."""
 
@@ -303,6 +318,7 @@ def leave(request, thread_id):
     }
 
     return composeJsonResponse(200, "", context)
+
 
 @login_required
 @csrf_exempt
@@ -320,6 +336,7 @@ def remove(request, thread_id, member_id):
 
 
 @login_required
+@csrf_exempt
 def archive(request, thread_id):
     # """Archive the thread."""
     print '############'
@@ -348,9 +365,31 @@ def unarchive(thread_id):
     thread.save()
 
     thread_chat = ThreadChat.objects.create(thread=thread, account=thread.account,
-                                         message=thread.account.id, kind=CHAT_CHOICES(5))
+                                            message=thread.account.id,
+                                            kind=CHAT_CHOICES(5))
 
     broadcast(thread_chat.id)
 
     context = {"thread": thread}
     return composeJsonResponse(200, "", context)
+
+
+def broadcast(chat_id=None):
+    # """Sends out push notifications to thread members about chat message. """
+
+    chat = ThreadChat.objects.get(id=chat_id)
+    thread = Thread.objects.get(id=chat.thread.id)
+    chat = model_to_dict(chat)
+    chat = pickle.dumps(chat)
+
+    if not chat or not thread:
+        raise Exception("thread or chat not found")
+
+    all_members = ThreadMember.objects.filter(thread=thread)
+
+    pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0',
+                    secret="bcfc287023b0df0c7d2f")
+
+    for member in all_members:
+        channels = ['public-account-{}'.format(member.account.id)]
+        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
