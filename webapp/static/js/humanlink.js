@@ -1388,48 +1388,6 @@ angular
     }
 
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    $pusher.$inject = ["Config"];
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher(Config) {
-        var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1679,6 +1637,48 @@ window.HL = window.HL || {};
     'use strict';
 
     angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    $pusher.$inject = ["Config"];
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher(Config) {
+        var self = this;
+        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
         .module('app.core')
         .constant('Config', getConfig());
 
@@ -1761,7 +1761,8 @@ window.HL = window.HL || {};
         function bindPusher() {
             var defer = $q.defer();
 
-            var channelName = 'public-account-' + Session.account.id;
+            var channelName = 'public-account-25'; //VV testing
+                //Session.account.id;
             // In the future, this will need to be private
             var channel = $pusher.client.subscribe(channelName);
 
@@ -4870,26 +4871,26 @@ angular
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
 
-            $('textarea').on('keydown', function(e){
+            $('textarea').on('keydown', function (e) {
                 var value = $('textarea').val();
                 var rows = $('textarea').attr('rows');
                 console.log(rows)
                 $('.textarea-copy').html(value);
                 var textareaWidth = $('.textarea-copy').width();
                 console.log(textareaWidth);
-                if (textareaWidth < 1050){
+                if (textareaWidth < 1050) {
                     $('.reply').css({"height": "70px"})
                     $('textarea').attr('rows', '1');
-                } else if (textareaWidth >= 1050 && textareaWidth < 2100){
+                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
                     $('.reply').css({"height": "100px"})
                     $('textarea').attr('rows', '2');
-                } else if (textareaWidth > 2100){
+                } else if (textareaWidth > 2100) {
                     $('.reply').css({"height": "130px"})
                     $('textarea').attr('rows', '3');
                 }
             });
 
-            var threadId = $stateParams.threadId
+            var threadId = $stateParams.threadId;
 
             load(threadId);
         }
@@ -4910,14 +4911,14 @@ angular
                 message: message
             };
 
-            var threadId = $stateParams.threadId
+            var threadId = $stateParams.threadId;
 
             MessagesService.send($stateParams.threadId, model).then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.message = '';
-                    vm.messages.push(data.threadchat)
-                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+                    vm.messages.push(data.threadchat);
+                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
                     console.log(vm.messages)
                 },
                 function (data) {
