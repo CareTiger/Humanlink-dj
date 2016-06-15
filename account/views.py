@@ -47,6 +47,9 @@ def index(request):
 def broadcast(chat_id=None):
     # """Sends out push notifications to thread members about chat message. """
 
+    print '###########'
+    print 'account.views.broadcast'
+
     chat = ThreadChat.objects.get(id=chat_id)
     thread = Thread.objects.get(id=chat.thread.id)
     chat = model_to_dict(chat)

@@ -14,6 +14,12 @@ THREADPURPOSE_CHOICES = (
     (1, 'Care')
 )
 
+GENDER_CHOICES = (
+    (0, 'Other'),
+    (1, 'Female'),
+    (2, 'Male')
+)
+
 PRIVACY_CHOICES = (
     (0, 'Open'),  # see notes file - messages 1
     (1, 'Closed'),
@@ -44,23 +50,33 @@ class Thread(models.Model):
     org = models.ForeignKey(Org, related_name="thread_org_id", null=True)
     name = models.CharField(max_length=30, null=False)
     is_archived = models.BooleanField(default=False)
-    purpose_type = models.IntegerField(choices=THREADPURPOSE_CHOICES, null=False, default=0)
+    purpose_type = models.IntegerField(choices=THREADPURPOSE_CHOICES, null=False,
+                                       default=0)
     purpose = models.TextField(max_length=500, null=True, default="")
 
-    @property
-    def owner_kind(self):
-        return self.kind
+    hours = models.IntegerField(default=0, null=True)
+    hobbies = models.TextField(max_length=500, null=True, default="")
+    gender = models.IntegerField(choices=GENDER_CHOICES, default=0, null=True)
+    notes = models.TextField(max_length=500, null=True, default="")
 
-    def get_members(self):
-        return self.threadmember_set.all()
 
-    def add_members(self, account_id):
-        member = ThreadMember.objects.get(account=account_id)
-        self.threadmembers.add(member)
-        return member
+@property
+def owner_kind(self):
+    return self.kind
 
-    def __str__(self):
-        return self.name
+
+def get_members(self):
+    return self.threadmember_set.all()
+
+
+def add_members(self, account_id):
+    member = ThreadMember.objects.get(account=account_id)
+    self.threadmembers.add(member)
+    return member
+
+
+def __str__(self):
+    return self.name
 
 
 class ThreadMember(models.Model):
