@@ -1433,6 +1433,123 @@ angular
 
 })();
 /**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+/**
+ * Dashboard helper/bootstraper.
+ */
+(function () {
+    'use strict';
+
+    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('DashboardHelper', DashboardHelper);
+
+    /** ngInject */
+    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
+                             MessagesService, Session) {
+
+        return {
+            initialize: init
+        };
+
+        /**
+         * Bootstraps the Dashboard module, specifically:
+         *   - Fetches org summary
+         *   - Fetches thread messages
+         *   - Binds pusher events.
+         */
+        function init() {
+            var threadsPr = MessagesService.getThreads().then(function (threads) {
+                // Asynchronously fetch thread histories.
+                // TODO: Delay won't be necessary once all templates are in one place.
+                $timeout(function () {fetchThreads(threads)}, 100);
+                return threads;
+            });
+            var pusherPr = bindPusher();
+            return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
+        }
+
+        /**
+         * Fetches history for all the threads in the org.
+         *
+         * TODO: only fetch recent 3-5 threads.
+         */
+        function fetchThreads(threads) {
+            threads[0].forEach(function (thread) {
+                if (thread.is_archived) {
+                    return;
+                }
+                MessagesService.getHistory(thread.id);
+            });
+        }
+
+        /**
+         * Subscribes to user's Pusher channel and binds callback events.
+         */
+        function bindPusher() {
+            var defer = $q.defer();
+
+            var channelName = 'public-account-25'; //VV testing
+                //Session.account.id;
+            // In the future, this will need to be private
+            var channel = $pusher.client.subscribe(channelName);
+
+            channel.bind('my_event', function(data) {
+                alert('There\'s a new chat !');
+            });
+
+            channel.bind('pusher:subscription_succeeded', function (data) {
+                $log.debug('Pusher subscribed: ' + channel.name);
+                PushListener.bindAndListen(channel);
+                defer.resolve(data);
+            });
+            channel.bind('pusher:subscription_error', function (status) {
+                if (status === 403) {
+                    var msg = 'Pusher channel not authorized.';
+                    $log.warn(msg);
+                    defer.reject(msg);
+                }
+            });
+
+            return defer.promise;
+        }
+    }
+
+})();
+/**
  * Created by timothybaney on 5/16/16.
  */
 'use strict';
@@ -1677,89 +1794,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-/**
- * Dashboard helper/bootstraper.
- */
-(function () {
-    'use strict';
-
-    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('DashboardHelper', DashboardHelper);
-
-    /** ngInject */
-    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
-                             MessagesService, Session) {
-
-        return {
-            initialize: init
-        };
-
-        /**
-         * Bootstraps the Dashboard module, specifically:
-         *   - Fetches org summary
-         *   - Fetches thread messages
-         *   - Binds pusher events.
-         */
-        function init() {
-            var threadsPr = MessagesService.getThreads().then(function (threads) {
-                // Asynchronously fetch thread histories.
-                // TODO: Delay won't be necessary once all templates are in one place.
-                $timeout(function () {fetchThreads(threads)}, 100);
-                return threads;
-            });
-            var pusherPr = bindPusher();
-            return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
-        }
-
-        /**
-         * Fetches history for all the threads in the org.
-         *
-         * TODO: only fetch recent 3-5 threads.
-         */
-        function fetchThreads(threads) {
-            threads[0].forEach(function (thread) {
-                if (thread.is_archived) {
-                    return;
-                }
-                MessagesService.getHistory(thread.id);
-            });
-        }
-
-        /**
-         * Subscribes to user's Pusher channel and binds callback events.
-         */
-        function bindPusher() {
-            var defer = $q.defer();
-
-            var channelName = 'public-account-' + Session.account.id;
-
-            var channel = $pusher.client.subscribe(channelName);
-
-            channel.bind('my_event', function(data) {
-                alert('There\'s a new chat !');
-            });
-
-            channel.bind('pusher:subscription_succeeded', function (data) {
-                $log.debug('Pusher subscribed: ' + channel.name);
-                PushListener.bindAndListen(channel);
-                defer.resolve(data);
-            });
-            channel.bind('pusher:subscription_error', function (status) {
-                if (status === 403) {
-                    var msg = 'Pusher channel not authorized.';
-                    $log.warn(msg);
-                    defer.reject(msg);
-                }
-            });
-
-            return defer.promise;
-        }
-    }
-
-})();
 (function () {
     'use strict';
 
@@ -3958,31 +3992,6 @@ angular
 
 })();
 /**
- * Controller for the sidepanel in the thread view.
- */
-(function () {
-    'use strict';
-
-    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidepanel', Sidepanel);
-
-    /** @ngInject */
-    function Sidepanel($log, $state, SidepanelState) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('sidepanel init');
-            SidepanelState.setState($state.current.name);
-            SidepanelState.open();
-        }
-    }
-
-})();
-/**
  * Controller for the dashboard welcome state.
  */
 (function () {
@@ -4019,21 +4028,113 @@ angular
 
 })();
 /**
- * Base controller for the dashboard module.
+ *  Controller for the team view.
  */
-angular
-    .module('app.dashboard')
-    .controller('dashboardBaseCtrl', ['$scope', '$window', function ($scope, $window) {
+(function () {
+    'use strict';
 
-        /**
-         * Go back to the previous page/view.
-         * @return void
-         */
-        $scope.previous = function () {
-            $window.history.back();
-        };
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
 
-    }]);
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
 /**
  *
  */
@@ -4523,114 +4624,6 @@ angular
 })();
 
 /**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
-/**
  *  Controller for the thread Archive.
  */
 (function () {
@@ -4888,26 +4881,26 @@ angular
             vm.thread = threadInfo.thread;
             vm.members = threadInfo.members;
 
-            $('textarea').on('keydown', function(e){
+            $('textarea').on('keydown', function (e) {
                 var value = $('textarea').val();
                 var rows = $('textarea').attr('rows');
                 console.log(rows)
                 $('.textarea-copy').html(value);
                 var textareaWidth = $('.textarea-copy').width();
                 console.log(textareaWidth);
-                if (textareaWidth < 1050){
+                if (textareaWidth < 1050) {
                     $('.reply').css({"height": "70px"})
                     $('textarea').attr('rows', '1');
-                } else if (textareaWidth >= 1050 && textareaWidth < 2100){
+                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
                     $('.reply').css({"height": "100px"})
                     $('textarea').attr('rows', '2');
-                } else if (textareaWidth > 2100){
+                } else if (textareaWidth > 2100) {
                     $('.reply').css({"height": "130px"})
                     $('textarea').attr('rows', '3');
                 }
             });
 
-            var threadId = $stateParams.threadId
+            var threadId = $stateParams.threadId;
 
             load(threadId);
         }
@@ -4928,14 +4921,14 @@ angular
                 message: message
             };
 
-            var threadId = $stateParams.threadId
+            var threadId = $stateParams.threadId;
 
             MessagesService.send($stateParams.threadId, model).then(
                 function (data) {
                     vm.submitBusy = false;
                     vm.message = '';
-                    vm.messages.push(data.threadchat)
-                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+                    vm.messages.push(data.threadchat);
+                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
                     console.log(vm.messages)
                 },
                 function (data) {
@@ -5250,7 +5243,11 @@ angular
             //currently supporting Basic channel purpose only
             model = {
                 name: vm.thread.name,
-                purpose: vm.thread.purpose
+                purpose: vm.thread.purpose,
+                hours: vm.thread.hours,
+                notes: vm.thread.notes,
+                gender: vm.thread.gender,
+                hobbies: vm.thread.hobbies,
             };
 
             MessagesRepo.updatePurpose(vm.thread.id, model).then(
