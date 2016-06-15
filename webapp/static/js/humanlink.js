@@ -1,4 +1,43 @@
 /**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
+})();
+/**
  * Account module.
  */
 (function () {
@@ -103,45 +142,6 @@
                 controller: 'settingsVerificationCtrl'
             });
         }
-})();
-/**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
 })();
 /**
  * A module that has common directives, services, constants, etc.
@@ -2338,6 +2338,95 @@ window.HL = window.HL || {};
 
 })();
 /**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
  * Parent controller of the account module.
  */
 (function () {
@@ -3374,95 +3463,6 @@ angular
         $scope.chosenDLState = $scope.states[0];
         $scope.chosenAddrState = $scope.states[0];
     }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -5233,7 +5233,11 @@ angular
             //currently supporting Basic channel purpose only
             model = {
                 name: vm.thread.name,
-                purpose: vm.thread.purpose
+                purpose: vm.thread.purpose,
+                hours: vm.thread.hours,
+                notes: vm.thread.notes,
+                gender: vm.thread.gender,
+                hobbies: vm.thread.hobbies,
             };
 
             MessagesRepo.updatePurpose(vm.thread.id, model).then(

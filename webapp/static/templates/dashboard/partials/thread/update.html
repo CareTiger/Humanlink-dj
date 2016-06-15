@@ -19,7 +19,8 @@
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="type" id="type" value="1" ng-model="vm.thread.purpose_type">
+            <input type="radio" name="type" id="type" value="1"
+                   ng-model="vm.thread.purpose_type">
             Care channel
           </label>
         </div>
@@ -98,9 +99,9 @@
         <div class="col-sm-9 col-md-7">
           <select id="gender" class="form-control"
                   ng-model="vm.thread.gender">
-            <option value="Male" ng-selected="!vm.thread.gender">Male</option>
-            <option value="Female">Female</option>
-            <option value="Male">Don't disclose</option>
+            <option value="0" ng-selected="!vm.thread.gender">Don't disclose</option>
+            <option value="1">Female</option>
+            <option value="2">Male</option>
           </select>
 
           <div class="help-block">
@@ -111,36 +112,13 @@
       </div>
 
       <div class="form-group">
-        <label for="care_needs" class="col-sm-3 control-label">Care Needs</label>
-
-        <div class="col-sm-9 col-md-7">
-          <div class="checkbox" ng-repeat="care in ::vm.careServices">
-            <label>
-              <input type="checkbox" ng-model="vm.careServices[care]"> {{ care }}
-              <small>({{ care }})</small>
-            </label>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="form-group">
         <label for="hobbies" class="col-sm-3 control-label">
           Hobbies/Interests/Past Profession</label>
 
         <div class="col-sm-9 col-md-7">
-      <textarea type="text" id="hobbies" name="hobbies" class="form-control"
-                rows="2" ng-model="vm.thread.hobbies"
-                hl-alphanum>
-      </textarea>
-
-          <div class="has-warning" ng-if="form.hobbies.$dirty">
-            <div class="help-block" ng-messages="form.hobbies.$error">
-              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
-                spaces are not allowed.
-              </div>
-            </div>
-          </div>
+          <textarea type="text" id="hobbies" name="hobbies" class="form-control"
+                    rows="2" ng-model="vm.thread.hobbies">
+          </textarea>
 
           <div class="help-block">General information that might help care providers</div>
         </div>
@@ -151,18 +129,8 @@
 
         <div class="col-sm-9 col-md-7">
               <textarea type="text" id="notes" name="notes" class="form-control"
-                        rows="2" ng-model="vm.thread.notes"
-                        hl-alphanum>
-
+                        rows="2" ng-model="vm.thread.notes">
               </textarea>
-
-          <div class="has-warning" ng-if="form.notes.$dirty">
-            <div class="help-block" ng-messages="form.notes.$error">
-              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
-                spaces are not allowed.
-              </div>
-            </div>
-          </div>
 
           <div class="help-block">
             Any additional information that you think will help your careproviders.
@@ -195,3 +163,4 @@
   </form>
 
 </div>
+<pre>{{ vm.thread | json }}</pre>

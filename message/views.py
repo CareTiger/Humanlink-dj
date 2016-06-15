@@ -109,9 +109,16 @@ def update_purpose(request, thread_id):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            print '###############'
+            print cleaned_data
+
             thread.name = cleaned_data['name']
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
+            thread.gender = cleaned_data['gender']
+            thread.notes = cleaned_data['notes']
+            thread.hours = cleaned_data['hours']
+            thread.hobbies = cleaned_data['hobbies']
             thread.save()
 
             context = {"thread": thread}

@@ -40,7 +40,11 @@
             //currently supporting Basic channel purpose only
             model = {
                 name: vm.thread.name,
-                purpose: vm.thread.purpose
+                purpose: vm.thread.purpose,
+                hours: vm.thread.hours,
+                notes: vm.thread.notes,
+                gender: vm.thread.gender,
+                hobbies: vm.thread.hobbies,
             };
 
             MessagesRepo.updatePurpose(vm.thread.id, model).then(
