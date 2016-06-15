@@ -18,6 +18,7 @@ from account.views import generate_token, requestPost
 from django.conf import settings
 import pickle
 from pusher.pusher import Pusher
+from account.views import broadcast
 
 
 @login_required
@@ -381,22 +382,21 @@ def unarchive(thread_id):
     return composeJsonResponse(200, "", context)
 
 
-def broadcast(chat_id=None):
-    # """Sends out push notifications to thread members about chat message. """
-
-    chat = ThreadChat.objects.get(id=chat_id)
-    thread = Thread.objects.get(id=chat.thread.id)
-    chat = model_to_dict(chat)
-    chat = pickle.dumps(chat)
-
-    if not chat or not thread:
-        raise Exception("thread or chat not found")
-
-    all_members = ThreadMember.objects.filter(thread=thread)
-
-    pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0',
-                    secret="bcfc287023b0df0c7d2f")
-
-    for member in all_members:
-        channels = ['public-account-{}'.format(member.account.id)]
-        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
+# def broadcast(chat_id=None):
+#     # """Sends out push notifications to thread members about chat message. """
+#
+#     chat = ThreadChat.objects.get(id=chat_id)
+#     thread = Thread.objects.get(id=chat.thread.id)
+#     chat = model_to_dict(chat)
+#     chat = pickle.dumps(chat)
+#
+#     if not chat or not thread:
+#         raise Exception("thread or chat not found")
+#
+#     all_members = ThreadMember.objects.filter(thread=thread)
+#
+#     pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0', secret="bcfc287023b0df0c7d2f", cluster='mt1')
+#
+#     for member in all_members:
+#         channels = ['public-account-{}'.format(member.account.id)]
+#         pusher.trigger(channels, 'my_event', {'thread_id': thread.id, 'chat': chat})

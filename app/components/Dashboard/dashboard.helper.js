@@ -55,9 +55,7 @@
         function bindPusher() {
             var defer = $q.defer();
 
-            var channelName = 'public-account-25'; //VV testing
-                //Session.account.id;
-            // In the future, this will need to be private
+            var channelName = 'public-account-' + Session.account.id;
             var channel = $pusher.client.subscribe(channelName);
 
             channel.bind('my_event', function(data) {
