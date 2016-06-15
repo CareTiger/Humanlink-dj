@@ -119,7 +119,7 @@ class Pusher(object):
         
         return cls.from_url(val, **options)
 
-    @request_method
+    # @request_method
     def trigger(self, channels, event_name, data, socket_id=None):
         '''
         Trigger an event on one or more channels, see:

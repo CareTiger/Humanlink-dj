@@ -142,7 +142,7 @@ def send(request, thread_id):
                 'remover': threadchat.remover
             }
 
-            # broadcast(threadchat.id)
+            broadcast(threadchat.id)
 
     context = {"threadchat": chatObject}
     return composeJsonResponse(200, "", context)
@@ -235,8 +235,8 @@ def add_member(request, thread_id):
                         }
                     ],
                     'to': [
-                        {'email': cleaned_data['email']},
-                        # {'email': 'tim@millcreeksoftware.biz'},
+                        # {'email': cleaned_data['email']},
+                        {'email': 'tim@millcreeksoftware.biz'},
                     ],
                 }
                 message['from_name'] = message.get('from_name', 'Humanlink')

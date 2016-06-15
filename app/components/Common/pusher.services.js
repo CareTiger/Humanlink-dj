@@ -10,9 +10,12 @@
         .factory('$pusher', $pusher);
 
     /** ngInject */
-    function $pusher(Config) {
+    function $pusher() {
         var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
 
         return {
             client: self.client

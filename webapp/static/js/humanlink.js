@@ -1414,15 +1414,17 @@ angular
 (function () {
     'use strict';
 
-    $pusher.$inject = ["Config"];
     angular
         .module('app.common')
         .factory('$pusher', $pusher);
 
     /** ngInject */
-    function $pusher(Config) {
+    function $pusher() {
         var self = this;
-        self.client = new Pusher(Config.pusher.key, Config.pusher.options || {});
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
 
         return {
             client: self.client
@@ -1675,35 +1677,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
 /**
  * Dashboard helper/bootstraper.
  */
@@ -1762,8 +1735,12 @@ window.HL = window.HL || {};
             var defer = $q.defer();
 
             var channelName = 'public-account-' + Session.account.id;
-            // In the future, this will need to be private
+
             var channel = $pusher.client.subscribe(channelName);
+
+            channel.bind('my_event', function(data) {
+                alert('There\'s a new chat !');
+            });
 
             channel.bind('pusher:subscription_succeeded', function (data) {
                 $log.debug('Pusher subscribed: ' + channel.name);

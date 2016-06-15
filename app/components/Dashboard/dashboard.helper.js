@@ -59,6 +59,10 @@
             // In the future, this will need to be private
             var channel = $pusher.client.subscribe(channelName);
 
+            channel.bind('my_event', function(data) {
+                alert('There\'s a new chat !');
+            });
+
             channel.bind('pusher:subscription_succeeded', function (data) {
                 $log.debug('Pusher subscribed: ' + channel.name);
                 PushListener.bindAndListen(channel);
