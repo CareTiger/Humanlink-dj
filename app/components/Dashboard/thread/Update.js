@@ -41,6 +41,7 @@
             model = {
                 name: vm.thread.name,
                 purpose: vm.thread.purpose,
+                purpose_type: vm.thread.purpose_type,
                 hours: vm.thread.hours,
                 notes: vm.thread.notes,
                 gender: vm.thread.gender,

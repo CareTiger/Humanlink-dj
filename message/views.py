@@ -56,7 +56,11 @@ def get_threads(request):
                 "purpose": thread.purpose,
                 "purpose_type": thread.purpose_type,
                 "is_archived": thread.is_archived,
-                "members": threads_members
+                "members": threads_members,
+                "hours": thread.hours,
+                "hobbies": thread.hobbies,
+                "notes": thread.notes,
+                "gender": thread.gender
             }
             all_threads.append(threadObject)
 
@@ -114,6 +118,7 @@ def update_purpose(request, thread_id):
             print cleaned_data
 
             thread.name = cleaned_data['name']
+            thread.purpose_type = cleaned_data ['purpose_type']
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.gender = cleaned_data['gender']
@@ -255,8 +260,8 @@ def add_member(request, thread_id):
                         }
                     ],
                     'to': [
-                        # {'email': cleaned_data['email']},
-                        {'email': 'tim@millcreeksoftware.biz'},
+                        {'email': cleaned_data['email']},
+                        # {'email': 'tim@millcreeksoftware.biz'},
                     ],
                 }
                 message['from_name'] = message.get('from_name', 'Humanlink')
@@ -380,7 +385,6 @@ def unarchive(thread_id):
 
     context = {"thread": thread}
     return composeJsonResponse(200, "", context)
-
 
 # def broadcast(chat_id=None):
 #     # """Sends out push notifications to thread members about chat message. """
