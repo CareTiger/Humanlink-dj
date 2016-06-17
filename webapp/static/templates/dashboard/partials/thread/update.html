@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <div ng-show="vm.thread.purpose_type === '1'">
+    <div ng-show="vm.thread.purpose_type == '1'">
 
       <div class="form-group">
         <label for="hours" class="col-sm-3 control-label">Hours of care</label>
@@ -98,8 +98,9 @@
 
         <div class="col-sm-9 col-md-7">
           <select id="gender" class="form-control"
-                  ng-model="vm.thread.gender">
-            <option value="0" ng-selected="!vm.thread.gender">Don't disclose</option>
+                  ng-model="vm.thread.gender" convert-to-number>
+            <option value="">---Please select---</option><!-- not selected / blank option -->
+            <option value="0">Don't disclose</option>
             <option value="1">Female</option>
             <option value="2">Male</option>
           </select>
