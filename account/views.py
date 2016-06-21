@@ -64,7 +64,7 @@ def broadcast(chat_id=None):
 
     for member in all_members:
         channels = ['public-account-{}'.format(member.account.id)]
-        pusher.trigger(channels, 'my_event', {'thread_id': thread.id, 'chat': chat})
+        pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
 def add_to_welcome(org_id, account_id):

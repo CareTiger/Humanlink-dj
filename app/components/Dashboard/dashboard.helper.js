@@ -54,13 +54,14 @@
          */
         function bindPusher() {
             var defer = $q.defer();
-
             var channelName = 'public-account-' + Session.account.id;
             var channel = $pusher.client.subscribe(channelName);
 
+            /** - Used for testing Pusher.com - delete when Pusher testing is not required
             channel.bind('my_event', function(data) {
                 alert('There\'s a new chat !');
             });
+             */
 
             channel.bind('pusher:subscription_succeeded', function (data) {
                 $log.debug('Pusher subscribed: ' + channel.name);
