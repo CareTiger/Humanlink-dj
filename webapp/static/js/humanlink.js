@@ -105,45 +105,6 @@
         }
 })();
 /**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
-})();
-/**
  * A module that has common directives, services, constants, etc.
  */
 (function () {
@@ -297,99 +258,42 @@
 
 })();
 /**
- * Dashboard module.
+ * Admin module.
  */
 (function () {
-    'use strict';
-
-    Config.$inject = ["$locationProvider", "$stateProvider", "$urlRouterProvider", "$httpProvider"];
-    Run.$inject = ["$rootScope", "$log", "$state", "MessageFormatter"];
-    rootResolve.$inject = ["DashboardHelper"];
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
     angular
-        .module('app.dashboard', [
-            'app.core',
-            'app.repo',
-            'app.dashboard.team',
-            'app.dashboard.thread'
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
         ])
-        .config(Config)
-        .run(Run);
+        .config(Config);
 
     /** ngInject */
-    function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
-
-        $locationProvider.html5Mode(true);
-        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    function Config($stateProvider, $urlRouterProvider) {
 
         $urlRouterProvider.otherwise('/');
 
         $stateProvider
-            .state('dashboard', {
+            .state('admin', {
                 abstract: true,
-                url: '/',
-                views: {
-                    'sidebar': {
-                        templateUrl: '/static/templates/dashboard/partials/sidebar.html',
-                        controller: 'Sidebar',
-                        controllerAs: 'sidebar'
-                    },
-                    '': {
-                        template: '<div ui-view></div>',
-                        controller: 'Base',
-                        controllerAs: 'base'
-                    }
-                },
-                resolve: {
-                    ready: rootResolve
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
                 }
             })
-            .state('dashboard.default', {
-                url: '',
-                templateUrl: '/static/templates/dashboard/partials/welcome.html',
-                controller: 'Welcome',
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Dashboard';} }
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
             })
-            .state('dashboard.new_thread', {
-                url: 'new',
-                templateUrl: '/static/templates/dashboard/partials/create.html',
-                controller: 'CreateThread',
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Create Channel';} }
-            })
-            .state('state-error', {
-                templateUrl: '/static/templates/dashboard/partials/state-error.html',
-                params: {error: null},
-                controller: /** ngInject */ ["$stateParams", function ($stateParams) {
-                    var vm = this;
-                    vm.error = $stateParams.error;
-                    vm.showError = false;
-                }],
-                controllerAs: 'vm',
-                resolve: { title: function () { return 'Error!!!';} }
-            })
-    }
-
-    /** ngInject */
-    function Run($rootScope, $log, $state, MessageFormatter) {
-        $rootScope.$on('$stateChangeError',
-            function (event, toState, toParams, fromState, fromParams, error) {
-                event.preventDefault();
-                $log.error(error);
-                $state.go('state-error', {error: error});
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
             });
-
-        // Register formatters that are used for rendering message body.
-        MessageFormatter.formatters.push(hl.markdown);
     }
-
-    /** ngInject */
-    function rootResolve(DashboardHelper) {
-        return DashboardHelper.initialize();
-    }
-
 
 })();
 /**
@@ -603,6 +507,102 @@ function Config($stateProvider, $urlRouterProvider){
 
 })();
 /**
+ * Dashboard module.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$locationProvider", "$stateProvider", "$urlRouterProvider", "$httpProvider"];
+    Run.$inject = ["$rootScope", "$log", "$state", "MessageFormatter"];
+    rootResolve.$inject = ["DashboardHelper"];
+    angular
+        .module('app.dashboard', [
+            'app.core',
+            'app.repo',
+            'app.dashboard.team',
+            'app.dashboard.thread'
+        ])
+        .config(Config)
+        .run(Run);
+
+    /** ngInject */
+    function Config($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
+
+        $locationProvider.html5Mode(true);
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('dashboard', {
+                abstract: true,
+                url: '/',
+                views: {
+                    'sidebar': {
+                        templateUrl: '/static/templates/dashboard/partials/sidebar.html',
+                        controller: 'Sidebar',
+                        controllerAs: 'sidebar'
+                    },
+                    '': {
+                        template: '<div ui-view></div>',
+                        controller: 'Base',
+                        controllerAs: 'base'
+                    }
+                },
+                resolve: {
+                    ready: rootResolve
+                }
+            })
+            .state('dashboard.default', {
+                url: '',
+                templateUrl: '/static/templates/dashboard/partials/welcome.html',
+                controller: 'Welcome',
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Dashboard';} }
+            })
+            .state('dashboard.new_thread', {
+                url: 'new',
+                templateUrl: '/static/templates/dashboard/partials/create.html',
+                controller: 'CreateThread',
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Create Channel';} }
+            })
+            .state('state-error', {
+                templateUrl: '/static/templates/dashboard/partials/state-error.html',
+                params: {error: null},
+                controller: /** ngInject */ ["$stateParams", function ($stateParams) {
+                    var vm = this;
+                    vm.error = $stateParams.error;
+                    vm.showError = false;
+                }],
+                controllerAs: 'vm',
+                resolve: { title: function () { return 'Error!!!';} }
+            })
+    }
+
+    /** ngInject */
+    function Run($rootScope, $log, $state, MessageFormatter) {
+        $rootScope.$on('$stateChangeError',
+            function (event, toState, toParams, fromState, fromParams, error) {
+                event.preventDefault();
+                $log.error(error);
+                $state.go('state-error', {error: error});
+            });
+
+        // Register formatters that are used for rendering message body.
+        MessageFormatter.formatters.push(hl.markdown);
+    }
+
+    /** ngInject */
+    function rootResolve(DashboardHelper) {
+        return DashboardHelper.initialize();
+    }
+
+
+})();
+/**
  * Settings module.
  */
 (function () {
@@ -711,6 +711,60 @@ function Config($stateProvider, $urlRouterProvider){
 //     }
 //
 // })();
+/**
+ * Team management and settings module.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$stateProvider"];
+    orgInfoResolve.$inject = ["ready", "$stateParams", "$q", "OrgService"];
+    angular
+        .module('app.dashboard.team', [])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider) {
+
+        $stateProvider
+            .state('dashboard.team', {
+                abstract: true,
+                url: 'manage/{org}',
+                templateUrl: '/static/templates/dashboard/partials/team/main.html',
+                controller: 'Team',
+                controllerAs: 'vm',
+                resolve: {
+                    orgInfo: orgInfoResolve
+                }
+            })
+            .state('dashboard.team.directory', {
+                url: '',
+                templateUrl: '/static/templates/dashboard/partials/team/directory.html',
+                controller: 'Directory',
+                controllerAs: 'vm'
+            })
+            .state('dashboard.team.invite', {
+                url: '/invite',
+                templateUrl: '/static/templates/dashboard/partials/team/invite.html',
+                controller: 'OrgInvite',
+                controllerAs: 'vm'
+            });
+    }
+
+    /**
+     * Org info resolved dependency that can be injected into the controllers.
+     * @param ready: (required) wait for the dashboard `ready` to resolve.
+     * @return {Promise}
+     */
+    /** ngInject */
+    function orgInfoResolve(ready, $stateParams, $q, OrgService) {
+        if (!$stateParams.org) {
+            return $q.reject('Invalid team.');
+        }
+        return OrgService.getOrgByUsername($stateParams.org);
+    }
+
+})();
 /**
  * Thread module.
  */
@@ -859,60 +913,6 @@ function Config($stateProvider, $urlRouterProvider){
                 owner: thread.owner
             };
         }
-    }
-
-})();
-/**
- * Team management and settings module.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$stateProvider"];
-    orgInfoResolve.$inject = ["ready", "$stateParams", "$q", "OrgService"];
-    angular
-        .module('app.dashboard.team', [])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider) {
-
-        $stateProvider
-            .state('dashboard.team', {
-                abstract: true,
-                url: 'manage/{org}',
-                templateUrl: '/static/templates/dashboard/partials/team/main.html',
-                controller: 'Team',
-                controllerAs: 'vm',
-                resolve: {
-                    orgInfo: orgInfoResolve
-                }
-            })
-            .state('dashboard.team.directory', {
-                url: '',
-                templateUrl: '/static/templates/dashboard/partials/team/directory.html',
-                controller: 'Directory',
-                controllerAs: 'vm'
-            })
-            .state('dashboard.team.invite', {
-                url: '/invite',
-                templateUrl: '/static/templates/dashboard/partials/team/invite.html',
-                controller: 'OrgInvite',
-                controllerAs: 'vm'
-            });
-    }
-
-    /**
-     * Org info resolved dependency that can be injected into the controllers.
-     * @param ready: (required) wait for the dashboard `ready` to resolve.
-     * @return {Promise}
-     */
-    /** ngInject */
-    function orgInfoResolve(ready, $stateParams, $q, OrgService) {
-        if (!$stateParams.org) {
-            return $q.reject('Invalid team.');
-        }
-        return OrgService.getOrgByUsername($stateParams.org);
     }
 
 })();
@@ -1406,6 +1406,50 @@ angular
     }
 
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1651,50 +1695,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 6/15/16.
  */
@@ -1725,89 +1725,6 @@ window.HL = window.HL || {};
                 }
             }
         };
-    }
-
-})();
-/**
- * Dashboard helper/bootstraper.
- */
-(function () {
-    'use strict';
-
-    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('DashboardHelper', DashboardHelper);
-
-    /** ngInject */
-    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
-                             MessagesService, Session) {
-
-        return {
-            initialize: init
-        };
-
-        /**
-         * Bootstraps the Dashboard module, specifically:
-         *   - Fetches org summary
-         *   - Fetches thread messages
-         *   - Binds pusher events.
-         */
-        function init() {
-            var threadsPr = MessagesService.getThreads().then(function (threads) {
-                // Asynchronously fetch thread histories.
-                // TODO: Delay won't be necessary once all templates are in one place.
-                $timeout(function () {fetchThreads(threads)}, 100);
-                return threads;
-            });
-            var pusherPr = bindPusher();
-            return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
-        }
-
-        /**
-         * Fetches history for all the threads in the org.
-         *
-         * TODO: only fetch recent 3-5 threads.
-         */
-        function fetchThreads(threads) {
-            threads[0].forEach(function (thread) {
-                if (thread.is_archived) {
-                    return;
-                }
-                MessagesService.getHistory(thread.id);
-            });
-        }
-
-        /**
-         * Subscribes to user's Pusher channel and binds callback events.
-         */
-        function bindPusher() {
-            var defer = $q.defer();
-            var channelName = 'public-account-' + Session.account.id;
-            var channel = $pusher.client.subscribe(channelName);
-
-            /** - Used for testing Pusher.com - delete when Pusher testing is not required
-            channel.bind('my_event', function(data) {
-                alert('There\'s a new chat !');
-            });
-             */
-
-            channel.bind('pusher:subscription_succeeded', function (data) {
-                $log.debug('Pusher subscribed: ' + channel.name);
-                PushListener.bindAndListen(channel);
-                defer.resolve(data);
-            });
-            channel.bind('pusher:subscription_error', function (status) {
-                if (status === 403) {
-                    var msg = 'Pusher channel not authorized.';
-                    $log.warn(msg);
-                    defer.reject(msg);
-                }
-            });
-
-            return defer.promise;
-        }
     }
 
 })();
@@ -1898,6 +1815,8 @@ window.HL = window.HL || {};
             join: join,
             login: login,
             save: save,
+            getTeam: getTeam,
+            updateTeam: updateTeam,
             me: me,
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
@@ -1942,6 +1861,24 @@ window.HL = window.HL || {};
          */
         function save(model) {
             return AbstractRepo.post('accounts/update/', model, false)
+                .then(apiGenericSuccess, genericError);
+        }
+
+        /**
+         * Get Team information.
+         * @returns {*}
+         */
+        function getTeam() {
+            return AbstractRepo.get('/accounts/getTeam/');
+        }
+
+        /**
+         * Update Team information.
+         * @param model
+         * @returns {Promise}
+         */
+        function updateTeam(model) {
+            return AbstractRepo.post('accounts/updateTeam/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -2280,6 +2217,89 @@ window.HL = window.HL || {};
 
 })();
 /**
+ * Dashboard helper/bootstraper.
+ */
+(function () {
+    'use strict';
+
+    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('DashboardHelper', DashboardHelper);
+
+    /** ngInject */
+    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
+                             MessagesService, Session) {
+
+        return {
+            initialize: init
+        };
+
+        /**
+         * Bootstraps the Dashboard module, specifically:
+         *   - Fetches org summary
+         *   - Fetches thread messages
+         *   - Binds pusher events.
+         */
+        function init() {
+            var threadsPr = MessagesService.getThreads().then(function (threads) {
+                // Asynchronously fetch thread histories.
+                // TODO: Delay won't be necessary once all templates are in one place.
+                $timeout(function () {fetchThreads(threads)}, 100);
+                return threads;
+            });
+            var pusherPr = bindPusher();
+            return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
+        }
+
+        /**
+         * Fetches history for all the threads in the org.
+         *
+         * TODO: only fetch recent 3-5 threads.
+         */
+        function fetchThreads(threads) {
+            threads[0].forEach(function (thread) {
+                if (thread.is_archived) {
+                    return;
+                }
+                MessagesService.getHistory(thread.id);
+            });
+        }
+
+        /**
+         * Subscribes to user's Pusher channel and binds callback events.
+         */
+        function bindPusher() {
+            var defer = $q.defer();
+            var channelName = 'public-account-' + Session.account.id;
+            var channel = $pusher.client.subscribe(channelName);
+
+            /** - Used for testing Pusher.com - delete when Pusher testing is not required
+            channel.bind('my_event', function(data) {
+                alert('There\'s a new chat !');
+            });
+             */
+
+            channel.bind('pusher:subscription_succeeded', function (data) {
+                $log.debug('Pusher subscribed: ' + channel.name);
+                PushListener.bindAndListen(channel);
+                defer.resolve(data);
+            });
+            channel.bind('pusher:subscription_error', function (status) {
+                if (status === 403) {
+                    var msg = 'Pusher channel not authorized.';
+                    $log.warn(msg);
+                    defer.reject(msg);
+                }
+            });
+
+            return defer.promise;
+        }
+    }
+
+})();
+/**
  * Humanlink helper methods.
  * Accessible via `window.hl`.
  */
@@ -2594,23 +2614,20 @@ angular
     function Team($scope, $window, CommonService, Session, AccountRepo, SiteAlert,
                   underscore) {
 
-        var userData = Session.account;
-        var profile = underscore.pick(userData, ['username', 'first', 'last', 'email',
-            'phone_number', 'email_verified']);
-
+        var team = {};
         var vm = this;
-        vm.profile = profile;
+        vm.team = team;
         vm.submitBusy = false;
         vm.update = update;
 
         init();
         function init() {
-            console.log('Edit Init');
             vm.submitBusy = true;
-            AccountRepo.me().then(
+            console.log('Get Team Profile');
+            AccountRepo.getTeam().then(
                 function (data) {
                     vm.submitBusy = false;
-                    vm.profile = data.data.response;
+                    vm.team = data.data.response;
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -2620,10 +2637,10 @@ angular
 
         function update(model) {
             vm.submitBusy = true;
-            AccountRepo.save(model).then(
+            AccountRepo.updateTeam(model).then(
                 function (data) {
                     vm.submitBusy = false;
-                    SiteAlert.success("Your account has been updated.");
+                    SiteAlert.success("Your team information has been updated.");
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -3405,95 +3422,6 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -3842,1452 +3770,94 @@ angular
     .module('Common')
     .constant('Constants', window.HL.constants);
 /**
- * Parent controller of the dashboard module.
+ * Created by timothybaney on 5/16/16.
  */
-(function () {
-    'use strict';
 
-    Base.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.dashboard')
-        .controller('Base', Base);
-
-    /** @ngInject */
-    function Base(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewLoading, function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-/**
- * Create thread controller.
- */
-(function () {
-    'use strict';
-
-    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
-    angular
-        .module('app.dashboard')
-        .controller('CreateThread', CreateThread);
-
-    /** @ngInject */
-    function CreateThread($log, CommonService, MessagesRepo) {
-        var vm = this;
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.createThread = createThread;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('create_thread init');
-            vm.type = 'option1';
-
-            //has to be move to constants file
-            vm.careServices = [
-                {
-                    "value": 0,
-                    "name": "Companion",
-                    "description": "Companionship",
-                    "skills": "All things companions do"
-                },
-                {
-                    "value": 1,
-                    "name": "Grooming",
-                    "description": "Personal Grooming",
-                    "skills": "Bathing and dressing"
-                },
-                {
-                    "value": 2,
-                    "name": "Meals",
-                    "description": "Meal Preparations",
-                    "skills": "Hot/cold meal preparations"
-                },
-                {
-                    "value": 3,
-                    "name": "Housekeeping",
-                    "description": "Housekeeping",
-                    "skills": "Housekeeping - Laundry and cleaning"
-                },
-                {
-                    "value": 4,
-                    "name": "Medication",
-                    "description": "Medication reminders",
-                    "skills": "Medication reminders"
-                },
-                {
-                    "value": 5,
-                    "name": "Transportation",
-                    "description": "Transportation",
-                    "skills": "Transportation from home to clinic and back"
-                },
-                {
-                    "value": 6,
-                    "name": "Alzheimers",
-                    "description": "Alzheimer's and Dementia",
-                    "skills": "Companionship, Mental simulation, 24-hour care"
-                },
-                {
-                    "value": 7,
-                    "name": "Mobility",
-                    "description": "Mobility assistance",
-                    "skills": "Mobility assistance"
-                }
-            ];
-        }
-
-        function createThread(model) {
-            vm.submitBusy = true;
-            model = {
-                name: model.name,
-                purpose: model.purpose
-            };
-
-            MessagesRepo.create(model).then(
-                function (thread) {
-                    console.log(thread.owner);
-                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-
-    }
-
-})();
-/**
- * Controller for the sidebar view.
- */
-(function () {
-    'use strict';
-
-    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidebar', Sidebar);
-
-    /** @ngInject */
-    function Sidebar($scope, $log, MessagesService) {
-        var vm = this;
-        vm.orgs = null;
-
-        init();
-
-        function init() {
-
-            MessagesService.getThreads().then(function (threads) {
-                $log.debug('sidebar init');
-                vm.threads = threads;
-            });
-        }
-    }
-
-})();
-/**
- * Controller for the dashboard welcome state.
- */
-(function () {
-    'use strict';
-
-    Welcome.$inject = ["$log", "NotificationManager"];
-    angular
-        .module('app.dashboard')
-        .controller('Welcome', Welcome);
-
-    /** @ngInject */
-    function Welcome($log, NotificationManager) {
-        var vm = this;
-        vm.nagDesktopNotifications = !NotificationManager.isGranted();
-
-        vm.enableNotifications = enableNotifications;
-
-        init();
-
-        function init() {
-            $log.debug('welcome init');
-            if (NotificationManager.permission === 'denied') {
-                vm.view = 'denied';
-            }
-        }
-
-        function enableNotifications() {
-            vm.view = 'hints';
-            NotificationManager.requestPermission().then(function (permission) {
-                vm.view = permission;
-            });
-        }
-    }
-
-})();
-/**
- *
- */
-(function () {
-    'use strict';
-
-    AccountService.$inject = ["$log", "$q", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('AccountService', AccountService);
-
-    /** @ngInject */
-    function AccountService($log, $q, Session) {
-
-        return {
-            isAccountMe: isAccountMe,
-            accountName: getAccountName
-        };
-
-        /**
-         * Checks if the account ID is the same as the logged in user's.
-         *
-         * @param accountId:
-         * @return {Account|false}
-         */
-        function isAccountMe(accountId) {
-            return Session.account.id === parseInt(accountId);
-        }
-
-        /**
-         * Returns account name.
-         * @param member: Account object
-         * @returns {String}
-         */
-        function getAccountName(profile) {
-            if (profile.name.trim()) {
-                return profile.name;
-            }
-            var name = profile.first;
-            if (profile.last) {
-                name += ' ' + profile.last;
-            }
-            if (!name) {
-                name = profile.username || profile.email || 'Unnamed';
-            }
-            profile.name = name;
-            return name;
-        }
-    }
-})();
+'use strict';
 
 /**
- * Provides an interface to register thread message formatters such
- * as markdown, autolinks, mentions, URL previews, etc.
+ * Base controller for the home module.
  */
-(function () {
-    'use strict';
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
 
-    angular
-        .module('app.dashboard')
-        .factory('MessageFormatter', MessageFormatter);
-
-    /** ngInject */
-    function MessageFormatter() {
-
-        var fact = {};
-
-        /**
-         * Array of functions to execute whenever the `run` method is called.
-         * The functions are called in array order, each passing its return
-         * value through to the next.
-         */
-        fact.formatters = [];
-        fact.run = run;
-
-        return fact;
-
-        function run(value) {
-            fact.formatters.forEach(function (fmt) {
-                value = fmt(value);
-            });
-            return value;
-        }
-
-    }
-
-})();
+        }]);
 /**
- * Messages service.
+ * Created by timothybaney on 5/16/16.
  */
-(function () {
-    'use strict';
 
-    MessagesService.$inject = ["$q", "$log", "$state", "underscore", "MessagesRepo"];
-    angular
-        .module('app.dashboard')
-        .factory('MessagesService', MessagesService);
-
-    /** ngInject */
-    function MessagesService($q, $log, $state, underscore, MessagesRepo) {
-        var self = this;
-
-        var cache = {
-            threads: null,
-            threadsIndexed: null,
-            // thread_id => messages mapping.
-            messages: {}
-        };
-
-        return {
-            append: append,
-            getThreads: getThreads,
-            getHistory: getHistory,
-            getThreadInfo: getThreadInfo,
-            send: send,
-            navigateToThread: navigateToThread
-        };
-
-        /**
-         * Returns list of threads the user is member of.
-
-         * @param forceRemote: if true, forces a remote request.
-         * @return {Promise -> Array}
-         */
-        function getThreads(forceRemote) {
-            if (cache.threads && !forceRemote) {
-                return $q.when(cache.threads);
-            }
-            return MessagesRepo.fetchThreads()
-                .then(function (threads) {
-                threads.threads.forEach(function (thread) {
-                    thread.membersIndexed = underscore.indexBy(thread.members, 'account');
-                });
-
-                cache.threads = underscore.sortBy(threads, 'name');
-                cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
-
-                return cache.threads;
-            });
-        }
-
-        /**
-         * Returns a cached thread history.
-         *
-         * The content of the array may change after the return call.
-         * (e.g a message is posted or removed).
-         *
-         * Be careful modifying the content of the returned array as it
-         * may have side affects.
-         *
-         * @param threadId
-         * @param forceRemote: if true, forces a remote request.
-         *
-         * @return {Promise -> Array} messages
-         */
-        function getHistory(threadId, forceRemote) {
-            threadId = parseInt(threadId);
-            if (cache.messages[threadId] && !forceRemote) {
-                    return $q.when(cache.messages[threadId]);
-            }
-            return MessagesRepo.fetchHistory(threadId).then(function (thread) {
-                cache.messages[threadId] = thread.all_chats.slice().reverse();
-                return cache.messages[threadId];
-            });
-        }
-
-        /**
-         * Appends a message to the end of the cached messages.
-         *
-         * @param threadId
-         * @param message
-         * @return {Promise -> Array}
-         */
-        function append(threadId, message) {
-            threadId = parseInt(threadId);
-            return getHistory(threadId).then(function (messages) {
-                if (!messages) {
-                    $log.warn('Trying to append to a non-existing thread.');
-                    return;
-                }
-                messages.push(message);
-                return messages;
-            });
-        }
-
-        /**
-         * Post a new message to a thread.
-         *
-         * TODO: add a temporary message while sending is in progress.
-         *
-         * @param model
-         * @return {Promise -> Object}
-         */
-        function send(threadId, model) {
-            threadId = parseInt(threadId);
-            return MessagesRepo.send(threadId, model);
-        }
-
-        /**
-         * Returns cached thread information.
-         *
-         * @param threadId
-         * @return {Thread}
-         */
-        function getThreadInfo(threadId) {
-            threadId = parseInt(threadId);
-            console.log(threadId)
-            return cache.threadsIndexed[threadId];
-        }
-
-        /**
-         * Navigates to a thread view.
-         * @param threadId
-         */
-        function navigateToThread(threadId) {
-            var thread = getThreadInfo(threadId);
-            return $state.go('dashboard.messages', {
-                threadId: thread.id,
-                owner: thread.owner.id,
-                thread: thread.name
-            });
-        }
-    }
-
-})();
-/**
- * HTML5 notifications.
- * Docs: https://developer.mozilla.org/en-US/docs/Web/API/notification
- *
- * This service is a generic wrapper around the HTML5 Notification API.
- */
-(function () {
-    'use strict';
-
-    NotificationManager.$inject = ["$window", "$timeout", "$q"];
-    angular
-        .module('app.dashboard')
-        .factory('NotificationManager', NotificationManager);
-
-    /** ngInject */
-    function NotificationManager($window, $timeout, $q) {
-
-        var notif = {
-            permission: null,
-            isGranted: isGranted,
-            requestPermission: requestPermission,
-            showNotification: showNotification
-        };
-
-        if ($window.Notification) {
-            notif.permission = Notification.permission;
-        }
-
-        return notif;
-
-        /**
-         * Wraps `Notification.requestPermission` in a promise;
-         * @return {Promise}
-         */
-        function requestPermission() {
-            var defer = $q.defer();
-
-            if (!$window.Notification) {
-                return defer.reject('HTML5 Notification not supported.');
-            }
-            if (isGranted()) {
-                return defer.resolve(Notification.permission);
-            }
-            Notification.requestPermission(function (permission) {
-                if (Notification.permission != permission) {
-                    Notification.permission = permission;
-                }
-                notif.permission = permission;
-                return defer.resolve(permission);
-            });
-
-            return defer.promise;
-        }
-
-        /**
-         * Displays a notification for 10 seconds.
-         *
-         * See `window.Notification` for argument descriptions.
-         *
-         * @return {window.Notification | undefined}
-         */
-        function showNotification(title, options, onclick) {
-            if ($window.document.hasFocus() || !isGranted()) {
-                return;
-            }
-            var n = new Notification(title, options);
-            if (angular.isFunction(onclick)) {
-                n.onclick = onclick;
-            }
-            $timeout(n.close.bind(n), 10000);
-            return n;
-        }
-
-        function isGranted() {
-            return $window.Notification && Notification.permission === 'granted';
-        }
-
-    }
-
-})();
-/**
- * Notifications service.
- */
-(function () {
-    'use strict';
-
-    Notifications.$inject = ["$window", "AccountService", "MessagesService", "NotificationManager"];
-    angular
-        .module('app.dashboard')
-        .factory('Notifications', Notifications);
-
-    /** ngInject */
-    function Notifications($window, AccountService, MessagesService,
-                           NotificationManager) {
-
-        return {
-            newMessage: newMessage
-        };
-
-        /**
-         * Displays a new message notification.
-         * @param threadId
-         * @param chat
-         */
-        function newMessage(threadId, chat) {
-            if (!displayOk() || chat.kind !== 0 || AccountService.isAccountMe(chat.account_id)) {
-                return;
-            }
-            var thread = MessagesService.getThreadInfo(threadId);
-            var account = thread.membersIndexed[chat.account_id];
-            var title = thread.name;
-            var body = AccountService.accountName(account.profile) + ': ' + chat.text;
-
-            NotificationManager.showNotification(title, {
-                body: body,
-                icon: thread.membersIndexed[chat.account_id].profile.gravatar_url,
-                tag: 'main'
-            }, onclick);
-
-            function onclick() {
-                $window.focus();
-                MessagesService.navigateToThread(thread.id);
-            }
-        }
-
-        function displayOk() {
-            return !$window.document.hasFocus() && NotificationManager.isGranted();
-        }
-
-    }
-
-})();
-/**
- * Various helper methods for working with orgs and org members.
- */
-(function () {
-    'use strict';
-
-    OrgService.$inject = ["$q", "underscore", "OrgsRepo", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('OrgService', OrgService);
-
-    /** @ngInject */
-    function OrgService($q, underscore, OrgsRepo, Session) {
-
-        var cache = {
-            orgs: null,
-            allThreads: {},
-            allMembers: {}
-        };
-
-        return {
-            cache: cache,
-            getSummary: getSummary,
-            getOrgByUsername: getOrgByUsername
-        };
-
-        /**
-         * Gets org summary.
-         *
-         * @return {Promise}
-         */
-        function getSummary() {
-            if (cache.orgs) {
-                return $q.when(cache.orgs);
-            }
-            return OrgsRepo.fetchSummary().then(function (orgs) {
-                orgs.all_orgs.forEach(butter);
-                cache.orgs = orgs.all_orgs;
-                return cache.orgs;
-            });
-
-            function butter(org) {
-                if (org.members) {
-                    org.membersIndexed = underscore.indexBy(org.members, 'id');
-                    angular.extend(cache.allMembers, org.membersIndexed);
-                }
-                if (org.threads) {
-                    org.threads = underscore.sortBy(org.threads, 'name');
-                    org.threadsIndexed = underscore.indexBy(org.threads, 'id');
-                    angular.extend(cache.allThreads, org.threadsIndexed);
-                }
-                return org;
-            }
-        }
-
-        /**
-         * Returns an org by username.
-         * @param username
-         * @return {Promise}
-         */
-        function getOrgByUsername(username) {
-            return getSummary().then(function (orgs) {
-                return underscore.findWhere(orgs, {username: username});
-            });
-        }
-
-    }
-
-})();
-/**
- * Dashboard push notification listeners.
- *
- * This service is responsible for listening and dispatching events
- * that were sent from Pusher.
- */
-(function () {
-    'use strict';
-
-    PushListener.$inject = ["$log", "$rootScope", "CommonService", "Notifications", "MessagesService"];
-    angular
-        .module('app.dashboard')
-        .factory('PushListener', PushListener);
-
-    /** ngInject */
-    function PushListener($log, $rootScope, CommonService,
-                          Notifications, MessagesService) {
-
-        var EVENTS = {
-            newMessage: 'message.new',
-            threadCreated: 'thread.created'
-
-        };
-
-        // New message listener.
-        CommonService.on(EVENTS.newMessage, onNewMessage);
-
-        return {
-            bindAndListen: bindAndListen
-        };
-
-        /**
-         * Bind pre-defined user events to the given Pusher channel.
-         *
-         * This method simply re-broadcasts those events at the $rootScope level
-         * so that anybody can subscribe at an application level.
-         *
-         * @param channel user's private channel
-         */
-        function bindAndListen(channel) {
-            angular.forEach(EVENTS, function (name, key) {
-                channel.bind(name, function (data) {
-                    CommonService.broadcast(name, data);
-                    digest();
-                });
-            });
-        }
-
-        function onNewMessage(scope, data) {
-            $log.debug(EVENTS.newMessage + ': on');
-            MessagesService.append(data.thread_id, data.chat);
-            Notifications.newMessage(data.thread_id, data.chat);
-        }
-
-        function digest () {
-            $rootScope.$digest();
-        }
-
-    }
-
-})();
+'use strict';
 
 /**
- *  Controller for the thread Archive.
+ * Base controller for the home module.
  */
-(function () {
-    'use strict';
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
 
-    Archive.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Archive', Archive);
-
-    /** @ngInject */
-    function Archive($scope, $log, $state,
-                     CommonService, CommonEvents,
-                     MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.archive = archive;
-        vm.cancel = cancel;
-
-        init();
-
-        function init() {
-            $log.debug('Archive init');
-            vm.thread = threadInfo.thread;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function archive() {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.archive(vm.thread.id).then(
-                function () {
-                    vm.submitBusy = false;
-                    $state.go('dashboard.default');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the thread Info.
- */
-(function () {
-    'use strict';
-
-    Info.$inject = ["$scope", "$log", "$window", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Info', Info);
-
-    /** @ngInject */
-    function Info($scope, $log, $window,
-                  CommonService, CommonEvents,
-                  MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.removeMember = removeMember;
-
-        init();
-
-        function init() {
-            $log.debug('Info init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function removeMember(threadId, memberId) {
-            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
-                var model = {
-                    thread_id: threadId,
-                    member_id: memberId
-                };
-                vm.submitBusy = true;
-                MessagesRepo.removeMember(model).then(
-                    function (data) {
-                        $log.debug("Removed member " + vm.thread.member.name);
-                    },
-                    function (data) {
-                        vm.submitBusy = false;
-                        vm.errorMessage = data;
-                        $log.debug(vm.errorMessage);
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
                     });
 
-            }
-        }
-
-    }
-
-})();
-/**
- *  Controller for the thread Invite.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$scope", "$log", "CommonService", "CommonEvents", "SiteAlert", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard')
-        .controller('Invite', Invite);
-
-    /** @ngInject */
-    function Invite($scope, $log,
-                    CommonService, CommonEvents, SiteAlert,
-                    MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.sendInvite = sendInvite;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Invite init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.invite(vm.thread.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the thread Leave.
- */
-(function () {
-    'use strict';
-
-    Leave.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Leave', Leave);
-
-    /** @ngInject */
-    function Leave($scope, $log, $state,
-                   CommonService, CommonEvents,
-                   MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.leave = leave;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Leave init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function leave() {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.leave(vm.thread.id).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    $state.go('dashboard.default');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- * Messages view controller.
- */
-(function () {
-    'use strict';
-
-    Messages.$inject = ["$log", "$stateParams", "$state", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
-    angular
-        .module('app.dashboard')
-        .controller('Messages', Messages);
-
-    /** @ngInject */
-    function Messages($log, $stateParams, $state, underscore, CommonService, CommonEvents,
-                      AccountService, MessagesService, MessageFormatter, threadInfo) {
-        var vm = this;
-        vm.thread = null;
-        vm.messages = null;
-        vm.members = null;
-        vm.message = '';
-        vm.submitBusy = false;
-        vm.errorMessage = null;
-
-        vm.send = send;
-        vm.onKeypress = onKeypress;
-        vm.accountName = accountName;
-        vm.isSameDay = isSameDay;
-        vm.localTime = localTime;
-        vm.body = body;
-
-        init();
-
-        function init() {
-            $log.debug('messages init');
-
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            $('textarea').on('keydown', function (e) {
-                var value = $('textarea').val();
-                var rows = $('textarea').attr('rows');
-                console.log(rows)
-                $('.textarea-copy').html(value);
-                var textareaWidth = $('.textarea-copy').width();
-                console.log(textareaWidth);
-                if (textareaWidth < 1050) {
-                    $('.reply').css({"height": "70px"})
-                    $('textarea').attr('rows', '1');
-                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
-                    $('.reply').css({"height": "100px"})
-                    $('textarea').attr('rows', '2');
-                } else if (textareaWidth > 2100) {
-                    $('.reply').css({"height": "130px"})
-                    $('textarea').attr('rows', '3');
-                }
-            });
-
-            var threadId = $stateParams.threadId;
-
-            load(threadId);
-        }
-
-        function load(threadId) {
-            MessagesService.getHistory(threadId).then(function (chats) {
-                vm.messages = chats;
-                console.log(chats)
-                CommonService.broadcast(CommonEvents.viewReady);
-            });
-        }
-
-        function send(message) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            var model = {
-                message: message
             };
 
-            var threadId = $stateParams.threadId;
-
-            MessagesService.send($stateParams.threadId, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.message = '';
-                    vm.messages.push(data.threadchat);
-                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
-                    console.log(vm.messages)
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                })
-
-
-        }
-
-        function onKeypress(event, message) {
-            if (event.which === 13 && !event.shiftKey) {
-                event.preventDefault();
-                if (message.trim()) {
-                    return vm.send(message);
-                }
-            }
-        }
-
-        /**
-         * Returns whether two dates are the same day.
-         * @returns {boolean}
-         */
-        function isSameDay(date1, date2) {
-            return moment(date1).isSame(date2, 'day');
-        }
-
-        /**
-         * Converts to local date/time from UTC.
-         * @returns {Date}
-         */
-        function localTime(date) {
-            return moment.utc(date).toDate();
-        }
-
-        /**
-         * Renders the message body.
-         *
-         * @returns {String} HTML output.
-         */
-        function body(chat) {
-            this.ML = this.ML || /\n/gm;
-            var ml = this.ML;
-            var text = chat.text;
-
-            switch (chat.kind) {
-                case 0:
-                    text = underscore.escape(text);
-                    text = MessageFormatter.run(text);
-                    text = text.replace(ml, '<br/>');
-                    break;
-                case 2:
-                    text = "joined " + vm.thread.name;
-                    if (chat.inviter !== null) {
-                        text += " by invitation from " + accountName(chat.inviter);
-                    }
-                    break;
-                case 3:
-                    if (chat.remover !== null) {
-                        text = "was removed from " + vm.thread.name + " by " +
-                            accountName(chat.remover)
-                    }
-                    else {
-                        text = "left " + vm.thread.name;
-                    }
-                    break;
-                case 4:
-                    text = "archived " + vm.thread.name;
-                    break;
-                case 5:
-                    text = "unarchived " + vm.thread.name;
-                    break;
-                case 6:
-                    text = "updated thread " + vm.thread.name;
-            }
-            return text;
-        }
-
-        /**
-         * Returns displayable account name.
-         * @param accountId
-         * @return {String}
-         */
-        function accountName(accountId) {
-            var profile = vm.members[accountId].profile;
-            return AccountService.accountName(profile);
-        }
-    }
-
-})();
+        }]);
 /**
- *  Controller for the thread pending invitations.
+ * Created by timothybaney on 5/16/16.
  */
-(function () {
-    'use strict';
 
-    Pending.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Pending', Pending);
+'use strict';
 
-    /** @ngInject */
-    function Pending($scope, $log, $state,
-                   CommonService, CommonEvents,
-                   MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Pending init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
 /**
- *  Controller for the thread Caregiver search.
+ * Base controller for the home module.
  */
-(function () {
-    'use strict';
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
 
-    Search.$inject = ["$scope", "$log", "$http", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Search', Search);
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
 
-    /** @ngInject */
-    function Search($scope, $log, $http,
-                  CommonService, CommonEvents,
-                  MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.search = search;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Invite init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        // Any function returning a promise object can be used to load values asynchronously
-        $scope.getLocation = function (val) {
-            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                },
-                dataType: 'jsonp'
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
                 });
-            });
-        };
-
-        function search(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.search(model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-
-/**
- * Controller for the sidepanel in the thread view.
- */
-(function () {
-    'use strict';
-
-    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidepanel', Sidepanel);
-
-    /** @ngInject */
-    function Sidepanel($log, $state, SidepanelState) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('sidepanel init');
-            SidepanelState.setState($state.current.name);
-            SidepanelState.open();
-        }
-    }
-
-})();
-/**
- * Parent controller for the `dashboard.messages` state.
- */
-(function () {
-    'use strict';
-
-    Thread.$inject = ["$log", "$state", "$stateParams", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Thread', Thread);
-
-    /** @ngInject */
-    function Thread($log, $state, $stateParams, SidepanelState) {
-        var vm = this;
-
-        vm.sidepanel = SidepanelState;
-        vm.toggleSidepanel = toggleSidepanel;
-        vm.openSidepanel = openSidepanel;
-        vm.closeSidepanel = closeSidepanel;
-
-        init();
-
-        function init() {
-            $log.debug('thread init');
-
-            if (SidepanelState.isOpen) {
-                return openSidepanel();
-            }
-        }
-
-        function toggleSidepanel() {
-            return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
-        }
-
-        function openSidepanel() {
-            var st = SidepanelState.state;
-            return $state.go(st || 'dashboard.messages.default.sidepanel.default');
-        }
-
-        function closeSidepanel() {
-            SidepanelState.close();
-            return $state.go('dashboard.messages.default');
-        }
-
-    }
-
-})();
-/**
- *  Controller for the thread Update.
- */
-(function () {
-    'use strict';
-
-    Update.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo", "SiteAlert"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Update', Update);
-
-    /** @ngInject */
-    function Update($scope, $log, $state,
-                    CommonService, CommonEvents,
-                    MessagesRepo, threadInfo, SiteAlert) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.type = true;
-        vm.UpdateInfo = UpdateInfo;
-        vm.cancel = cancel;
-        vm.careServices = {Blue: true, Orange: true};
-
-        init();
-
-        function init() {
-            console.log('UPDATE INIT2');
-            vm.thread = threadInfo.thread;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function UpdateInfo(model) {
-
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            //currently supporting Basic channel purpose only
-            model = {
-                name: vm.thread.name,
-                purpose: vm.thread.purpose,
-                purpose_type: vm.thread.purpose_type,
-                hours: vm.thread.hours,
-                notes: vm.thread.notes,
-                gender: vm.thread.gender,
-                hobbies: vm.thread.hobbies,
             };
 
-            MessagesRepo.updatePurpose(vm.thread.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your update was successful.");
-                    SiteAlert.check();
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                }
-            );
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
 
-        }
+            };
+        }]);
 
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  * Controller for the accept view.
  */
@@ -6099,6 +4669,1453 @@ angular
 
 
     }]);
+/**
+ * Parent controller of the dashboard module.
+ */
+(function () {
+    'use strict';
+
+    Base.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.dashboard')
+        .controller('Base', Base);
+
+    /** @ngInject */
+    function Base(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewLoading, function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+/**
+ * Create thread controller.
+ */
+(function () {
+    'use strict';
+
+    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
+    angular
+        .module('app.dashboard')
+        .controller('CreateThread', CreateThread);
+
+    /** @ngInject */
+    function CreateThread($log, CommonService, MessagesRepo) {
+        var vm = this;
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.createThread = createThread;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('create_thread init');
+            vm.type = 'option1';
+
+            //has to be move to constants file
+            vm.careServices = [
+                {
+                    "value": 0,
+                    "name": "Companion",
+                    "description": "Companionship",
+                    "skills": "All things companions do"
+                },
+                {
+                    "value": 1,
+                    "name": "Grooming",
+                    "description": "Personal Grooming",
+                    "skills": "Bathing and dressing"
+                },
+                {
+                    "value": 2,
+                    "name": "Meals",
+                    "description": "Meal Preparations",
+                    "skills": "Hot/cold meal preparations"
+                },
+                {
+                    "value": 3,
+                    "name": "Housekeeping",
+                    "description": "Housekeeping",
+                    "skills": "Housekeeping - Laundry and cleaning"
+                },
+                {
+                    "value": 4,
+                    "name": "Medication",
+                    "description": "Medication reminders",
+                    "skills": "Medication reminders"
+                },
+                {
+                    "value": 5,
+                    "name": "Transportation",
+                    "description": "Transportation",
+                    "skills": "Transportation from home to clinic and back"
+                },
+                {
+                    "value": 6,
+                    "name": "Alzheimers",
+                    "description": "Alzheimer's and Dementia",
+                    "skills": "Companionship, Mental simulation, 24-hour care"
+                },
+                {
+                    "value": 7,
+                    "name": "Mobility",
+                    "description": "Mobility assistance",
+                    "skills": "Mobility assistance"
+                }
+            ];
+        }
+
+        function createThread(model) {
+            vm.submitBusy = true;
+            model = {
+                name: model.name,
+                purpose: model.purpose
+            };
+
+            MessagesRepo.create(model).then(
+                function (thread) {
+                    console.log(thread.owner);
+                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+
+    }
+
+})();
+/**
+ * Controller for the sidebar view.
+ */
+(function () {
+    'use strict';
+
+    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidebar', Sidebar);
+
+    /** @ngInject */
+    function Sidebar($scope, $log, MessagesService) {
+        var vm = this;
+        vm.orgs = null;
+
+        init();
+
+        function init() {
+
+            MessagesService.getThreads().then(function (threads) {
+                $log.debug('sidebar init');
+                vm.threads = threads;
+            });
+        }
+    }
+
+})();
+/**
+ * Controller for the dashboard welcome state.
+ */
+(function () {
+    'use strict';
+
+    Welcome.$inject = ["$log", "NotificationManager"];
+    angular
+        .module('app.dashboard')
+        .controller('Welcome', Welcome);
+
+    /** @ngInject */
+    function Welcome($log, NotificationManager) {
+        var vm = this;
+        vm.nagDesktopNotifications = !NotificationManager.isGranted();
+
+        vm.enableNotifications = enableNotifications;
+
+        init();
+
+        function init() {
+            $log.debug('welcome init');
+            if (NotificationManager.permission === 'denied') {
+                vm.view = 'denied';
+            }
+        }
+
+        function enableNotifications() {
+            vm.view = 'hints';
+            NotificationManager.requestPermission().then(function (permission) {
+                vm.view = permission;
+            });
+        }
+    }
+
+})();
+/**
+ *
+ */
+(function () {
+    'use strict';
+
+    AccountService.$inject = ["$log", "$q", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('AccountService', AccountService);
+
+    /** @ngInject */
+    function AccountService($log, $q, Session) {
+
+        return {
+            isAccountMe: isAccountMe,
+            accountName: getAccountName
+        };
+
+        /**
+         * Checks if the account ID is the same as the logged in user's.
+         *
+         * @param accountId:
+         * @return {Account|false}
+         */
+        function isAccountMe(accountId) {
+            return Session.account.id === parseInt(accountId);
+        }
+
+        /**
+         * Returns account name.
+         * @param member: Account object
+         * @returns {String}
+         */
+        function getAccountName(profile) {
+            if (profile.name.trim()) {
+                return profile.name;
+            }
+            var name = profile.first;
+            if (profile.last) {
+                name += ' ' + profile.last;
+            }
+            if (!name) {
+                name = profile.username || profile.email || 'Unnamed';
+            }
+            profile.name = name;
+            return name;
+        }
+    }
+})();
+
+/**
+ * Provides an interface to register thread message formatters such
+ * as markdown, autolinks, mentions, URL previews, etc.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.dashboard')
+        .factory('MessageFormatter', MessageFormatter);
+
+    /** ngInject */
+    function MessageFormatter() {
+
+        var fact = {};
+
+        /**
+         * Array of functions to execute whenever the `run` method is called.
+         * The functions are called in array order, each passing its return
+         * value through to the next.
+         */
+        fact.formatters = [];
+        fact.run = run;
+
+        return fact;
+
+        function run(value) {
+            fact.formatters.forEach(function (fmt) {
+                value = fmt(value);
+            });
+            return value;
+        }
+
+    }
+
+})();
+/**
+ * Messages service.
+ */
+(function () {
+    'use strict';
+
+    MessagesService.$inject = ["$q", "$log", "$state", "underscore", "MessagesRepo"];
+    angular
+        .module('app.dashboard')
+        .factory('MessagesService', MessagesService);
+
+    /** ngInject */
+    function MessagesService($q, $log, $state, underscore, MessagesRepo) {
+        var self = this;
+
+        var cache = {
+            threads: null,
+            threadsIndexed: null,
+            // thread_id => messages mapping.
+            messages: {}
+        };
+
+        return {
+            append: append,
+            getThreads: getThreads,
+            getHistory: getHistory,
+            getThreadInfo: getThreadInfo,
+            send: send,
+            navigateToThread: navigateToThread
+        };
+
+        /**
+         * Returns list of threads the user is member of.
+
+         * @param forceRemote: if true, forces a remote request.
+         * @return {Promise -> Array}
+         */
+        function getThreads(forceRemote) {
+            if (cache.threads && !forceRemote) {
+                return $q.when(cache.threads);
+            }
+            return MessagesRepo.fetchThreads()
+                .then(function (threads) {
+                threads.threads.forEach(function (thread) {
+                    thread.membersIndexed = underscore.indexBy(thread.members, 'account');
+                });
+
+                cache.threads = underscore.sortBy(threads, 'name');
+                cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
+
+                return cache.threads;
+            });
+        }
+
+        /**
+         * Returns a cached thread history.
+         *
+         * The content of the array may change after the return call.
+         * (e.g a message is posted or removed).
+         *
+         * Be careful modifying the content of the returned array as it
+         * may have side affects.
+         *
+         * @param threadId
+         * @param forceRemote: if true, forces a remote request.
+         *
+         * @return {Promise -> Array} messages
+         */
+        function getHistory(threadId, forceRemote) {
+            threadId = parseInt(threadId);
+            if (cache.messages[threadId] && !forceRemote) {
+                    return $q.when(cache.messages[threadId]);
+            }
+            return MessagesRepo.fetchHistory(threadId).then(function (thread) {
+                cache.messages[threadId] = thread.all_chats.slice().reverse();
+                return cache.messages[threadId];
+            });
+        }
+
+        /**
+         * Appends a message to the end of the cached messages.
+         *
+         * @param threadId
+         * @param message
+         * @return {Promise -> Array}
+         */
+        function append(threadId, message) {
+            threadId = parseInt(threadId);
+            return getHistory(threadId).then(function (messages) {
+                if (!messages) {
+                    $log.warn('Trying to append to a non-existing thread.');
+                    return;
+                }
+                messages.push(message);
+                return messages;
+            });
+        }
+
+        /**
+         * Post a new message to a thread.
+         *
+         * TODO: add a temporary message while sending is in progress.
+         *
+         * @param model
+         * @return {Promise -> Object}
+         */
+        function send(threadId, model) {
+            threadId = parseInt(threadId);
+            return MessagesRepo.send(threadId, model);
+        }
+
+        /**
+         * Returns cached thread information.
+         *
+         * @param threadId
+         * @return {Thread}
+         */
+        function getThreadInfo(threadId) {
+            threadId = parseInt(threadId);
+            console.log(threadId)
+            return cache.threadsIndexed[threadId];
+        }
+
+        /**
+         * Navigates to a thread view.
+         * @param threadId
+         */
+        function navigateToThread(threadId) {
+            var thread = getThreadInfo(threadId);
+            return $state.go('dashboard.messages', {
+                threadId: thread.id,
+                owner: thread.owner.id,
+                thread: thread.name
+            });
+        }
+    }
+
+})();
+/**
+ * HTML5 notifications.
+ * Docs: https://developer.mozilla.org/en-US/docs/Web/API/notification
+ *
+ * This service is a generic wrapper around the HTML5 Notification API.
+ */
+(function () {
+    'use strict';
+
+    NotificationManager.$inject = ["$window", "$timeout", "$q"];
+    angular
+        .module('app.dashboard')
+        .factory('NotificationManager', NotificationManager);
+
+    /** ngInject */
+    function NotificationManager($window, $timeout, $q) {
+
+        var notif = {
+            permission: null,
+            isGranted: isGranted,
+            requestPermission: requestPermission,
+            showNotification: showNotification
+        };
+
+        if ($window.Notification) {
+            notif.permission = Notification.permission;
+        }
+
+        return notif;
+
+        /**
+         * Wraps `Notification.requestPermission` in a promise;
+         * @return {Promise}
+         */
+        function requestPermission() {
+            var defer = $q.defer();
+
+            if (!$window.Notification) {
+                return defer.reject('HTML5 Notification not supported.');
+            }
+            if (isGranted()) {
+                return defer.resolve(Notification.permission);
+            }
+            Notification.requestPermission(function (permission) {
+                if (Notification.permission != permission) {
+                    Notification.permission = permission;
+                }
+                notif.permission = permission;
+                return defer.resolve(permission);
+            });
+
+            return defer.promise;
+        }
+
+        /**
+         * Displays a notification for 10 seconds.
+         *
+         * See `window.Notification` for argument descriptions.
+         *
+         * @return {window.Notification | undefined}
+         */
+        function showNotification(title, options, onclick) {
+            if ($window.document.hasFocus() || !isGranted()) {
+                return;
+            }
+            var n = new Notification(title, options);
+            if (angular.isFunction(onclick)) {
+                n.onclick = onclick;
+            }
+            $timeout(n.close.bind(n), 10000);
+            return n;
+        }
+
+        function isGranted() {
+            return $window.Notification && Notification.permission === 'granted';
+        }
+
+    }
+
+})();
+/**
+ * Notifications service.
+ */
+(function () {
+    'use strict';
+
+    Notifications.$inject = ["$window", "AccountService", "MessagesService", "NotificationManager"];
+    angular
+        .module('app.dashboard')
+        .factory('Notifications', Notifications);
+
+    /** ngInject */
+    function Notifications($window, AccountService, MessagesService,
+                           NotificationManager) {
+
+        return {
+            newMessage: newMessage
+        };
+
+        /**
+         * Displays a new message notification.
+         * @param threadId
+         * @param chat
+         */
+        function newMessage(threadId, chat) {
+            if (!displayOk() || chat.kind !== 0 || AccountService.isAccountMe(chat.account_id)) {
+                return;
+            }
+            var thread = MessagesService.getThreadInfo(threadId);
+            var account = thread.membersIndexed[chat.account_id];
+            var title = thread.name;
+            var body = AccountService.accountName(account.profile) + ': ' + chat.text;
+
+            NotificationManager.showNotification(title, {
+                body: body,
+                icon: thread.membersIndexed[chat.account_id].profile.gravatar_url,
+                tag: 'main'
+            }, onclick);
+
+            function onclick() {
+                $window.focus();
+                MessagesService.navigateToThread(thread.id);
+            }
+        }
+
+        function displayOk() {
+            return !$window.document.hasFocus() && NotificationManager.isGranted();
+        }
+
+    }
+
+})();
+/**
+ * Various helper methods for working with orgs and org members.
+ */
+(function () {
+    'use strict';
+
+    OrgService.$inject = ["$q", "underscore", "OrgsRepo", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('OrgService', OrgService);
+
+    /** @ngInject */
+    function OrgService($q, underscore, OrgsRepo, Session) {
+
+        var cache = {
+            orgs: null,
+            allThreads: {},
+            allMembers: {}
+        };
+
+        return {
+            cache: cache,
+            getSummary: getSummary,
+            getOrgByUsername: getOrgByUsername
+        };
+
+        /**
+         * Gets org summary.
+         *
+         * @return {Promise}
+         */
+        function getSummary() {
+            if (cache.orgs) {
+                return $q.when(cache.orgs);
+            }
+            return OrgsRepo.fetchSummary().then(function (orgs) {
+                orgs.all_orgs.forEach(butter);
+                cache.orgs = orgs.all_orgs;
+                return cache.orgs;
+            });
+
+            function butter(org) {
+                if (org.members) {
+                    org.membersIndexed = underscore.indexBy(org.members, 'id');
+                    angular.extend(cache.allMembers, org.membersIndexed);
+                }
+                if (org.threads) {
+                    org.threads = underscore.sortBy(org.threads, 'name');
+                    org.threadsIndexed = underscore.indexBy(org.threads, 'id');
+                    angular.extend(cache.allThreads, org.threadsIndexed);
+                }
+                return org;
+            }
+        }
+
+        /**
+         * Returns an org by username.
+         * @param username
+         * @return {Promise}
+         */
+        function getOrgByUsername(username) {
+            return getSummary().then(function (orgs) {
+                return underscore.findWhere(orgs, {username: username});
+            });
+        }
+
+    }
+
+})();
+/**
+ * Dashboard push notification listeners.
+ *
+ * This service is responsible for listening and dispatching events
+ * that were sent from Pusher.
+ */
+(function () {
+    'use strict';
+
+    PushListener.$inject = ["$log", "$rootScope", "CommonService", "Notifications", "MessagesService"];
+    angular
+        .module('app.dashboard')
+        .factory('PushListener', PushListener);
+
+    /** ngInject */
+    function PushListener($log, $rootScope, CommonService,
+                          Notifications, MessagesService) {
+
+        var EVENTS = {
+            newMessage: 'message.new',
+            threadCreated: 'thread.created'
+
+        };
+
+        // New message listener.
+        CommonService.on(EVENTS.newMessage, onNewMessage);
+
+        return {
+            bindAndListen: bindAndListen
+        };
+
+        /**
+         * Bind pre-defined user events to the given Pusher channel.
+         *
+         * This method simply re-broadcasts those events at the $rootScope level
+         * so that anybody can subscribe at an application level.
+         *
+         * @param channel user's private channel
+         */
+        function bindAndListen(channel) {
+            angular.forEach(EVENTS, function (name, key) {
+                channel.bind(name, function (data) {
+                    CommonService.broadcast(name, data);
+                    digest();
+                });
+            });
+        }
+
+        function onNewMessage(scope, data) {
+            $log.debug(EVENTS.newMessage + ': on');
+            MessagesService.append(data.thread_id, data.chat);
+            Notifications.newMessage(data.thread_id, data.chat);
+        }
+
+        function digest () {
+            $rootScope.$digest();
+        }
+
+    }
+
+})();
+
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
+/**
+ *  Controller for the thread Archive.
+ */
+(function () {
+    'use strict';
+
+    Archive.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Archive', Archive);
+
+    /** @ngInject */
+    function Archive($scope, $log, $state,
+                     CommonService, CommonEvents,
+                     MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.archive = archive;
+        vm.cancel = cancel;
+
+        init();
+
+        function init() {
+            $log.debug('Archive init');
+            vm.thread = threadInfo.thread;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function archive() {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.archive(vm.thread.id).then(
+                function () {
+                    vm.submitBusy = false;
+                    $state.go('dashboard.default');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Info.
+ */
+(function () {
+    'use strict';
+
+    Info.$inject = ["$scope", "$log", "$window", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Info', Info);
+
+    /** @ngInject */
+    function Info($scope, $log, $window,
+                  CommonService, CommonEvents,
+                  MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.removeMember = removeMember;
+
+        init();
+
+        function init() {
+            $log.debug('Info init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function removeMember(threadId, memberId) {
+            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
+                var model = {
+                    thread_id: threadId,
+                    member_id: memberId
+                };
+                vm.submitBusy = true;
+                MessagesRepo.removeMember(model).then(
+                    function (data) {
+                        $log.debug("Removed member " + vm.thread.member.name);
+                    },
+                    function (data) {
+                        vm.submitBusy = false;
+                        vm.errorMessage = data;
+                        $log.debug(vm.errorMessage);
+                    });
+
+            }
+        }
+
+    }
+
+})();
+/**
+ *  Controller for the thread Invite.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$scope", "$log", "CommonService", "CommonEvents", "SiteAlert", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard')
+        .controller('Invite', Invite);
+
+    /** @ngInject */
+    function Invite($scope, $log,
+                    CommonService, CommonEvents, SiteAlert,
+                    MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.sendInvite = sendInvite;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Invite init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.invite(vm.thread.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Leave.
+ */
+(function () {
+    'use strict';
+
+    Leave.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Leave', Leave);
+
+    /** @ngInject */
+    function Leave($scope, $log, $state,
+                   CommonService, CommonEvents,
+                   MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.leave = leave;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Leave init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function leave() {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.leave(vm.thread.id).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    $state.go('dashboard.default');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ * Messages view controller.
+ */
+(function () {
+    'use strict';
+
+    Messages.$inject = ["$log", "$stateParams", "$state", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
+    angular
+        .module('app.dashboard')
+        .controller('Messages', Messages);
+
+    /** @ngInject */
+    function Messages($log, $stateParams, $state, underscore, CommonService, CommonEvents,
+                      AccountService, MessagesService, MessageFormatter, threadInfo) {
+        var vm = this;
+        vm.thread = null;
+        vm.messages = null;
+        vm.members = null;
+        vm.message = '';
+        vm.submitBusy = false;
+        vm.errorMessage = null;
+
+        vm.send = send;
+        vm.onKeypress = onKeypress;
+        vm.accountName = accountName;
+        vm.isSameDay = isSameDay;
+        vm.localTime = localTime;
+        vm.body = body;
+
+        init();
+
+        function init() {
+            $log.debug('messages init');
+
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            $('textarea').on('keydown', function (e) {
+                var value = $('textarea').val();
+                var rows = $('textarea').attr('rows');
+                console.log(rows)
+                $('.textarea-copy').html(value);
+                var textareaWidth = $('.textarea-copy').width();
+                console.log(textareaWidth);
+                if (textareaWidth < 1050) {
+                    $('.reply').css({"height": "70px"})
+                    $('textarea').attr('rows', '1');
+                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
+                    $('.reply').css({"height": "100px"})
+                    $('textarea').attr('rows', '2');
+                } else if (textareaWidth > 2100) {
+                    $('.reply').css({"height": "130px"})
+                    $('textarea').attr('rows', '3');
+                }
+            });
+
+            var threadId = $stateParams.threadId;
+
+            load(threadId);
+        }
+
+        function load(threadId) {
+            MessagesService.getHistory(threadId).then(function (chats) {
+                vm.messages = chats;
+                console.log(chats)
+                CommonService.broadcast(CommonEvents.viewReady);
+            });
+        }
+
+        function send(message) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            var model = {
+                message: message
+            };
+
+            var threadId = $stateParams.threadId;
+
+            MessagesService.send($stateParams.threadId, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.message = '';
+                    vm.messages.push(data.threadchat);
+                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
+                    console.log(vm.messages)
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                })
+
+
+        }
+
+        function onKeypress(event, message) {
+            if (event.which === 13 && !event.shiftKey) {
+                event.preventDefault();
+                if (message.trim()) {
+                    return vm.send(message);
+                }
+            }
+        }
+
+        /**
+         * Returns whether two dates are the same day.
+         * @returns {boolean}
+         */
+        function isSameDay(date1, date2) {
+            return moment(date1).isSame(date2, 'day');
+        }
+
+        /**
+         * Converts to local date/time from UTC.
+         * @returns {Date}
+         */
+        function localTime(date) {
+            return moment.utc(date).toDate();
+        }
+
+        /**
+         * Renders the message body.
+         *
+         * @returns {String} HTML output.
+         */
+        function body(chat) {
+            this.ML = this.ML || /\n/gm;
+            var ml = this.ML;
+            var text = chat.text;
+
+            switch (chat.kind) {
+                case 0:
+                    text = underscore.escape(text);
+                    text = MessageFormatter.run(text);
+                    text = text.replace(ml, '<br/>');
+                    break;
+                case 2:
+                    text = "joined " + vm.thread.name;
+                    if (chat.inviter !== null) {
+                        text += " by invitation from " + accountName(chat.inviter);
+                    }
+                    break;
+                case 3:
+                    if (chat.remover !== null) {
+                        text = "was removed from " + vm.thread.name + " by " +
+                            accountName(chat.remover)
+                    }
+                    else {
+                        text = "left " + vm.thread.name;
+                    }
+                    break;
+                case 4:
+                    text = "archived " + vm.thread.name;
+                    break;
+                case 5:
+                    text = "unarchived " + vm.thread.name;
+                    break;
+                case 6:
+                    text = "updated thread " + vm.thread.name;
+            }
+            return text;
+        }
+
+        /**
+         * Returns displayable account name.
+         * @param accountId
+         * @return {String}
+         */
+        function accountName(accountId) {
+            var profile = vm.members[accountId].profile;
+            return AccountService.accountName(profile);
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread pending invitations.
+ */
+(function () {
+    'use strict';
+
+    Pending.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Pending', Pending);
+
+    /** @ngInject */
+    function Pending($scope, $log, $state,
+                   CommonService, CommonEvents,
+                   MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Pending init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Caregiver search.
+ */
+(function () {
+    'use strict';
+
+    Search.$inject = ["$scope", "$log", "$http", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Search', Search);
+
+    /** @ngInject */
+    function Search($scope, $log, $http,
+                  CommonService, CommonEvents,
+                  MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.search = search;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Invite init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        // Any function returning a promise object can be used to load values asynchronously
+        $scope.getLocation = function (val) {
+            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                },
+                dataType: 'jsonp'
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        };
+
+        function search(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.search(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+
+/**
+ * Controller for the sidepanel in the thread view.
+ */
+(function () {
+    'use strict';
+
+    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidepanel', Sidepanel);
+
+    /** @ngInject */
+    function Sidepanel($log, $state, SidepanelState) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('sidepanel init');
+            SidepanelState.setState($state.current.name);
+            SidepanelState.open();
+        }
+    }
+
+})();
+/**
+ * Parent controller for the `dashboard.messages` state.
+ */
+(function () {
+    'use strict';
+
+    Thread.$inject = ["$log", "$state", "$stateParams", "SidepanelState"];
+    angular
+        .module('app.dashboard')
+        .controller('Thread', Thread);
+
+    /** @ngInject */
+    function Thread($log, $state, $stateParams, SidepanelState) {
+        var vm = this;
+
+        vm.sidepanel = SidepanelState;
+        vm.toggleSidepanel = toggleSidepanel;
+        vm.openSidepanel = openSidepanel;
+        vm.closeSidepanel = closeSidepanel;
+
+        init();
+
+        function init() {
+            $log.debug('thread init');
+
+            if (SidepanelState.isOpen) {
+                return openSidepanel();
+            }
+        }
+
+        function toggleSidepanel() {
+            return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
+        }
+
+        function openSidepanel() {
+            var st = SidepanelState.state;
+            return $state.go(st || 'dashboard.messages.default.sidepanel.default');
+        }
+
+        function closeSidepanel() {
+            SidepanelState.close();
+            return $state.go('dashboard.messages.default');
+        }
+
+    }
+
+})();
+/**
+ *  Controller for the thread Update.
+ */
+(function () {
+    'use strict';
+
+    Update.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo", "SiteAlert"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Update', Update);
+
+    /** @ngInject */
+    function Update($scope, $log, $state,
+                    CommonService, CommonEvents,
+                    MessagesRepo, threadInfo, SiteAlert) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.type = true;
+        vm.UpdateInfo = UpdateInfo;
+        vm.cancel = cancel;
+        vm.careServices = {Blue: true, Orange: true};
+
+        init();
+
+        function init() {
+            console.log('UPDATE INIT2');
+            vm.thread = threadInfo.thread;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function UpdateInfo(model) {
+
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            //currently supporting Basic channel purpose only
+            model = {
+                name: vm.thread.name,
+                purpose: vm.thread.purpose,
+                purpose_type: vm.thread.purpose_type,
+                hours: vm.thread.hours,
+                notes: vm.thread.notes,
+                gender: vm.thread.gender,
+                hobbies: vm.thread.hobbies,
+            };
+
+            MessagesRepo.updatePurpose(vm.thread.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your update was successful.");
+                    SiteAlert.check();
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                }
+            );
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
 /**
  * Parent controller of the settings module.
  */

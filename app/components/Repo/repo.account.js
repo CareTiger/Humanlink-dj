@@ -15,6 +15,8 @@
             join: join,
             login: login,
             save: save,
+            getTeam: getTeam,
+            updateTeam: updateTeam,
             me: me,
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
@@ -59,6 +61,24 @@
          */
         function save(model) {
             return AbstractRepo.post('accounts/update/', model, false)
+                .then(apiGenericSuccess, genericError);
+        }
+
+        /**
+         * Get Team information.
+         * @returns {*}
+         */
+        function getTeam() {
+            return AbstractRepo.get('/accounts/getTeam/');
+        }
+
+        /**
+         * Update Team information.
+         * @param model
+         * @returns {Promise}
+         */
+        function updateTeam(model) {
+            return AbstractRepo.post('accounts/updateTeam/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 

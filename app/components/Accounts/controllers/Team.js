@@ -13,23 +13,20 @@
     function Team($scope, $window, CommonService, Session, AccountRepo, SiteAlert,
                   underscore) {
 
-        var userData = Session.account;
-        var profile = underscore.pick(userData, ['username', 'first', 'last', 'email',
-            'phone_number', 'email_verified']);
-
+        var team = {};
         var vm = this;
-        vm.profile = profile;
+        vm.team = team;
         vm.submitBusy = false;
         vm.update = update;
 
         init();
         function init() {
-            console.log('Edit Init');
             vm.submitBusy = true;
-            AccountRepo.me().then(
+            console.log('Get Team Profile');
+            AccountRepo.getTeam().then(
                 function (data) {
                     vm.submitBusy = false;
-                    vm.profile = data.data.response;
+                    vm.team = data.data.response;
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -39,10 +36,10 @@
 
         function update(model) {
             vm.submitBusy = true;
-            AccountRepo.save(model).then(
+            AccountRepo.updateTeam(model).then(
                 function (data) {
                     vm.submitBusy = false;
-                    SiteAlert.success("Your account has been updated.");
+                    SiteAlert.success("Your team information has been updated.");
                 },
                 function (data) {
                     vm.submitBusy = false;

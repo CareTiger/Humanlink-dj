@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
-from .models import Account, CareGiver
+from .models import Account, CareGiver, CareSeeker
 
 
 # Login form that caches a User with clean username and password
@@ -17,27 +17,34 @@ class LoginForm(forms.Form):
         kwargs.setdefault('label_suffix', '')
         super(LoginForm, self).__init__(*args, **kwargs)
 
-
     def get_user(self):
         return self.cached_user
 
-class BasicInfo(forms.ModelForm):
 
+class BasicInfo(forms.ModelForm):
     class Meta:
         model = Account
         fields = ['username', 'first', 'last', 'phone_number']
 
-class CareGiverInfo(forms.ModelForm):
 
+class CareGiverInfo(forms.ModelForm):
     class Meta:
         model = CareGiver
         fields = ['is_hireable', 'location', 'about', 'certs']
+
+
+class CareSeekerInfo(forms.ModelForm):
+    class Meta:
+        model = CareSeeker
+        fields = ['team_name', 'mission', 'website']
+
 
 class AcceptInvite(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
     password_conf = forms.CharField(required=True)
     token = forms.CharField(required=True)
+
 
 class SignUp(forms.Form):
     email = forms.EmailField(required=True)

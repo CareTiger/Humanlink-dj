@@ -20,13 +20,15 @@ from account.models import Account, CareGiver, CareSeeker
 from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, ThreadInvite
 from org.models import Org, OrgInvite, OrgMember
 from pusher.pusher import Pusher
-from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp
+from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp, \
+    CareSeekerInfo
 from django.contrib.auth import logout
 from django.http import QueryDict
 import ast
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
+
 
 def index(request):
     # """ -Return Account Template """
@@ -60,7 +62,8 @@ def broadcast(chat_id=None):
 
     all_members = ThreadMember.objects.filter(thread=thread)
 
-    pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0', secret="bcfc287023b0df0c7d2f", cluster='mt1')
+    pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0',
+                    secret="bcfc287023b0df0c7d2f", cluster='mt1')
 
     for member in all_members:
         channels = ['public-account-{}'.format(member.account.id)]
@@ -87,6 +90,7 @@ def requestPost(request):
     postdata = QueryDict(query_string=querystring)
 
     return postdata
+
 
 @csrf_exempt
 def login(request):
@@ -135,7 +139,8 @@ def login(request):
                             if ThreadInvite.objects.filter(token=token):
                                 threadInvite = ThreadInvite.objects.get(token=token)
                                 thread = Thread.objects.get(id=threadInvite.thread.id)
-                                threadmember = ThreadMember.objects.filter(account=account, thread=thread)
+                                threadmember = ThreadMember.objects.filter(
+                                    account=account, thread=thread)
                                 if not threadmember:
                                     ThreadMember.objects.create(account=account,
                                                                 thread=thread)
@@ -161,7 +166,6 @@ def login(request):
                             else:
                                 raise Exception("Invitation token is invalid.")
 
-
                         context = {
                             'message': form.errors,
                             'next': '/app/',
@@ -172,6 +176,7 @@ def login(request):
 
 def logout_user(request):
     logout(request)
+
 
 @csrf_exempt
 def signup(request):
@@ -222,7 +227,8 @@ def signup(request):
                         org = Org.objects.create(name=org_name, username=org_username,
                                                  actor=account)
                         OrgMember.objects.create(account=account, org=org)
-                        Thread.objects.create(name='welcome', account=account, owner=account, org=org,
+                        Thread.objects.create(name='welcome', account=account,
+                                              owner=account, org=org,
                                               purpose='To welcome new members to the team.')
                         add_to_welcome(org_id=org.id, account_id=account.id)
 
@@ -269,6 +275,7 @@ def signup(request):
                     User.objects.filter(username=email[:30]).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
 
+
 def check_account_availability(email):
     account = Account.objects.filter(email=email)
     if account:
@@ -281,6 +288,7 @@ def check_account_availability(email):
         }
 
     return composeJsonResponse(200, '', context)
+
 
 @csrf_exempt
 def accept_invite(request):
@@ -355,10 +363,11 @@ def me(request):
 @csrf_exempt
 def update(request):
     # """ - Update Account Information """
-
     account = Account.objects.get(email=request.user.email)
+
     if request.method == "POST":
         form = BasicInfo(requestPost(request))
+
         if form.is_valid():
             cleaned_data = form.cleaned_data
             account.username = cleaned_data['username']
@@ -371,6 +380,55 @@ def update(request):
                 'account': 'test'
             }
 
+            return composeJsonResponse(200, "", context)
+
+
+@login_required
+@csrf_exempt
+def getTeam(request):
+    # """ - Get Team Information """
+    account = Account.objects.get(email=request.user.email)
+
+    try:
+        team = CareSeeker.objects.get(pk=account.id)
+        context = {
+            'team_name': team.team_name,
+            'mission': team.mission,
+            'website': team.website,
+        }
+        return composeJsonResponse(200, "", context)
+    except:
+        context = {
+        }
+        return composeJsonResponse(200, "", context)
+
+
+@login_required
+@csrf_exempt
+def updateTeam(request):
+    # """ - Update Team Information """
+    account = Account.objects.get(email=request.user.email)
+
+    try:
+        team = CareSeeker.objects.get(pk=account.id)
+    except:
+        team = CareSeeker(account=account)
+
+    if request.method == "POST":
+        form = CareSeekerInfo(requestPost(request))
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            team.team_name = cleaned_data.get("team_name")
+            team.mission = cleaned_data.get("mission")
+            team.website = cleaned_data.get("website")
+            team.save()
+
+            context = {
+                'team_name': team.team_name,
+                'mission': team.mission,
+                'website': team.website,
+            }
             return composeJsonResponse(200, "", context)
 
 
@@ -410,6 +468,7 @@ def profile(request, account_id):
     }
 
     return composeJsonResponse(200, "", context)
+
 
 @login_required
 def caregiver_info(request, account_id):
@@ -504,6 +563,7 @@ def get_current_user(request):
     account = Account.objects.get(username=user.username)
 
     return account
+
 
 @csrf_exempt
 def get_caregivers(request):

@@ -52,22 +52,21 @@ class CareGiver(models.Model):
     background_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
 
-
     def __str__(self):
         return self.account.email
+
 
 class CareSeeker(models.Model):
     account = models.ForeignKey(Account)
     public = models.BooleanField(default=True)
-    team_name = models.CharField(max_length=100)
-    mission = models.CharField(max_length=200)
-    # Make this into a TextField with a widget
-    main_phone = models.CharField(max_length=20)
-    website = models.CharField(max_length=100)
-    video = models.FileField(max_length=200)
-    email = models.FileField(max_length=200)
+    team_name = models.CharField(max_length=100, null=False)
+    mission = models.TextField(null=True)
+    main_phone = models.CharField(max_length=20, null=True)
+    website = models.CharField(max_length=100, null=True)
+    video = models.FileField(max_length=200, null=True)
+    email = models.FileField(max_length=200, null=True)
     # Email and video will later have to be made into FileBrowser
-    caregiver_needs = models.CharField(max_length=200)
+    caregiver_needs = models.CharField(max_length=200, null=True)
     hoyer_lift = models.BooleanField(default=False)
     cough_assist = models.BooleanField(default=False)
     adaptive_utensil = models.BooleanField(default=False)
