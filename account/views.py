@@ -390,7 +390,7 @@ def getTeam(request):
     account = Account.objects.get(email=request.user.email)
 
     try:
-        team = CareSeeker.objects.get(pk=account.id)
+        team = CareSeeker.objects.get(account=account)
         context = {
             'team_name': team.team_name,
             'mission': team.mission,
@@ -405,12 +405,12 @@ def getTeam(request):
 
 @login_required
 @csrf_exempt
-def updateTeam(request):
+def update_team(request):
     # """ - Update Team Information """
     account = Account.objects.get(email=request.user.email)
 
     try:
-        team = CareSeeker.objects.get(pk=account.id)
+        team = CareSeeker.objects.get(account=account)
     except:
         team = CareSeeker(account=account)
 
@@ -419,9 +419,9 @@ def updateTeam(request):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            team.team_name = cleaned_data.get("team_name")
-            team.mission = cleaned_data.get("mission")
-            team.website = cleaned_data.get("website")
+            team.team_name = cleaned_data['team_name']
+            team.mission = cleaned_data['mission']
+            team.website = cleaned_data['website']
             team.save()
 
             context = {
