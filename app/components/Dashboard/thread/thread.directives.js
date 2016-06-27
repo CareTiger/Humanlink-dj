@@ -39,7 +39,6 @@
                 if (height < minHeight) {
                     height = minHeight;
                 }
-
                 elem.css('height', (height) + 'px');
 
                 // Scroll to bottom if it was at the bottom before.

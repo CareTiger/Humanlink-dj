@@ -8,15 +8,14 @@
     padding: 0;
     height: 100vh;
     border-left: 3px solid @border;
-    background-color: white;
+    background-color: @background;
   }
 
   .messages {
     min-height: 200px;
     overflow-y: scroll;
     background-color: @background;
-    padding: 40px;
-    margin-bottom: 70px;
+    padding: 10px;
 
     .message {
       padding: 7px 0;
@@ -29,8 +28,13 @@
       }
     }
 
+    .notification {
+      color: @gray-light;
+      font-style: italic;
+    }
+
     .thread-welcome {
-      padding: 40px 20;
+      padding: 40px 20px;
     }
 
     .date-divider {
@@ -50,9 +54,9 @@
     }
   }
 
-  .archived{
-
+  .archived {
   }
+
   .textarea-copy {
     padding: 12px;
     display: none;
@@ -66,10 +70,12 @@
     height: @reply-height;
     border-top: 1px solid @border;
     padding-top: @reply-height/4;
-    position: fixed;
-    bottom: 0px;
-    width: 84%;
-    background-color: white;
+
+    //Venkatesh
+    background-color: @background;
+    //position: fixed;
+    //bottom: 0px;
+    //width: 84%;
 
     .block {
       position: relative;

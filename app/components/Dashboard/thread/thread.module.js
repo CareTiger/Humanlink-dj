@@ -8,7 +8,8 @@
     threadInfoResolve.$inject = ["ready", "$stateParams", "$q", "underscore", "MessagesService"];
     angular
         .module('app.dashboard.thread', [
-            'ngSanitize'
+            'ngSanitize',
+            'luegg.directives'
         ])
         .config(Config);
 
@@ -122,16 +123,17 @@
             var ownerId = parseInt($stateParams.owner);
             var threadName = $stateParams.thread.toLowerCase();
 
+            //venkatesh
             function thread(threads) {
-                var threadsList = threads[0]
+                var threadsList = threads[0];
                 for (var thread in threadsList) {
                     if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName) {
                         return threadsList[thread]
                     }
                 }
             }
+            var threadResult = thread(threads);
 
-            var threadResult = thread(threads)
             return populate(threadResult);
         });
 

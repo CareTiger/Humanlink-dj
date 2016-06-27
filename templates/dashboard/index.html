@@ -38,7 +38,9 @@
       <ul class="dropdown-menu">
         <li><a href="/accounts">Account</a></li>
         <li><a href="/settings">Settings</a></li>
+        <!-- venkatesh
         <li><a ui-sref="dashboard.team.directory({org: '{{ user_data.org }}'})">Directory</a></li>
+        -->
         <li class="divider"></li>
         <li><a href="/logout">Logout</a></li>
       </ul>
@@ -60,4 +62,19 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+(function () {
+    var messages = [
+      "<p>How much does a polar bear weigh?</p>"
+      + "<p>Just enough to break the ice!</p>",
+      "<p>What is not heavy and blue?</p>"
+      + "<p>Lightblue!</p>",
+      "Hang in there.",
+      "Can you talk to the clouds?",
+      "I hope you're ready for what's next."
+    ];
+    var ind = window._.random(0, messages.length-1);
+    document.getElementById('loading-message').innerHTML = messages[ind];
+})();
+</script>
 {% endblock %}

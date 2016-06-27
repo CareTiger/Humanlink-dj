@@ -144,79 +144,6 @@
 
 })();
 /**
- * A module that has common directives, services, constants, etc.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.common', []);
-
-})();
-
-'use strict';
-
-/**
- * A module that is common to all other site modules.
- */
-(function () {
-    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
-    Config.$inject = ["$compileProvider"];
-    Ctrl.$inject = ["$scope"];
-    angular
-        .module('Common', ['ui.router'])
-        .run(Run)
-        .config(Config)
-        .controller('commonCtrl', Ctrl);
-
-    /** @ngInject */
-    function Run($rootScope, $location, $state, userSession) {
-        // Broadcasted when the state of the module changes.
-        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
-
-        // siteAlert is global.
-        $rootScope.siteAlert = {};
-
-        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
-            if (toState.data && angular.isDefined(toState.data.role)) {
-                var accessRole = toState.data.role;
-                var userRole = userSession.getRole();
-                // Guest is redirected account page.
-                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('settings.profile');
-                    return;
-                }
-                // User is redirected to login.
-                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('login',
-                        {next: $location.absUrl()},
-                        {notify: false}
-                    );
-                    return;
-                }
-            }
-            // No need to update userSession on page load.
-            if (!fromState.abstract) {
-                userSession.update();
-            }
-        }
-    }
-
-    /** @ngInject */
-    function Config($compileProvider) {
-        if (HL.helpers.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-        }
-    }
-
-    /** @ngInject */
-    function Ctrl($scope) {
-        // Empty.
-    }
-
-})();
-/**
  * Core module that bootstrap most of the dependencies and configuration.
  */
 (function () {
@@ -293,6 +220,79 @@
                 $window.document.title = title;
             });
         }
+    }
+
+})();
+/**
+ * A module that has common directives, services, constants, etc.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.common', []);
+
+})();
+
+'use strict';
+
+/**
+ * A module that is common to all other site modules.
+ */
+(function () {
+    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
+    Config.$inject = ["$compileProvider"];
+    Ctrl.$inject = ["$scope"];
+    angular
+        .module('Common', ['ui.router'])
+        .run(Run)
+        .config(Config)
+        .controller('commonCtrl', Ctrl);
+
+    /** @ngInject */
+    function Run($rootScope, $location, $state, userSession) {
+        // Broadcasted when the state of the module changes.
+        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
+
+        // siteAlert is global.
+        $rootScope.siteAlert = {};
+
+        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
+            if (toState.data && angular.isDefined(toState.data.role)) {
+                var accessRole = toState.data.role;
+                var userRole = userSession.getRole();
+                // Guest is redirected account page.
+                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('settings.profile');
+                    return;
+                }
+                // User is redirected to login.
+                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('login',
+                        {next: $location.absUrl()},
+                        {notify: false}
+                    );
+                    return;
+                }
+            }
+            // No need to update userSession on page load.
+            if (!fromState.abstract) {
+                userSession.update();
+            }
+        }
+    }
+
+    /** @ngInject */
+    function Config($compileProvider) {
+        if (HL.helpers.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+        }
+    }
+
+    /** @ngInject */
+    function Ctrl($scope) {
+        // Empty.
     }
 
 })();
@@ -775,7 +775,8 @@ function Config($stateProvider, $urlRouterProvider){
     threadInfoResolve.$inject = ["ready", "$stateParams", "$q", "underscore", "MessagesService"];
     angular
         .module('app.dashboard.thread', [
-            'ngSanitize'
+            'ngSanitize',
+            'luegg.directives'
         ])
         .config(Config);
 
@@ -889,16 +890,17 @@ function Config($stateProvider, $urlRouterProvider){
             var ownerId = parseInt($stateParams.owner);
             var threadName = $stateParams.thread.toLowerCase();
 
+            //venkatesh
             function thread(threads) {
-                var threadsList = threads[0]
+                var threadsList = threads[0];
                 for (var thread in threadsList) {
                     if (threadsList[thread].owner.id === ownerId && threadsList[thread].name.toLowerCase() === threadName) {
                         return threadsList[thread]
                     }
                 }
             }
+            var threadResult = thread(threads);
 
-            var threadResult = thread(threads)
             return populate(threadResult);
         });
 
@@ -1304,7 +1306,6 @@ angular
                 if (height < minHeight) {
                     height = minHeight;
                 }
-
                 elem.css('height', (height) + 'px');
 
                 // Scroll to bottom if it was at the bottom before.
@@ -1403,50 +1404,6 @@ angular
 
         return $window._;
 
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
     }
 
 })();
@@ -1724,6 +1681,50 @@ window.HL = window.HL || {};
                     // }
                 }
             }
+        };
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
         };
     }
 
@@ -2384,6 +2385,95 @@ window.HL = window.HL || {};
     };
 
 })();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
 /**
  * Parent controller of the account module.
  */
@@ -3422,95 +3512,6 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
- * Created by timothybaney on 5/16/16.
- */
-
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -4062,6 +4063,114 @@ angular
 
 })();
 /**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
+/**
  *
  */
 (function () {
@@ -4549,114 +4658,6 @@ angular
 
 })();
 
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  *  Controller for the thread Archive.
  */

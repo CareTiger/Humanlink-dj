@@ -77,6 +77,6 @@ gulp.task('watch', function(){
   gulp.watch('app/**/*.js', ['js']);
   gulp.watch('webapp/static/less/**/*.less', ['less']);
   // Other watchers
-})
+});
 
 gulp.task('default', ['js', 'less', 'cv', 'watch']);
