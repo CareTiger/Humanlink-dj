@@ -93,6 +93,8 @@ def new_thread(request):
 
             ThreadMember.objects.create(thread=thread, account=account)
 
+    x = form.errors
+
     context = {"name": thread.name,
                "owner": {
                    "id": thread.owner.id,
