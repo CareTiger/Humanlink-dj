@@ -164,7 +164,7 @@ def send(request, thread_id):
                 'remover': threadchat.remover
             }
 
-            broadcast(threadchat.id)
+            broadcast(request, threadchat.id)
 
     context = {"threadchat": chatObject}
     return composeJsonResponse(200, "", context)

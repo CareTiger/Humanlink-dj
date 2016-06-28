@@ -46,8 +46,12 @@ def index(request):
     return render(request, 'accounts/index.html', context)
 
 
-def broadcast(chat_id=None):
+def broadcast(request, chat_id=None):
     # """Sends out push notifications to thread members about chat message. """
+
+    user = Account.objects.filter(email=request.user.username[:30])
+    if user:
+        user = user[0]
 
     print '###########'
     print 'account.views.broadcast'
@@ -60,7 +64,7 @@ def broadcast(chat_id=None):
     if not chat or not thread:
         raise Exception("thread or chat not found")
 
-    all_members = ThreadMember.objects.filter(thread=thread)
+    all_members = ThreadMember.objects.filter(thread=thread).exclude(account=user.id)
 
     pusher = Pusher(app_id='197533', key='2676265f725e22f7e5d0',
                     secret="bcfc287023b0df0c7d2f", cluster='mt1')
