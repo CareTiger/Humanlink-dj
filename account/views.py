@@ -5,6 +5,7 @@ import codecs
 import os
 import logging
 
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
@@ -53,13 +54,19 @@ def broadcast(request, chat_id=None):
     if user:
         user = user[0]
 
+
+    now = str(datetime.datetime.now().strftime('%I:%M %p'))
+
     print '###########'
     print 'account.views.broadcast'
 
     chat = ThreadChat.objects.get(id=chat_id)
     thread = Thread.objects.get(id=chat.thread.id)
     chat = model_to_dict(chat)
-    chat = pickle.dumps(chat)
+    chat['gravatar_url'] = user.gravatar_url()
+    chat['name'] = user.email
+    chat['created'] = now
+    chat = json.dumps(chat)
 
     if not chat or not thread:
         raise Exception("thread or chat not found")

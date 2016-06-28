@@ -62,7 +62,6 @@
         function load(threadId) {
             MessagesService.getHistory(threadId).then(function (chats) {
                 vm.messages = chats;
-                console.log(chats)
                 CommonService.broadcast(CommonEvents.viewReady);
             });
         }

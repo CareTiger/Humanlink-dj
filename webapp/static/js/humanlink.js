@@ -144,6 +144,79 @@
 
 })();
 /**
+ * A module that has common directives, services, constants, etc.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.common', []);
+
+})();
+
+'use strict';
+
+/**
+ * A module that is common to all other site modules.
+ */
+(function () {
+    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
+    Config.$inject = ["$compileProvider"];
+    Ctrl.$inject = ["$scope"];
+    angular
+        .module('Common', ['ui.router'])
+        .run(Run)
+        .config(Config)
+        .controller('commonCtrl', Ctrl);
+
+    /** @ngInject */
+    function Run($rootScope, $location, $state, userSession) {
+        // Broadcasted when the state of the module changes.
+        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
+
+        // siteAlert is global.
+        $rootScope.siteAlert = {};
+
+        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
+            if (toState.data && angular.isDefined(toState.data.role)) {
+                var accessRole = toState.data.role;
+                var userRole = userSession.getRole();
+                // Guest is redirected account page.
+                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('settings.profile');
+                    return;
+                }
+                // User is redirected to login.
+                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
+                    e.preventDefault();
+                    $state.go('login',
+                        {next: $location.absUrl()},
+                        {notify: false}
+                    );
+                    return;
+                }
+            }
+            // No need to update userSession on page load.
+            if (!fromState.abstract) {
+                userSession.update();
+            }
+        }
+    }
+
+    /** @ngInject */
+    function Config($compileProvider) {
+        if (HL.helpers.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+        }
+    }
+
+    /** @ngInject */
+    function Ctrl($scope) {
+        // Empty.
+    }
+
+})();
+/**
  * Core module that bootstrap most of the dependencies and configuration.
  */
 (function () {
@@ -220,79 +293,6 @@
                 $window.document.title = title;
             });
         }
-    }
-
-})();
-/**
- * A module that has common directives, services, constants, etc.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.common', []);
-
-})();
-
-'use strict';
-
-/**
- * A module that is common to all other site modules.
- */
-(function () {
-    Run.$inject = ["$rootScope", "$location", "$state", "userSession"];
-    Config.$inject = ["$compileProvider"];
-    Ctrl.$inject = ["$scope"];
-    angular
-        .module('Common', ['ui.router'])
-        .run(Run)
-        .config(Config)
-        .controller('commonCtrl', Ctrl);
-
-    /** @ngInject */
-    function Run($rootScope, $location, $state, userSession) {
-        // Broadcasted when the state of the module changes.
-        $rootScope.$on('$stateChangeStart', stateChangeStartListener);
-
-        // siteAlert is global.
-        $rootScope.siteAlert = {};
-
-        function stateChangeStartListener(e, toState, toParams, fromState, fromParams) {
-            if (toState.data && angular.isDefined(toState.data.role)) {
-                var accessRole = toState.data.role;
-                var userRole = userSession.getRole();
-                // Guest is redirected account page.
-                if (accessRole === userSession.roles.GUEST && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('settings.profile');
-                    return;
-                }
-                // User is redirected to login.
-                if (accessRole === userSession.roles.AUTHORIZED && userRole !== accessRole) {
-                    e.preventDefault();
-                    $state.go('login',
-                        {next: $location.absUrl()},
-                        {notify: false}
-                    );
-                    return;
-                }
-            }
-            // No need to update userSession on page load.
-            if (!fromState.abstract) {
-                userSession.update();
-            }
-        }
-    }
-
-    /** @ngInject */
-    function Config($compileProvider) {
-        if (HL.helpers.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-        }
-    }
-
-    /** @ngInject */
-    function Ctrl($scope) {
-        // Empty.
     }
 
 })();
@@ -1407,6 +1407,83 @@ angular
     }
 
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
+/**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1652,83 +1729,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-/**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Dashboard helper/bootstraper.
  */
@@ -2385,95 +2385,6 @@ window.HL = window.HL || {};
     };
 
 })();
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
 /**
  * Parent controller of the account module.
  */
@@ -3512,6 +3423,95 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -4063,114 +4063,6 @@ angular
 
 })();
 /**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
-/**
  *
  */
 (function () {
@@ -4350,7 +4242,27 @@ angular
                     $log.warn('Trying to append to a non-existing thread.');
                     return;
                 }
-                messages.push(message);
+
+                message = JSON.parse(message);
+
+                var newMessage = {
+                    'account': {
+                        'gravatar_url': message['gravatar_url'],
+                        'name': message['name']
+                    },
+                    'created': message['created'],
+                    'kind': 0,
+                    'remover': null,
+                    'text': message['text']
+
+                }
+
+                console.log(message);
+                //console.log('messages before');
+                //console.log(messages);
+                messages.push(newMessage);
+                //console.log('messages after');
+                console.log(messages);
                 return messages;
             });
         }
@@ -4659,152 +4571,71 @@ angular
 })();
 
 /**
- *  Controller for the thread Archive.
+ *  Controller for the team view.
  */
 (function () {
     'use strict';
 
-    Archive.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
     angular
-        .module('app.dashboard.thread')
-        .controller('Archive', Archive);
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
 
     /** @ngInject */
-    function Archive($scope, $log, $state,
-                     CommonService, CommonEvents,
-                     MessagesRepo, threadInfo) {
+    function Directory($log, OrgService, orgInfo) {
         var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
 
-        vm.thread = null;
-        vm.archive = archive;
-        vm.cancel = cancel;
+        vm.org = null;
+        vm.memberName = memberName;
 
         init();
 
         function init() {
-            $log.debug('Archive init');
-            vm.thread = threadInfo.thread;
-
-            CommonService.broadcast(CommonEvents.viewReady);
+            $log.debug('directory init');
+            vm.org = orgInfo;
         }
 
-        function archive() {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.archive(vm.thread.id).then(
-                function () {
-                    vm.submitBusy = false;
-                    $state.go('dashboard.default');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
+        function memberName(member) {
+            return OrgService.memberName(member);
         }
     }
 
 })();
 /**
- *  Controller for the thread Info.
+ *  Controller for the invite view.
  */
 (function () {
     'use strict';
 
-    Info.$inject = ["$scope", "$log", "$window", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
     angular
-        .module('app.dashboard.thread')
-        .controller('Info', Info);
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
 
     /** @ngInject */
-    function Info($scope, $log, $window,
-                  CommonService, CommonEvents,
-                  MessagesRepo, threadInfo) {
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
         var vm = this;
+
+        vm.org = null;
         vm.errorMessage = null;
         vm.submitBusy = false;
 
-        vm.thread = null;
-        vm.removeMember = removeMember;
-
-        init();
-
-        function init() {
-            $log.debug('Info init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function removeMember(threadId, memberId) {
-            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
-                var model = {
-                    thread_id: threadId,
-                    member_id: memberId
-                };
-                vm.submitBusy = true;
-                MessagesRepo.removeMember(model).then(
-                    function (data) {
-                        $log.debug("Removed member " + vm.thread.member.name);
-                    },
-                    function (data) {
-                        vm.submitBusy = false;
-                        vm.errorMessage = data;
-                        $log.debug(vm.errorMessage);
-                    });
-
-            }
-        }
-
-    }
-
-})();
-/**
- *  Controller for the thread Invite.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$scope", "$log", "CommonService", "CommonEvents", "SiteAlert", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard')
-        .controller('Invite', Invite);
-
-    /** @ngInject */
-    function Invite($scope, $log,
-                    CommonService, CommonEvents, SiteAlert,
-                    MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
         vm.sendInvite = sendInvite;
-        vm.cancel = cancel;
-
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
 
         init();
 
         function init() {
-            $log.debug('Invite init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
+            $log.debug('invite init');
+            vm.org = orgInfo;
         }
 
         function sendInvite(model) {
             vm.submitBusy = true;
             vm.errorMessage = null;
 
-            MessagesRepo.invite(vm.thread.id, model).then(
+            OrgsRepo.sendInvite(vm.org.id, model).then(
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your invite has been sent to " + model.email);
@@ -4814,495 +4645,36 @@ angular
                     vm.submitBusy = false;
                     vm.errorMessage = data;
                 });
-
         }
 
-        function cancel() {
+        function cancelInvite() {
             CommonService.previous();
         }
     }
 
 })();
 /**
- *  Controller for the thread Leave.
+ *  Controller for the team view.
  */
 (function () {
     'use strict';
 
-    Leave.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    Team.$inject = ["$log", "orgInfo"];
     angular
-        .module('app.dashboard.thread')
-        .controller('Leave', Leave);
+        .module('app.dashboard.team')
+        .controller('Team', Team);
 
     /** @ngInject */
-    function Leave($scope, $log, $state,
-                   CommonService, CommonEvents,
-                   MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.leave = leave;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Leave init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function leave() {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.leave(vm.thread.id).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    $state.go('dashboard.default');
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- * Messages view controller.
- */
-(function () {
-    'use strict';
-
-    Messages.$inject = ["$log", "$stateParams", "$state", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
-    angular
-        .module('app.dashboard')
-        .controller('Messages', Messages);
-
-    /** @ngInject */
-    function Messages($log, $stateParams, $state, underscore, CommonService, CommonEvents,
-                      AccountService, MessagesService, MessageFormatter, threadInfo) {
-        var vm = this;
-        vm.thread = null;
-        vm.messages = null;
-        vm.members = null;
-        vm.message = '';
-        vm.submitBusy = false;
-        vm.errorMessage = null;
-
-        vm.send = send;
-        vm.onKeypress = onKeypress;
-        vm.accountName = accountName;
-        vm.isSameDay = isSameDay;
-        vm.localTime = localTime;
-        vm.body = body;
-
-        init();
-
-        function init() {
-            $log.debug('messages init');
-
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            $('textarea').on('keydown', function (e) {
-                var value = $('textarea').val();
-                var rows = $('textarea').attr('rows');
-                console.log(rows)
-                $('.textarea-copy').html(value);
-                var textareaWidth = $('.textarea-copy').width();
-                console.log(textareaWidth);
-                if (textareaWidth < 1050) {
-                    $('.reply').css({"height": "70px"})
-                    $('textarea').attr('rows', '1');
-                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
-                    $('.reply').css({"height": "100px"})
-                    $('textarea').attr('rows', '2');
-                } else if (textareaWidth > 2100) {
-                    $('.reply').css({"height": "130px"})
-                    $('textarea').attr('rows', '3');
-                }
-            });
-
-            var threadId = $stateParams.threadId;
-
-            load(threadId);
-        }
-
-        function load(threadId) {
-            MessagesService.getHistory(threadId).then(function (chats) {
-                vm.messages = chats;
-                console.log(chats)
-                CommonService.broadcast(CommonEvents.viewReady);
-            });
-        }
-
-        function send(message) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            var model = {
-                message: message
-            };
-
-            var threadId = $stateParams.threadId;
-
-            MessagesService.send($stateParams.threadId, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.message = '';
-                    vm.messages.push(data.threadchat);
-                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
-                    console.log(vm.messages)
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                })
-
-
-        }
-
-        function onKeypress(event, message) {
-            if (event.which === 13 && !event.shiftKey) {
-                event.preventDefault();
-                if (message.trim()) {
-                    return vm.send(message);
-                }
-            }
-        }
-
-        /**
-         * Returns whether two dates are the same day.
-         * @returns {boolean}
-         */
-        function isSameDay(date1, date2) {
-            return moment(date1).isSame(date2, 'day');
-        }
-
-        /**
-         * Converts to local date/time from UTC.
-         * @returns {Date}
-         */
-        function localTime(date) {
-            return moment.utc(date).toDate();
-        }
-
-        /**
-         * Renders the message body.
-         *
-         * @returns {String} HTML output.
-         */
-        function body(chat) {
-            this.ML = this.ML || /\n/gm;
-            var ml = this.ML;
-            var text = chat.text;
-
-            switch (chat.kind) {
-                case 0:
-                    text = underscore.escape(text);
-                    text = MessageFormatter.run(text);
-                    text = text.replace(ml, '<br/>');
-                    break;
-                case 2:
-                    text = "joined " + vm.thread.name;
-                    if (chat.inviter !== null) {
-                        text += " by invitation from " + accountName(chat.inviter);
-                    }
-                    break;
-                case 3:
-                    if (chat.remover !== null) {
-                        text = "was removed from " + vm.thread.name + " by " +
-                            accountName(chat.remover)
-                    }
-                    else {
-                        text = "left " + vm.thread.name;
-                    }
-                    break;
-                case 4:
-                    text = "archived " + vm.thread.name;
-                    break;
-                case 5:
-                    text = "unarchived " + vm.thread.name;
-                    break;
-                case 6:
-                    text = "updated thread " + vm.thread.name;
-            }
-            return text;
-        }
-
-        /**
-         * Returns displayable account name.
-         * @param accountId
-         * @return {String}
-         */
-        function accountName(accountId) {
-            var profile = vm.members[accountId].profile;
-            return AccountService.accountName(profile);
-        }
-    }
-
-})();
-/**
- *  Controller for the thread pending invitations.
- */
-(function () {
-    'use strict';
-
-    Pending.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Pending', Pending);
-
-    /** @ngInject */
-    function Pending($scope, $log, $state,
-                   CommonService, CommonEvents,
-                   MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Pending init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the thread Caregiver search.
- */
-(function () {
-    'use strict';
-
-    Search.$inject = ["$scope", "$log", "$http", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Search', Search);
-
-    /** @ngInject */
-    function Search($scope, $log, $http,
-                  CommonService, CommonEvents,
-                  MessagesRepo, threadInfo) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.search = search;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('Invite init');
-            vm.thread = threadInfo.thread;
-            vm.members = threadInfo.members;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        // Any function returning a promise object can be used to load values asynchronously
-        $scope.getLocation = function (val) {
-            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                },
-                dataType: 'jsonp'
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
-        };
-
-        function search(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            MessagesRepo.search(model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-    }
-
-})();
-
-/**
- * Controller for the sidepanel in the thread view.
- */
-(function () {
-    'use strict';
-
-    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidepanel', Sidepanel);
-
-    /** @ngInject */
-    function Sidepanel($log, $state, SidepanelState) {
+    function Team($log, orgInfo) {
         var vm = this;
 
         init();
 
         function init() {
-            $log.debug('sidepanel init');
-            SidepanelState.setState($state.current.name);
-            SidepanelState.open();
-        }
-    }
-
-})();
-/**
- * Parent controller for the `dashboard.messages` state.
- */
-(function () {
-    'use strict';
-
-    Thread.$inject = ["$log", "$state", "$stateParams", "SidepanelState"];
-    angular
-        .module('app.dashboard')
-        .controller('Thread', Thread);
-
-    /** @ngInject */
-    function Thread($log, $state, $stateParams, SidepanelState) {
-        var vm = this;
-
-        vm.sidepanel = SidepanelState;
-        vm.toggleSidepanel = toggleSidepanel;
-        vm.openSidepanel = openSidepanel;
-        vm.closeSidepanel = closeSidepanel;
-
-        init();
-
-        function init() {
-            $log.debug('thread init');
-
-            if (SidepanelState.isOpen) {
-                return openSidepanel();
-            }
+            $log.debug('team init');
+            vm.org = orgInfo;
         }
 
-        function toggleSidepanel() {
-            return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
-        }
-
-        function openSidepanel() {
-            var st = SidepanelState.state;
-            return $state.go(st || 'dashboard.messages.default.sidepanel.default');
-        }
-
-        function closeSidepanel() {
-            SidepanelState.close();
-            return $state.go('dashboard.messages.default');
-        }
-
-    }
-
-})();
-/**
- *  Controller for the thread Update.
- */
-(function () {
-    'use strict';
-
-    Update.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo", "SiteAlert"];
-    angular
-        .module('app.dashboard.thread')
-        .controller('Update', Update);
-
-    /** @ngInject */
-    function Update($scope, $log, $state,
-                    CommonService, CommonEvents,
-                    MessagesRepo, threadInfo, SiteAlert) {
-        var vm = this;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.type = true;
-        vm.UpdateInfo = UpdateInfo;
-        vm.cancel = cancel;
-        vm.careServices = {Blue: true, Orange: true};
-
-        init();
-
-        function init() {
-            console.log('UPDATE INIT2');
-            vm.thread = threadInfo.thread;
-
-            CommonService.broadcast(CommonEvents.viewReady);
-        }
-
-        function UpdateInfo(model) {
-
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            //currently supporting Basic channel purpose only
-            model = {
-                name: vm.thread.name,
-                purpose: vm.thread.purpose,
-                purpose_type: vm.thread.purpose_type,
-                hours: vm.thread.hours,
-                notes: vm.thread.notes,
-                gender: vm.thread.gender,
-                hobbies: vm.thread.hobbies,
-            };
-
-            MessagesRepo.updatePurpose(vm.thread.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your update was successful.");
-                    SiteAlert.check();
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                }
-            );
-
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
     }
 
 })();
@@ -5724,6 +5096,653 @@ angular
         function gotoLogin() {
             $location.hash('login-view');
             $anchorScroll();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Archive.
+ */
+(function () {
+    'use strict';
+
+    Archive.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Archive', Archive);
+
+    /** @ngInject */
+    function Archive($scope, $log, $state,
+                     CommonService, CommonEvents,
+                     MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.archive = archive;
+        vm.cancel = cancel;
+
+        init();
+
+        function init() {
+            $log.debug('Archive init');
+            vm.thread = threadInfo.thread;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function archive() {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.archive(vm.thread.id).then(
+                function () {
+                    vm.submitBusy = false;
+                    $state.go('dashboard.default');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Info.
+ */
+(function () {
+    'use strict';
+
+    Info.$inject = ["$scope", "$log", "$window", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Info', Info);
+
+    /** @ngInject */
+    function Info($scope, $log, $window,
+                  CommonService, CommonEvents,
+                  MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.removeMember = removeMember;
+
+        init();
+
+        function init() {
+            $log.debug('Info init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function removeMember(threadId, memberId) {
+            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
+                var model = {
+                    thread_id: threadId,
+                    member_id: memberId
+                };
+                vm.submitBusy = true;
+                MessagesRepo.removeMember(model).then(
+                    function (data) {
+                        $log.debug("Removed member " + vm.thread.member.name);
+                    },
+                    function (data) {
+                        vm.submitBusy = false;
+                        vm.errorMessage = data;
+                        $log.debug(vm.errorMessage);
+                    });
+
+            }
+        }
+
+    }
+
+})();
+/**
+ *  Controller for the thread Invite.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$scope", "$log", "CommonService", "CommonEvents", "SiteAlert", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard')
+        .controller('Invite', Invite);
+
+    /** @ngInject */
+    function Invite($scope, $log,
+                    CommonService, CommonEvents, SiteAlert,
+                    MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.sendInvite = sendInvite;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Invite init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.invite(vm.thread.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Leave.
+ */
+(function () {
+    'use strict';
+
+    Leave.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Leave', Leave);
+
+    /** @ngInject */
+    function Leave($scope, $log, $state,
+                   CommonService, CommonEvents,
+                   MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.leave = leave;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Leave init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function leave() {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.leave(vm.thread.id).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    $state.go('dashboard.default');
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ * Messages view controller.
+ */
+(function () {
+    'use strict';
+
+    Messages.$inject = ["$log", "$stateParams", "$state", "underscore", "CommonService", "CommonEvents", "AccountService", "MessagesService", "MessageFormatter", "threadInfo"];
+    angular
+        .module('app.dashboard')
+        .controller('Messages', Messages);
+
+    /** @ngInject */
+    function Messages($log, $stateParams, $state, underscore, CommonService, CommonEvents,
+                      AccountService, MessagesService, MessageFormatter, threadInfo) {
+        var vm = this;
+        vm.thread = null;
+        vm.messages = null;
+        vm.members = null;
+        vm.message = '';
+        vm.submitBusy = false;
+        vm.errorMessage = null;
+
+        vm.send = send;
+        vm.onKeypress = onKeypress;
+        vm.accountName = accountName;
+        vm.isSameDay = isSameDay;
+        vm.localTime = localTime;
+        vm.body = body;
+
+        init();
+
+        function init() {
+            $log.debug('messages init');
+
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            $('textarea').on('keydown', function (e) {
+                var value = $('textarea').val();
+                var rows = $('textarea').attr('rows');
+                console.log(rows)
+                $('.textarea-copy').html(value);
+                var textareaWidth = $('.textarea-copy').width();
+                console.log(textareaWidth);
+                if (textareaWidth < 1050) {
+                    $('.reply').css({"height": "70px"})
+                    $('textarea').attr('rows', '1');
+                } else if (textareaWidth >= 1050 && textareaWidth < 2100) {
+                    $('.reply').css({"height": "100px"})
+                    $('textarea').attr('rows', '2');
+                } else if (textareaWidth > 2100) {
+                    $('.reply').css({"height": "130px"})
+                    $('textarea').attr('rows', '3');
+                }
+            });
+
+            var threadId = $stateParams.threadId;
+
+            load(threadId);
+        }
+
+        function load(threadId) {
+            MessagesService.getHistory(threadId).then(function (chats) {
+                vm.messages = chats;
+                CommonService.broadcast(CommonEvents.viewReady);
+            });
+        }
+
+        function send(message) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            var model = {
+                message: message
+            };
+
+            var threadId = $stateParams.threadId;
+
+            MessagesService.send($stateParams.threadId, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.message = '';
+                    vm.messages.push(data.threadchat);
+                    $("html, body").animate({scrollTop: $(document).height()}, "slow");
+                    console.log(vm.messages)
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                })
+
+
+        }
+
+        function onKeypress(event, message) {
+            if (event.which === 13 && !event.shiftKey) {
+                event.preventDefault();
+                if (message.trim()) {
+                    return vm.send(message);
+                }
+            }
+        }
+
+        /**
+         * Returns whether two dates are the same day.
+         * @returns {boolean}
+         */
+        function isSameDay(date1, date2) {
+            return moment(date1).isSame(date2, 'day');
+        }
+
+        /**
+         * Converts to local date/time from UTC.
+         * @returns {Date}
+         */
+        function localTime(date) {
+            return moment.utc(date).toDate();
+        }
+
+        /**
+         * Renders the message body.
+         *
+         * @returns {String} HTML output.
+         */
+        function body(chat) {
+            this.ML = this.ML || /\n/gm;
+            var ml = this.ML;
+            var text = chat.text;
+
+            switch (chat.kind) {
+                case 0:
+                    text = underscore.escape(text);
+                    text = MessageFormatter.run(text);
+                    text = text.replace(ml, '<br/>');
+                    break;
+                case 2:
+                    text = "joined " + vm.thread.name;
+                    if (chat.inviter !== null) {
+                        text += " by invitation from " + accountName(chat.inviter);
+                    }
+                    break;
+                case 3:
+                    if (chat.remover !== null) {
+                        text = "was removed from " + vm.thread.name + " by " +
+                            accountName(chat.remover)
+                    }
+                    else {
+                        text = "left " + vm.thread.name;
+                    }
+                    break;
+                case 4:
+                    text = "archived " + vm.thread.name;
+                    break;
+                case 5:
+                    text = "unarchived " + vm.thread.name;
+                    break;
+                case 6:
+                    text = "updated thread " + vm.thread.name;
+            }
+            return text;
+        }
+
+        /**
+         * Returns displayable account name.
+         * @param accountId
+         * @return {String}
+         */
+        function accountName(accountId) {
+            var profile = vm.members[accountId].profile;
+            return AccountService.accountName(profile);
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread pending invitations.
+ */
+(function () {
+    'use strict';
+
+    Pending.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Pending', Pending);
+
+    /** @ngInject */
+    function Pending($scope, $log, $state,
+                   CommonService, CommonEvents,
+                   MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Pending init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the thread Caregiver search.
+ */
+(function () {
+    'use strict';
+
+    Search.$inject = ["$scope", "$log", "$http", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Search', Search);
+
+    /** @ngInject */
+    function Search($scope, $log, $http,
+                  CommonService, CommonEvents,
+                  MessagesRepo, threadInfo) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.search = search;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('Invite init');
+            vm.thread = threadInfo.thread;
+            vm.members = threadInfo.members;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        // Any function returning a promise object can be used to load values asynchronously
+        $scope.getLocation = function (val) {
+            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                },
+                dataType: 'jsonp'
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        };
+
+        function search(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            MessagesRepo.search(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+    }
+
+})();
+
+/**
+ * Controller for the sidepanel in the thread view.
+ */
+(function () {
+    'use strict';
+
+    Sidepanel.$inject = ["$log", "$state", "SidepanelState"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidepanel', Sidepanel);
+
+    /** @ngInject */
+    function Sidepanel($log, $state, SidepanelState) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('sidepanel init');
+            SidepanelState.setState($state.current.name);
+            SidepanelState.open();
+        }
+    }
+
+})();
+/**
+ * Parent controller for the `dashboard.messages` state.
+ */
+(function () {
+    'use strict';
+
+    Thread.$inject = ["$log", "$state", "$stateParams", "SidepanelState"];
+    angular
+        .module('app.dashboard')
+        .controller('Thread', Thread);
+
+    /** @ngInject */
+    function Thread($log, $state, $stateParams, SidepanelState) {
+        var vm = this;
+
+        vm.sidepanel = SidepanelState;
+        vm.toggleSidepanel = toggleSidepanel;
+        vm.openSidepanel = openSidepanel;
+        vm.closeSidepanel = closeSidepanel;
+
+        init();
+
+        function init() {
+            $log.debug('thread init');
+
+            if (SidepanelState.isOpen) {
+                return openSidepanel();
+            }
+        }
+
+        function toggleSidepanel() {
+            return SidepanelState.isOpen ? closeSidepanel() : openSidepanel();
+        }
+
+        function openSidepanel() {
+            var st = SidepanelState.state;
+            return $state.go(st || 'dashboard.messages.default.sidepanel.default');
+        }
+
+        function closeSidepanel() {
+            SidepanelState.close();
+            return $state.go('dashboard.messages.default');
+        }
+
+    }
+
+})();
+/**
+ *  Controller for the thread Update.
+ */
+(function () {
+    'use strict';
+
+    Update.$inject = ["$scope", "$log", "$state", "CommonService", "CommonEvents", "MessagesRepo", "threadInfo", "SiteAlert"];
+    angular
+        .module('app.dashboard.thread')
+        .controller('Update', Update);
+
+    /** @ngInject */
+    function Update($scope, $log, $state,
+                    CommonService, CommonEvents,
+                    MessagesRepo, threadInfo, SiteAlert) {
+        var vm = this;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.type = true;
+        vm.UpdateInfo = UpdateInfo;
+        vm.cancel = cancel;
+        vm.careServices = {Blue: true, Orange: true};
+
+        init();
+
+        function init() {
+            console.log('UPDATE INIT2');
+            vm.thread = threadInfo.thread;
+
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function UpdateInfo(model) {
+
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            //currently supporting Basic channel purpose only
+            model = {
+                name: vm.thread.name,
+                purpose: vm.thread.purpose,
+                purpose_type: vm.thread.purpose_type,
+                hours: vm.thread.hours,
+                notes: vm.thread.notes,
+                gender: vm.thread.gender,
+                hobbies: vm.thread.hobbies,
+            };
+
+            MessagesRepo.updatePurpose(vm.thread.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your update was successful.");
+                    SiteAlert.check();
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                }
+            );
+
+        }
+
+        function cancel() {
+            CommonService.previous();
         }
     }
 

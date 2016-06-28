@@ -91,7 +91,27 @@
                     $log.warn('Trying to append to a non-existing thread.');
                     return;
                 }
-                messages.push(message);
+
+                message = JSON.parse(message);
+
+                var newMessage = {
+                    'account': {
+                        'gravatar_url': message['gravatar_url'],
+                        'name': message['name']
+                    },
+                    'created': message['created'],
+                    'kind': 0,
+                    'remover': null,
+                    'text': message['text']
+
+                }
+
+                console.log(message);
+                //console.log('messages before');
+                //console.log(messages);
+                messages.push(newMessage);
+                //console.log('messages after');
+                console.log(messages);
                 return messages;
             });
         }
