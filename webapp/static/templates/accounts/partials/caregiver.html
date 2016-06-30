@@ -1,0 +1,160 @@
+<form class="form-horizontal" name="form" ng-submit="vm.update(vm.cvgr)">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Headline and Bio</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="row form-group">
+        <label for="headline" class="col-sm-3 control-label">
+          Headline
+        </label>
+
+        <div class="col-sm-9">
+          <input ng-model="vm.cvgr.headline"
+                 placeholder="Enter availability here..."
+                 id="headline" name="headline" class="form-control"/>
+
+          <p class="help-block">Your headline is a one sentence description of
+            your current weekly availability. Please state the number of hours
+            you are available per week and the days of the week you will be
+            available to our clients. For example - "I am available M-F from
+            1-4 pm". Please update you availability as frequently as possible.
+          </p>
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <label for="bio" class="col-sm-3 control-label">Bio</label>
+
+        <div class="col-sm-9">
+          <textarea ng-model="vm.cvgr.bio"
+                    placeholder="Write something about yourself"
+                    rows="4" id="bio" class="form-control">
+          </textarea>
+
+          <p class="help-block"><b>humanlink</b> is built on trust.
+            Our care seekers want to know that you are compassionate and caring.
+            This is your opportunity to let them know about you.
+            Taking a few minutes to build an awesome online profile can increase
+            your chances of getting hired.
+          </p>
+
+          <p class="help-block">Tell our users why they should they hire you?
+            If you are a volunteer at an organization that helps your community or
+            If you are religious or spiritual share with them why it is important
+            to you?
+          </p>
+
+          <p class="help-block">Tell our users about things you like:
+            what are 5 things you can't live without?
+            Share your favorite travel destinations, books, movies, shows, music,
+            food.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.headline.$valid || vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Professional Data</h2>
+    </div>
+    <div class="panel-body">
+      <div class="row form-group">
+        <label for="school" class="col-sm-3 control-label">
+          Relevant Education / Experience
+        </label>
+
+        <div class="col-sm-9">
+          <textarea ng-model="vm.cvgr.certificates"
+                    placeholder="Professional certificate or relevant experience"
+                    rows="6" id="certificates" class="form-control">
+          </textarea>
+
+          <p class="help-block">Please share any education or experience that would be
+            relevant to the Humanlink community. You can cut and paste from your existing
+            resume.
+          </p>
+
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Professional Preferences</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="row form-group">
+        <label for="arrangements" class="col-sm-3 control-label">
+          Living arrangements
+        </label>
+
+        <div class="col-sm-9">
+          <input ng-model="vm.cvgr.arrangements"
+                 placeholder="Please state your living preferences"
+                 id="arrangements" name="arrangements" class="form-control"/>
+
+          <p class="help-block">Do you prefer live-out arrangments only? Are you available
+            for live-in arrangements?
+          </p>
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <label for="allergies" class="col-sm-3 control-label">
+          Allergies
+        </label>
+
+        <div class="col-sm-9">
+          <input ng-model="vm.cvgr.allergies"
+                 placeholder="Do you have any allergies?"
+                 id="allergies" name="allergies" class="form-control"/>
+
+          <p class="help-block">Cats, Dogs, Smoking, etc.</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.headline.$valid || vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>

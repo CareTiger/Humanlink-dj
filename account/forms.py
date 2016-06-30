@@ -3,6 +3,14 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
 from .models import Account, CareGiver, CareSeeker
 
+CERTIFICATES = (
+    ('LPN', 'Licensed Practical Nurse (LPN)'),
+    ('CNA', 'Certified Nursing Aide (CNA)'),
+    ('IHA', 'In-Home Assistant) (IHA)'),
+    ('HCS', 'Home Care Specialist (HCS)'),
+    ('AD', 'Alzheimers & Dementia (AD)'),
+)
+
 
 # Login form that caches a User with clean username and password
 class LoginForm(forms.Form):
@@ -30,7 +38,7 @@ class BasicInfo(forms.ModelForm):
 class CareGiverInfo(forms.ModelForm):
     class Meta:
         model = CareGiver
-        fields = ['is_hireable', 'location', 'about', 'certs']
+        fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements']
 
 
 class CareSeekerInfo(forms.ModelForm):

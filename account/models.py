@@ -2,11 +2,17 @@ from __future__ import unicode_literals
 
 import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
-from django.core import *
-
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+
+CERTIFICATES = (
+    ('LPN', 'Licensed Practical Nurse (LPN)'),
+    ('CNA', 'Certified Nursing Aide (CNA)'),
+    ('IHA', 'In-Home Assistant) (IHA)'),
+    ('HCS', 'Home Care Specialist (HCS)'),
+    ('AD', 'Alzheimers & Dementia (AD)'),
+)
 
 
 class Account(models.Model):
@@ -43,14 +49,16 @@ class Account(models.Model):
 
 class CareGiver(models.Model):
     account = models.ForeignKey(Account)
-    is_hireable = models.BooleanField(default=False)
-    location = models.CharField(max_length=255)
-    city = models.CharField(max_length=100, null=True)
-    about = models.TextField()
-    certs = models.TextField()
-    headline = models.CharField(max_length=200, null=True)
-    background_verified = models.BooleanField(default=False)
-    phone_verified = models.BooleanField(default=False)
+    is_hireable = models.BooleanField(default=False, blank=True)
+    location = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    certificates = models.TextField(null=True, blank=True)
+    headline = models.CharField(max_length=200, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    allergies = models.TextField(null=True, blank=True)
+    arrangements = models.TextField(null=True, blank=True)
+    background_verified = models.BooleanField(default=False, blank=True)
+    phone_verified = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.account.email

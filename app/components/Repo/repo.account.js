@@ -17,6 +17,8 @@
             save: save,
             getTeam: getTeam,
             updateTeam: updateTeam,
+            getCaregiver: getCaregiver,
+            updateCaregiver: updateCaregiver,
             me: me,
             threadInvite: threadInvite,
             get_caregivers: get_caregivers,
@@ -79,6 +81,24 @@
          */
         function updateTeam(model) {
             return AbstractRepo.post('accounts/updateTeam/', model, false)
+                .then(apiGenericSuccess, genericError);
+        }
+
+        /**
+         * Get Caregiver information.
+         * @returns {*}
+         */
+        function getCaregiver() {
+            return AbstractRepo.get('/accounts/get_caregiver/');
+        }
+
+        /**
+         * Update Caregiver information.
+         * @param model
+         * @returns {Promise}
+         */
+        function updateCaregiver(model) {
+            return AbstractRepo.post('accounts/update_caregiver/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 

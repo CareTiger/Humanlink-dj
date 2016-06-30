@@ -54,7 +54,6 @@ def broadcast(request, chat_id=None):
     if user:
         user = user[0]
 
-
     now = str(datetime.datetime.now().strftime('%I:%M %p'))
 
     print '###########'
@@ -445,25 +444,53 @@ def update_team(request):
 
 @login_required
 @csrf_exempt
+def get_caregiver(request):
+    # """ -Retrieve Caregiver Details for an Account """
+    account = Account.objects.get(email=request.user.email)
+
+    try:
+        caregiver = CareGiver.objects.get(account=account)
+        context = {
+            'headline': caregiver.headline,
+            'bio': caregiver.bio,
+            'arrangements': caregiver.arrangements,
+            'allergies': caregiver.allergies,
+            'certificates': caregiver.certificates,
+        }
+        return composeJsonResponse(200, "", context)
+    except:
+        context = {
+        }
+        return composeJsonResponse(200, "", context)
+
+
+@login_required
+@csrf_exempt
 def update_caregiver(request):
     # """ -Updates Account's Caregiver Information. """
 
     account = Account.objects.get(email=request.user.username)
-    caregiver = CareGiver.objects.get(account=account)
+
+    try:
+        caregiver = CareGiver.objects.get(account=account)
+    except:
+        caregiver = CareGiver(account=account)
 
     if request.method == "POST":
-        form = CareGiverInfo
+        form = CareGiverInfo(requestPost(request))
 
-        if form.is_valid:
+        if form.is_valid():
             cleaned_data = form.cleaned_data
-            caregiver.is_hireable = cleaned_data['is_hireable']
-            caregiver.location = cleaned_data['location']
-            caregiver.about = cleaned_data['about']
-            caregiver.certs = cleaned_data['certs']
+            caregiver.headline = cleaned_data['headline']
+            caregiver.bio = cleaned_data['bio']
+            caregiver.certificates = cleaned_data['certificates']
+            caregiver.arrangements = cleaned_data['arrangements']
+            caregiver.allergies = cleaned_data['allergies']
             caregiver.save()
 
             context = {
-                'caregiver': caregiver
+                'headline': caregiver.headline,
+                'bio': caregiver.bio,
             }
 
             return composeJsonResponse(200, "", context)

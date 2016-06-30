@@ -38,6 +38,12 @@
                 controller: 'Team',
                 controllerAs: 'vm'
             })
+            .state('account.caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/accounts/partials/caregiver.html',
+                controller: 'Caregiver',
+                controllerAs: 'vm'
+            })
             .state('account.security', {
                 url: '/security',
                 templateUrl: '/static/templates/accounts/partials/security.html',
