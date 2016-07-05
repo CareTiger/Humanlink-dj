@@ -2412,95 +2412,6 @@ window.HL = window.HL || {};
 
 })();
 /**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
  * Parent controller of the account module.
  */
 (function () {
@@ -3588,6 +3499,95 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -3935,6 +3935,317 @@ angular
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
+/**
+ * Parent controller of the dashboard module.
+ */
+(function () {
+    'use strict';
+
+    Base.$inject = ["CommonService", "CommonEvents"];
+    angular
+        .module('app.dashboard')
+        .controller('Base', Base);
+
+    /** @ngInject */
+    function Base(CommonService, CommonEvents) {
+        var vm = this;
+        vm.viewReady = false;
+
+        init();
+
+        function init() {
+            CommonService.on('$stateChangeStart', function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewLoading, function () {
+                vm.viewReady = false;
+            });
+            CommonService.on(CommonEvents.viewReady, function () {
+                vm.viewReady = true;
+            });
+        }
+    }
+
+})();
+/**
+ * Create thread controller.
+ */
+(function () {
+    'use strict';
+
+    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
+    angular
+        .module('app.dashboard')
+        .controller('CreateThread', CreateThread);
+
+    /** @ngInject */
+    function CreateThread($log, CommonService, MessagesRepo) {
+        var vm = this;
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.thread = null;
+        vm.createThread = createThread;
+        vm.cancel = cancel;
+
+
+        init();
+
+        function init() {
+            $log.debug('create_thread init');
+            vm.type = 'option1';
+
+            //has to be move to constants file
+            vm.careServices = [
+                {
+                    "value": 0,
+                    "name": "Companion",
+                    "description": "Companionship",
+                    "skills": "All things companions do"
+                },
+                {
+                    "value": 1,
+                    "name": "Grooming",
+                    "description": "Personal Grooming",
+                    "skills": "Bathing and dressing"
+                },
+                {
+                    "value": 2,
+                    "name": "Meals",
+                    "description": "Meal Preparations",
+                    "skills": "Hot/cold meal preparations"
+                },
+                {
+                    "value": 3,
+                    "name": "Housekeeping",
+                    "description": "Housekeeping",
+                    "skills": "Housekeeping - Laundry and cleaning"
+                },
+                {
+                    "value": 4,
+                    "name": "Medication",
+                    "description": "Medication reminders",
+                    "skills": "Medication reminders"
+                },
+                {
+                    "value": 5,
+                    "name": "Transportation",
+                    "description": "Transportation",
+                    "skills": "Transportation from home to clinic and back"
+                },
+                {
+                    "value": 6,
+                    "name": "Alzheimers",
+                    "description": "Alzheimer's and Dementia",
+                    "skills": "Companionship, Mental simulation, 24-hour care"
+                },
+                {
+                    "value": 7,
+                    "name": "Mobility",
+                    "description": "Mobility assistance",
+                    "skills": "Mobility assistance"
+                }
+            ];
+        }
+
+        function createThread(model) {
+            vm.submitBusy = true;
+            model = {
+                name: model.name,
+                purpose: model.purpose
+            };
+
+            MessagesRepo.create(model).then(
+                function (thread) {
+                    console.log(thread.owner);
+                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancel() {
+            CommonService.previous();
+        }
+
+    }
+
+})();
+/**
+ * Controller for the sidebar view.
+ */
+(function () {
+    'use strict';
+
+    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
+    angular
+        .module('app.dashboard')
+        .controller('Sidebar', Sidebar);
+
+    /** @ngInject */
+    function Sidebar($scope, $log, MessagesService) {
+        var vm = this;
+        vm.orgs = null;
+
+        init();
+
+        function init() {
+
+            MessagesService.getThreads().then(function (threads) {
+                $log.debug('sidebar init');
+                vm.threads = threads;
+            });
+        }
+    }
+
+})();
+/**
+ * Controller for the dashboard welcome state.
+ */
+(function () {
+    'use strict';
+
+    Welcome.$inject = ["$log", "NotificationManager"];
+    angular
+        .module('app.dashboard')
+        .controller('Welcome', Welcome);
+
+    /** @ngInject */
+    function Welcome($log, NotificationManager) {
+        var vm = this;
+        vm.nagDesktopNotifications = !NotificationManager.isGranted();
+
+        vm.enableNotifications = enableNotifications;
+
+        init();
+
+        function init() {
+            $log.debug('welcome init');
+            if (NotificationManager.permission === 'denied') {
+                vm.view = 'denied';
+            }
+        }
+
+        function enableNotifications() {
+            vm.view = 'hints';
+            NotificationManager.requestPermission().then(function (permission) {
+                vm.view = permission;
+            });
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
 /**
  *
  */
@@ -4443,317 +4754,6 @@ angular
 
 })();
 
-/**
- * Parent controller of the dashboard module.
- */
-(function () {
-    'use strict';
-
-    Base.$inject = ["CommonService", "CommonEvents"];
-    angular
-        .module('app.dashboard')
-        .controller('Base', Base);
-
-    /** @ngInject */
-    function Base(CommonService, CommonEvents) {
-        var vm = this;
-        vm.viewReady = false;
-
-        init();
-
-        function init() {
-            CommonService.on('$stateChangeStart', function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewLoading, function () {
-                vm.viewReady = false;
-            });
-            CommonService.on(CommonEvents.viewReady, function () {
-                vm.viewReady = true;
-            });
-        }
-    }
-
-})();
-/**
- * Create thread controller.
- */
-(function () {
-    'use strict';
-
-    CreateThread.$inject = ["$log", "CommonService", "MessagesRepo"];
-    angular
-        .module('app.dashboard')
-        .controller('CreateThread', CreateThread);
-
-    /** @ngInject */
-    function CreateThread($log, CommonService, MessagesRepo) {
-        var vm = this;
-
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.thread = null;
-        vm.createThread = createThread;
-        vm.cancel = cancel;
-
-
-        init();
-
-        function init() {
-            $log.debug('create_thread init');
-            vm.type = 'option1';
-
-            //has to be move to constants file
-            vm.careServices = [
-                {
-                    "value": 0,
-                    "name": "Companion",
-                    "description": "Companionship",
-                    "skills": "All things companions do"
-                },
-                {
-                    "value": 1,
-                    "name": "Grooming",
-                    "description": "Personal Grooming",
-                    "skills": "Bathing and dressing"
-                },
-                {
-                    "value": 2,
-                    "name": "Meals",
-                    "description": "Meal Preparations",
-                    "skills": "Hot/cold meal preparations"
-                },
-                {
-                    "value": 3,
-                    "name": "Housekeeping",
-                    "description": "Housekeeping",
-                    "skills": "Housekeeping - Laundry and cleaning"
-                },
-                {
-                    "value": 4,
-                    "name": "Medication",
-                    "description": "Medication reminders",
-                    "skills": "Medication reminders"
-                },
-                {
-                    "value": 5,
-                    "name": "Transportation",
-                    "description": "Transportation",
-                    "skills": "Transportation from home to clinic and back"
-                },
-                {
-                    "value": 6,
-                    "name": "Alzheimers",
-                    "description": "Alzheimer's and Dementia",
-                    "skills": "Companionship, Mental simulation, 24-hour care"
-                },
-                {
-                    "value": 7,
-                    "name": "Mobility",
-                    "description": "Mobility assistance",
-                    "skills": "Mobility assistance"
-                }
-            ];
-        }
-
-        function createThread(model) {
-            vm.submitBusy = true;
-            model = {
-                name: model.name,
-                purpose: model.purpose
-            };
-
-            MessagesRepo.create(model).then(
-                function (thread) {
-                    console.log(thread.owner);
-                    CommonService.hardRedirect('/app/c/' + thread.owner.id + '/' + thread.name);
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancel() {
-            CommonService.previous();
-        }
-
-    }
-
-})();
-/**
- * Controller for the sidebar view.
- */
-(function () {
-    'use strict';
-
-    Sidebar.$inject = ["$scope", "$log", "MessagesService"];
-    angular
-        .module('app.dashboard')
-        .controller('Sidebar', Sidebar);
-
-    /** @ngInject */
-    function Sidebar($scope, $log, MessagesService) {
-        var vm = this;
-        vm.orgs = null;
-
-        init();
-
-        function init() {
-
-            MessagesService.getThreads().then(function (threads) {
-                $log.debug('sidebar init');
-                vm.threads = threads;
-            });
-        }
-    }
-
-})();
-/**
- * Controller for the dashboard welcome state.
- */
-(function () {
-    'use strict';
-
-    Welcome.$inject = ["$log", "NotificationManager"];
-    angular
-        .module('app.dashboard')
-        .controller('Welcome', Welcome);
-
-    /** @ngInject */
-    function Welcome($log, NotificationManager) {
-        var vm = this;
-        vm.nagDesktopNotifications = !NotificationManager.isGranted();
-
-        vm.enableNotifications = enableNotifications;
-
-        init();
-
-        function init() {
-            $log.debug('welcome init');
-            if (NotificationManager.permission === 'denied') {
-                vm.view = 'denied';
-            }
-        }
-
-        function enableNotifications() {
-            vm.view = 'hints';
-            NotificationManager.requestPermission().then(function (permission) {
-                vm.view = permission;
-            });
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
 /**
  *  Controller for the thread Archive.
  */
