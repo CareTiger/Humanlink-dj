@@ -4,14 +4,14 @@
 {% block title %} Dashboard {% endblock %}
 
 {% block ngapp %}
-    ng-app="app.dashboard"
+  ng-app="app.dashboard"
 {% endblock %}
 
 {% block head %}
-    <base href="/app/">
+  <base href="/app/">
 {% endblock %}
 
-{% block layout %} layout-sidebar {%endblock%}
+{% block layout %} layout-sidebar {% endblock %}
 
 {% block nav %}{% endblock %}
 
@@ -19,62 +19,64 @@
 {% block container %} {% endblock %}
 
 {% block content %}
-<div class="dashboard">
-  <div class="sidebar">
-    <div class="account dropdown">
-      <a href class="item dropdown-toggle" data-toggle="dropdown">
-        <img src="{{ user_data.gravatar_url }}" />
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="account dropdown">
+        <a href class="item dropdown-toggle" data-toggle="dropdown">
+          <img src="{{ user_data.gravatar_url }}"/>
 
         <span class="name">
         {% if user_data.name %}
-            {{ user_data.name }}
+          {{ user_data.name }}
         {% else %}
-            {{ user_data.email }}
+          {{ user_data.email }}
         {% endif %}
         </span>
-        <span class="caret"></span>
-      </a>
+          <span class="caret"></span>
+        </a>
 
-      <ul class="dropdown-menu">
-        <li><a href="/accounts">Account</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <!-- venkatesh
+        <ul class="dropdown-menu">
+          <li><a href="/accounts">Account</a></li>
+          <li><a href="/settings">Settings</a></li>
+          <!-- venkatesh
         <li><a ui-sref="dashboard.team.directory({org: '{{ user_data.org }}'})">Directory</a></li>
         -->
-        <li class="divider"></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
+          <li class="divider"></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+
+      <div ui-view="sidebar">
+      </div>
     </div>
 
-    <div ui-view="sidebar">
-    </div>
+    <div class="content" ui-view>
+      <div class="card card-half text-center">
+        <img src="{% static "images/spinner.logo100.gif" %}" alt="Please wait"/>
 
-  </div>
-  <div class="content" ui-view>
-    <div class="card card-half text-center">
-      <img src="{% static "images/spinner.logo100.gif" %}" alt="Please wait"/>
-      <h2>Loading&hellip;</h2>
-      <div id="loading-message">
+        <h2>Loading&hellip;</h2>
+
+        <div id="loading-message">
+        </div>
       </div>
     </div>
   </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-(function () {
-    var messages = [
-      "<p>How much does a polar bear weigh?</p>"
-      + "<p>Just enough to break the ice!</p>",
-      "<p>What is not heavy and blue?</p>"
-      + "<p>Lightblue!</p>",
-      "Hang in there.",
-      "Can you talk to the clouds?",
-      "I hope you're ready for what's next."
-    ];
-    var ind = window._.random(0, messages.length-1);
-    document.getElementById('loading-message').innerHTML = messages[ind];
-})();
-</script>
+  <script type="text/javascript">
+    (function () {
+      var messages = [
+        "<p>How much does a polar bear weigh?</p>"
+        + "<p>Just enough to break the ice!</p>",
+        "<p>What is not heavy and blue?</p>"
+        + "<p>Lightblue!</p>",
+        "Hang in there.",
+        "Can you talk to the clouds?",
+        "I hope you're ready for what's next."
+      ];
+      var ind = window._.random(0, messages.length - 1);
+      document.getElementById('loading-message').innerHTML = messages[ind];
+    })();
+  </script>
 {% endblock %}

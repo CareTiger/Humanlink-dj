@@ -16,7 +16,7 @@
      * Try resizing the window the see the effect.
      */
     /** ngInject */
-    function hlResizeMessages($window) {
+        function hlResizeMessages($window) {
         var w = angular.element($window);
         // Make sure to keep these in sync.
         var headerHeight = 45;
