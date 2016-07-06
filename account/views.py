@@ -80,7 +80,7 @@ def broadcast(request, chat_id=None):
         pusher.trigger(channels, 'message.new', {'thread_id': thread.id, 'chat': chat})
 
 
-def add_to_welcome(org_id, account_id):
+def add_to_welcome(request, org_id, account_id):
     account = Account.objects.get(id=account_id)
     org = Org.objects.get(id=org_id)
     thread = Thread.objects.get(org=org, name="welcome")
@@ -91,7 +91,7 @@ def add_to_welcome(org_id, account_id):
                                          text=account.email + ' has joined ',
                                          kind=0, inviter=2, remover=3)
 
-        broadcast(chat_id=chat.id)
+        broadcast(request, chat_id=chat.id)
 
 
 # Converts AJAX JSON into query dictionary for the view to process.
@@ -218,6 +218,10 @@ def signup(request):
                             email = email[:30]
                             user = User.objects.create_user(email, email, password)
 
+                    login(request)
+
+                    # Only hits this block of code if they are signing up after being invited to a thread or org, and do
+                    # not have a profile yet.
                     if invite_token:
                         if ThreadInvite.objects.filter(token=invite_token):
                             invitation = ThreadInvite.objects.get(token=invite_token)
@@ -240,9 +244,8 @@ def signup(request):
                         Thread.objects.create(name='welcome', account=account,
                                               owner=account, org=org,
                                               purpose='To welcome new members to the team.')
-                        add_to_welcome(org_id=org.id, account_id=account.id)
+                        add_to_welcome(request, org_id=org.id, account_id=account.id)
 
-                    login(request)
 
                     md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                     t = invite_token.replace(' ', '+')
