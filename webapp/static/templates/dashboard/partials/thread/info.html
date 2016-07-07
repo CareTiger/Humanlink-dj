@@ -23,6 +23,8 @@
   <div ng-show="showChannelInfo">
     <div ng-if="vm.thread.purpose">
       <p><strong>Purpose</strong>: {{ vm.thread.purpose }}</p>
+      <p><strong>Notes</strong>: {{ vm.thread.notes }}</p>
+      <p><strong>Hours of care (weekly)</strong>: {{ vm.thread.hours }}</p>
 
       <p>Update channel purpose
         <a ui-sref-active-eq="active"
@@ -35,7 +37,7 @@
         No purpose exists for channel <strong>{{ vm.thread.name }}</strong>.
         Creating a channel purpose helps current and future team members.
         Get started <a ui-sref-active-eq="active" ui-sref="dashboard.messages.update">
-          here.</a>
+        here.</a>
       </div>
     </div>
   </div>
@@ -44,7 +46,8 @@
     <h4>
       <div class="fill-div">
         <i class="material-icons md-24">group_add</i>&nbsp;Members
-        <i class="material-icons md-24 pull-right fa fa-chevron-right" ng-show="!showChannelMembers"></i>
+        <i class="material-icons md-24 pull-right fa fa-chevron-right"
+           ng-show="!showChannelMembers"></i>
         <i class="material-icons md-24 pull-right"
            ng-show="showChannelMembers">expand_more</i>
       </div>
@@ -71,8 +74,9 @@
         <div class="name">
           <div class="pull-right">
             <span>
-                <a href title="Remove Member" ng-click="vm.removeMember(vm.thread.id, member.id)">
-                    <i class="material-icons">clear</i>
+                <a href title="Remove Member"
+                   ng-click="vm.removeMember(vm.thread.id, member.id)">
+                  <i class="material-icons">clear</i>
                 </a>
             </span>
           </div>
