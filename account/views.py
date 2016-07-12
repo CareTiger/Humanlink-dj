@@ -122,10 +122,16 @@ def login(request):
                                        'Please enter an email and password.')
                         return form.ValidationError("Error")
                     else:
-                        form.cached_user = authenticate(username=email[:30],
-                                                        password=password)
+                        account = Account.objects.get(email=email)
+                        passwords_match = account.check_password(password)
 
-                        auth_login(request, form.cached_user)
+                        if passwords_match:
+                            form.cached_user = authenticate(username=email[:30],
+                                                            password=password)
+
+                            auth_login(request, form.cached_user)
+                        else:
+                            messages.error(form.request, 'Password is incorrect')
 
                         if form.cached_user is None:
                             form.errors["password"] = form.error_class(
@@ -135,8 +141,6 @@ def login(request):
                                            'This account is inactive. Please check your inbox for our confirmation email, and '
                                            'click the link within to activate your account.')
                             raise form.ValidationError("Error")
-
-                        account = Account.objects.get(email=email, password=password)
 
                         if cleaned_data['invite']:
                             token = cleaned_data['invite']
@@ -209,7 +213,11 @@ def signup(request):
                     invite_token = cleaned_data['invite']
 
                 try:
-                    account = Account.objects.create(email=email, password=password)
+                    account = Account.objects.create(email=email)
+                    # Encrypt password and save in database
+                    account.password = account._set_password(password)
+                    account.save()
+
                     userExists = User.objects.filter(username=email[:30])
                     if not userExists:
                         if len(email) < 30:
@@ -284,7 +292,7 @@ def signup(request):
 
                 except Exception, e:
                     logging.error(e)
-                    Account.objects.filter(email=email, password=password).delete()
+                    Account.objects.filter(email=email).delete()
                     User.objects.filter(username=email[:30]).delete()
                     Org.objects.filter(name=org_name, username=org_username).delete()
 
