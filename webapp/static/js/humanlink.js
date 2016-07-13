@@ -1308,7 +1308,7 @@ angular
                 var origHeight = elem[0].scrollHeight;
                 var origPos = elem[0].scrollTop + elem[0].offsetHeight;
 
-                var height = w.height - (headerHeight + textareaHeight);
+                var height = w.height() - (headerHeight + textareaHeight);
                 if (height < minHeight) {
                     height = minHeight;
                 }
