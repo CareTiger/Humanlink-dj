@@ -17,7 +17,7 @@
 
         $locationProvider.html5Mode(true);
 
-        $urlRouterProvider.otherwise('/notifications');
+        $urlRouterProvider.otherwise('/payments');
 
         $stateProvider
             .state('settings', {

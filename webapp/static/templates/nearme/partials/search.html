@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-sm-9">
+    <div class="input-group">
+      <input type="text" class="form-control">
+
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown">Filter <span
+                class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li><a href="#">Show only care teams</a></li>
+          <li><a href="#">Show only caregivers</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+<h4><a href>{{ vm.nearme.team_name }}</a></h4>
+<h5><strong>Mission: </strong>{{ vm.nearme.mission }}</h5>
+<h5><strong>Current care needs: </strong> {{ vm.nearme.care_needs }}</h5>
+<h5><a href>Read more...</a></h5>
+<hr>
+<h4><a href>{{ vm.nearme.first }} {{ vm.nearme.last }}</a></h4>
+<h5><strong>Headline: </strong>{{ vm.nearme.headline }}</h5>
+<h5><strong>Bio: </strong>{{ vm.nearme.bio }}</h5>
+<h5><a href>Read more...</a></h5>
