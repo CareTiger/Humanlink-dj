@@ -29,7 +29,8 @@ class Account(models.Model):
 
     def _set_password(self, raw):
         salted = raw + settings.SECRET_KEY
-        self._password = generate_password_hash(salted)
+        encrypted_password = generate_password_hash(salted)
+        return encrypted_password
 
     def check_password(self, other):
         salted = other + settings.SECRET_KEY
