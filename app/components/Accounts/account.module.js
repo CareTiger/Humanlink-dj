@@ -50,6 +50,12 @@
                 controller: 'Security',
                 controllerAs: 'vm'
             })
+            .state('account.nearme', {
+                url: '/nearme',
+                templateUrl: '/static/templates/accounts/partials/search.html',
+                controller: 'Nearme',
+                controllerAs: 'vm'
+            })
             .state('reset', {
                 url: '/reset',
                 templateUrl: '/views/accounts/partials/reset.html',

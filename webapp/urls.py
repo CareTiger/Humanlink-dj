@@ -23,7 +23,6 @@ urlpatterns = [
     url(r'^home/', views.home, name="home"),
     url(r'^app/', views.app, name="app"),
     url(r'^settings/', views.settings, name="settings"),
-    url(r'^nearme/', views.nearme, name="nearme"),
     url(r'^terms/', views.terms, name="terms"),
     url(r'^accounts/', include("account.urls"), name="account-urls"),
     url(r'^orgs/', include("org.urls"), name="org-urls"),

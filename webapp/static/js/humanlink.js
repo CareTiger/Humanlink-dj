@@ -50,6 +50,12 @@
                 controller: 'Security',
                 controllerAs: 'vm'
             })
+            .state('account.nearme', {
+                url: '/nearme',
+                templateUrl: '/static/templates/accounts/partials/search.html',
+                controller: 'Nearme',
+                controllerAs: 'vm'
+            })
             .state('reset', {
                 url: '/reset',
                 templateUrl: '/views/accounts/partials/reset.html',
@@ -1459,50 +1465,6 @@ angular
     }
 
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1748,6 +1710,50 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 6/15/16.
  */
@@ -1957,6 +1963,7 @@ window.HL = window.HL || {};
             updateCaregiver: updateCaregiver,
             me: me,
             threadInvite: threadInvite,
+            search: search,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -2044,6 +2051,14 @@ window.HL = window.HL || {};
          */
         function me() {
             return AbstractRepo.get('/accounts/me/');
+        }
+
+        /**
+         * Get Search results.
+         * @returns {*}
+         */
+        function search() {
+            return AbstractRepo.get('/accounts/nearme');
         }
 
         /**
@@ -2246,37 +2261,6 @@ window.HL = window.HL || {};
 
         function apiGenericSuccess(response) {
             return response.data.response;
-        }
-
-    }
-
-})();
-/**
- * Created by venkatesh on 7/12/16.
- */
-
-(function () {
-    'use strict';
-
-    NearmeRepo.$inject = ["$q", "$log", "AbstractRepo"];
-    angular
-        .module('app.repo')
-        .factory('NearmeRepo', NearmeRepo);
-
-    /** ngInject */
-    function NearmeRepo($q, $log, AbstractRepo) {
-
-        return {
-            search: search,
-        };
-
-
-        /**
-         * Get Search results.
-         * @returns {*}
-         */
-        function search() {
-            return AbstractRepo.get('/nearme/');
         }
 
     }
@@ -2613,6 +2597,73 @@ window.HL = window.HL || {};
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your account has been updated.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+    }
+
+})();
+/**
+ * Controller for the Nearme view.
+ */
+(function () {
+    'use strict';
+
+    Nearme.$inject = ["$scope", "$window", "CommonService", "CommonEvents", "Session", "AccountRepo", "SiteAlert", "underscore"];
+    angular
+        .module('app.account')
+        .controller('Nearme', Nearme);
+
+    /** @ngInject */
+    function Nearme($scope, $window, CommonService, CommonEvents, Session, NearmeRepo, SiteAlert,
+                    underscore) {
+
+        var nearme = {};
+        var vm = this;
+        vm.nearme = nearme;
+        vm.submitBusy = false;
+        vm.update = update;
+
+        init();
+        function init() {
+            vm.submitBusy = true;
+            console.log('Get Nearme Profile');
+
+            NearmeRepo.search().then(
+                function (data) {
+                    vm.submitBusy = false;
+                    CommonService.broadcast(CommonEvents.viewReady);
+                    vm.nearme = data.data.response;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    CommonService.broadcast(CommonEvents.viewReady);
+                    vm.errorMessage = data;
+                });
+
+            /*
+             vm.nearme = {
+             'team_name': "My team",
+             'mission': "Lower the cost of in home care",
+             'care_needs': "1) 4 hours respite care coverage Saturday 12pm-4pm 2) 2 hours ongoing care Tuesdays 7am – 9am 3) 1 overnight care Friday 6pm – Saturday 10am",
+             'first': "Goofy",
+             'last': "dog",
+             'headline': "I am available M-F from 1-4 pm",
+             'bio': "humanlink is built on trust. Our care seekers want to know that you are compassionate and caring. This is your opportunity to let them know about you. Taking a few minutes to build an awesome online profile can increase your chances of getting hired",
+             }
+             */
+
+        }
+
+        function update(model) {
+            vm.submitBusy = true;
+            AccountRepo.updateTeam(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your nearme information has been updated.");
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -6314,70 +6365,6 @@ angular
             CommonService.on(CommonEvents.viewReady, function () {
                 vm.viewReady = true;
             });
-        }
-    }
-
-})();
-/**
- * Controller for the Nearme view.
- */
-(function () {
-    'use strict';
-
-    Nearme.$inject = ["$scope", "$window", "CommonService", "CommonEvents", "Session", "NearmeRepo", "SiteAlert", "underscore"];
-    angular
-        .module('app.nearme')
-        .controller('Nearme', Nearme);
-
-    /** @ngInject */
-    function Nearme($scope, $window, CommonService, CommonEvents, Session, NearmeRepo, SiteAlert,
-                    underscore) {
-
-        var nearme = {};
-        var vm = this;
-        vm.nearme = nearme;
-        vm.submitBusy = false;
-        vm.update = update;
-
-        init();
-        function init() {
-            vm.submitBusy = true;
-            console.log('Get Nearme Profile');
-            NearmeRepo.search().then(
-                function (data) {
-                    vm.submitBusy = false;
-                    CommonService.broadcast(CommonEvents.viewReady);
-                    vm.profile = data.data.response;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    CommonService.broadcast(CommonEvents.viewReady);
-                    vm.errorMessage = data;
-                });
-
-            vm.nearme = {
-                'team_name': "My team",
-                'mission': "Lower the cost of in home care",
-                'care_needs': "1) 4 hours respite care coverage Saturday 12pm-4pm 2) 2 hours ongoing care Tuesdays 7am – 9am 3) 1 overnight care Friday 6pm – Saturday 10am",
-                'first': "Goofy",
-                'last': "dog",
-                'headline': "I am available M-F from 1-4 pm",
-                'bio': "humanlink is built on trust. Our care seekers want to know that you are compassionate and caring. This is your opportunity to let them know about you. Taking a few minutes to build an awesome online profile can increase your chances of getting hired",
-            }
-
-        }
-
-        function update(model) {
-            vm.submitBusy = true;
-            AccountRepo.updateTeam(model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your nearme information has been updated.");
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
         }
     }
 

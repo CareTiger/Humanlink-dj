@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from account.models import Account
+from account.models import Account, CareGiver, CareSeeker
 from account.views import logout, verify, invite_accept_redirect, requestPost, \
     check_account_availability
 from api_helpers import composeJsonResponse
@@ -91,24 +91,6 @@ def settings(request):
         }
     }
     return render(request, 'settings/index.html', context)
-
-
-@login_required
-@csrf_exempt
-def nearme(request):
-    print '###'
-    account = Account.objects.get(email=request.user.email)
-    context = {
-        'userdata': {
-            'id': account.id
-        },
-        'user_data': {
-            'gravatar_url': account.gravatar_url(),
-            'name': account.username,
-            'email': account.email
-        }
-    }
-    return render(request, 'nearme/index.html', context)
 
 
 def logout_user(request):

@@ -254,7 +254,6 @@ def signup(request):
                                               purpose='To welcome new members to the team.')
                         add_to_welcome(request, org_id=org.id, account_id=account.id)
 
-
                     md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                     t = invite_token.replace(' ', '+')
                     url = "https://localhost:8000/verify/{}".format(t)
@@ -514,6 +513,26 @@ def profile(request, account_id):
     account = Account.objects.get(id=account_id)
     context = {
         'account': account
+    }
+
+    return composeJsonResponse(200, "", context)
+
+
+@login_required
+def nearme(request):
+    account = Account.objects.get(email=request.user.email)
+    caregiver = CareGiver.objects.get(account=account)
+    careseeker = CareSeeker.objects.get(account=account)
+
+    print '############'
+    print caregiver.bio
+    context = {
+        'mission': careseeker.mission,
+        'team_name': careseeker.team_name,
+        'first': account.first,
+        'last': account.last,
+        'headline': caregiver.headline,
+        'bio': caregiver.bio,
     }
 
     return composeJsonResponse(200, "", context)

@@ -21,6 +21,7 @@
             updateCaregiver: updateCaregiver,
             me: me,
             threadInvite: threadInvite,
+            search: search,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -108,6 +109,14 @@
          */
         function me() {
             return AbstractRepo.get('/accounts/me/');
+        }
+
+        /**
+         * Get Search results.
+         * @returns {*}
+         */
+        function search() {
+            return AbstractRepo.get('/accounts/nearme');
         }
 
         /**
