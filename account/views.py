@@ -22,7 +22,7 @@ from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, Threa
 from org.models import Org, OrgInvite, OrgMember
 from pusher.pusher import Pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp, \
-    CareSeekerInfo
+    CareSeekerInfo, Nearme
 from django.contrib.auth import logout
 from django.http import QueryDict
 import ast
@@ -520,22 +520,44 @@ def profile(request, account_id):
 
 @login_required
 def nearme(request):
-    account = Account.objects.get(email=request.user.email)
-    caregiver = CareGiver.objects.get(account=account)
-    careseeker = CareSeeker.objects.get(account=account)
+    caregivers = CareGiver.objects.all()
+    careseekers = CareSeeker.objects.all()
 
-    print '############'
-    print caregiver.bio
-    context = {
-        'mission': careseeker.mission,
-        'team_name': careseeker.team_name,
-        'first': account.first,
-        'last': account.last,
-        'headline': caregiver.headline,
-        'bio': caregiver.bio,
-    }
+    cgvr_array = []
+    cskr_array = []
 
-    return composeJsonResponse(200, "", context)
+    if request.method == "GET":
+        form = Nearme(request.GET)
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            print '***********'
+            print cleaned_data['search_string']
+            print '***********'
+
+            for cgvr in caregivers:
+                cgvr_map = {
+                    'first': cgvr.account.first,
+                    'last': cgvr.account.last,
+                    'bio': cgvr.bio,
+                    'headline': cgvr.headline
+                }
+                cgvr_array.append(cgvr_map)
+
+            for cskr in careseekers:
+                cskr_map = {
+                    'account': cskr.account,
+                    'mission': cskr.mission,
+                    'team_name': cskr.team_name
+                }
+                cskr_array.append(cskr_map)
+
+            context = {
+                'caregivers': cgvr_array,
+                'careseekers': cskr_array
+            }
+
+            return composeJsonResponse(200, "", context)
 
 
 @login_required

@@ -1,28 +1,30 @@
 <div class="row">
   <div class="col-sm-9">
     <div class="input-group">
-      <input type="text" class="form-control">
-
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle"
-                data-toggle="dropdown">Filter <span
-                class="caret"></span>
+      <input type="text" id="search_string" name="search_string" class="form-control"
+             placeholder="Search for..." ng-model="vm.nearme.search_string">
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-outline-primary" type="button"
+                ng-click="vm.search(vm.nearme.search_string)">
+          Search
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li><a href="#">Show only care teams</a></li>
-          <li><a href="#">Show only caregivers</a></li>
-        </ul>
-      </div>
+      </span>
     </div>
   </div>
 </div>
 
 <hr>
-<h4><a href>{{ vm.nearme.team_name }}</a></h4>
-<h5><strong>Mission: </strong>{{ vm.nearme.mission }}</h5>
-<h5><a href>Read more...</a></h5>
+<h4><strong>Caregivers near me</strong></h4>
+<li ng-repeat="cgvr in vm.nearme.caregivers">
+  <h5><strong>Name: </strong>{{ cgvr.first }} {{ cgvr.last }}</h5>
+  <h5><strong>Headline: </strong>{{ cgvr.headline }}</h5>
+  <h5><strong>Bio: </strong>{{ cgvr.bio }}</h5>
+  <h5><a href>Read more...</a></h5>
+</li>
 <hr>
-<h4><a href>{{ vm.nearme.first }} {{ vm.nearme.last }}</a></h4>
-<h5><strong>Headline: </strong>{{ vm.nearme.headline }}</h5>
-<h5><strong>Bio: </strong>{{ vm.nearme.bio }}</h5>
-<h5><a href>Read more...</a></h5>
+<h4><strong>Careseekers near me</strong></h4>
+<li ng-repeat="cskr in vm.nearme.careseekers">
+  <h5><strong>Team Name:</strong>{{ cskr.team_name }}</h5>
+  <h5><strong>Mission: </strong>{{ cskr.mission }}</h5>
+  <h5><a href>Read more...</a></h5>
+</li>

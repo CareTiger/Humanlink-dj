@@ -41,6 +41,10 @@ class CareGiverInfo(forms.ModelForm):
         fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements']
 
 
+class Nearme(forms.Form):
+    search_string = forms.CharField(required=False)
+
+
 class CareSeekerInfo(forms.ModelForm):
     class Meta:
         model = CareSeeker
