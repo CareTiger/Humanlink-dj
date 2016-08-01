@@ -11,7 +11,7 @@
             'app.repo'
         ])
         .config(Config);
-    
+
     // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
 
     /** ngInject */
@@ -54,6 +54,12 @@
                 url: '/nearme',
                 templateUrl: '/static/templates/accounts/partials/search.html',
                 controller: 'Nearme',
+                controllerAs: 'vm'
+            })
+            .state('account.caregiverProfile', {
+                url: '/caregiverProfile/:id',
+                templateUrl: '/static/templates/accounts/partials/caregiverProfile.html',
+                controller: 'CaregiverProfile',
                 controllerAs: 'vm'
             })
             .state('reset', {
@@ -114,5 +120,5 @@
                 templateUrl: '/static/templates/accounts/partials/settings/verification.html',
                 controller: 'settingsVerificationCtrl'
             });
-        }
+    }
 })();

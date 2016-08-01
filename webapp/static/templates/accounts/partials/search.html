@@ -13,18 +13,22 @@
   </div>
 </div>
 
-<hr>
-<h4><strong>Caregivers near me</strong></h4>
-<li ng-repeat="cgvr in vm.nearme.caregivers">
-  <h5><strong>Name: </strong>{{ cgvr.first }} {{ cgvr.last }}</h5>
-  <h5><strong>Headline: </strong>{{ cgvr.headline }}</h5>
-  <h5><strong>Bio: </strong>{{ cgvr.bio }}</h5>
-  <h5><a href>Read more...</a></h5>
-</li>
-<hr>
-<h4><strong>Careseekers near me</strong></h4>
-<li ng-repeat="cskr in vm.nearme.careseekers">
-  <h5><strong>Team Name:</strong>{{ cskr.team_name }}</h5>
-  <h5><strong>Mission: </strong>{{ cskr.mission }}</h5>
-  <h5><a href>Read more...</a></h5>
-</li>
+<form>
+  <hr>
+  <h4><strong>Caregivers near me</strong></h4>
+  <ul class="row vmargin5" ng-repeat="cgvr in vm.nearme.caregivers">
+    <h5>{{ cgvr.first }} {{ cgvr.last }}</h5>
+    <h5>Headline: {{ cgvr.headline }}</h5>
+    <h5>Bio: {{ cgvr.bio }}</h5>
+    <h5><a href="#/caregiverProfile/{{ cgvr.email }}">Read more...</a></h5>
+  </ul>
+</form>
+<form>
+  <hr>
+  <h4><strong>Careseekers near me</strong></h4>
+  <ul class="row vmargin5" ng-repeat="cskr in vm.nearme.careseekers">
+    <h5>{{ cskr.team_name }}</h5>
+    <h5>Mission: {{ cskr.mission }}</h5>
+    <h5><a href ng-click="vm.careseekerProfile(cskr.email)">Read more...</a></h5>
+  </ul>
+</form>

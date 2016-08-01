@@ -540,13 +540,14 @@ def nearme(request):
                     'first': cgvr.account.first,
                     'last': cgvr.account.last,
                     'bio': cgvr.bio,
-                    'headline': cgvr.headline
+                    'headline': cgvr.headline,
+                    'email': cgvr.account.email
                 }
                 cgvr_array.append(cgvr_map)
 
             for cskr in careseekers:
                 cskr_map = {
-                    'account': cskr.account,
+                    'email': cskr.account.email,
                     'mission': cskr.mission,
                     'team_name': cskr.team_name
                 }
@@ -571,7 +572,25 @@ def caregiver_info(request, account_id):
     return composeJsonResponse(200, "", context)
 
 
+@login_required
+def caregiver_profile(request):
+    email = request.GET.get('email')
+    account = Account.objects.get(email=email)
+    caregiver = CareGiver.objects.get(account=account)
+    context = {
+        'headline': caregiver.headline,
+        'bio': caregiver.bio,
+        'certificates': caregiver.certificates,
+        'allergies': caregiver.allergies,
+        'arrangements': caregiver.arrangements,
+        'background_verified': caregiver.background_verified,
+        'phone_verified': caregiver.phone_verified,
+    }
+    return composeJsonResponse(200, '', context)
+
+
 def get_invite(token):
+
     if not token:
         raise Exception("Invitation token is not specified")
 
