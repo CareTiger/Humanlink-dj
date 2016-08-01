@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'^nearme/', views.nearme, name="nearme"),
     url(r'^caregiverProfile/', views.caregiver_profile,
         name="caregiver_profile"),
+    url(r'^careseekerProfile/', views.careseeker_profile,
+        name="careseeker_profile"),
     url(r'^search_caregivers/', views.get_caregivers, name="get_caregivers"),
     url(r'^search_seekers/', views.get_careseekers, name="get_careseekers"), ]

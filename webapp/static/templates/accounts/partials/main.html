@@ -1,22 +1,22 @@
 <div class="row settings">
-    <div class="col-sm-3">
-        <div class="list-group">
-            <a href class="list-group-item" ui-sref-active-eq="active"
-               ui-sref="account.edit">Basic Profile</a>
-            <a href class="list-group-item" ui-sref-active-eq="active"
-               ui-sref="account.team">Team Profile</a>
-            <!-- venkatesh
-            <a href class="list-group-item" ui-sref-active-eq="active"
-               ui-sref="account.security">Security</a>
-             -->
-        </div>
-        <hr>
-        <div class="list-group">
-            <a href class="list-group-item" ui-sref-active-eq="active"
-               ui-sref="account.caregiver">Caregiver Profile</a>
-            <a href class="list-group-item" ui-sref-active-eq="active"
-               ui-sref="account.nearme">Nearme</a>
-        </div>
+  <div class="col-sm-3">
+    <div class="list-group">
+      <a href class="list-group-item" ui-sref-active-eq="active"
+         ui-sref="account.edit">Basic Profile</a>
+      <a href class="list-group-item" ui-sref-active-eq="active"
+         ui-sref="account.team">My Team Profile</a>
+      <!-- venkatesh
+      <a href class="list-group-item" ui-sref-active-eq="active"
+         ui-sref="account.security">Security</a>
+       -->
     </div>
-    <div class="col-sm-9" ui-view></div>
+    <hr>
+    <div class="list-group">
+      <a href class="list-group-item" ui-sref-active-eq="active"
+         ui-sref="account.caregiver">My Caregiver Profile</a>
+      <a href class="list-group-item" ui-sref-active-eq="active"
+         ui-sref="account.nearme">Nearme</a>
+    </div>
+  </div>
+  <div class="col-sm-9" ui-view></div>
 </div>

@@ -29,6 +29,6 @@
   <ul class="row vmargin5" ng-repeat="cskr in vm.nearme.careseekers">
     <h5>{{ cskr.team_name }}</h5>
     <h5>Mission: {{ cskr.mission }}</h5>
-    <h5><a href ng-click="vm.careseekerProfile(cskr.email)">Read more...</a></h5>
+    <h5><a href="#/careseekerProfile/{{ cskr.email }}">Read more...</a></h5>
   </ul>
 </form>

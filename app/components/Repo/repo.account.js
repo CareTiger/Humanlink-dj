@@ -23,6 +23,7 @@
             threadInvite: threadInvite,
             search: search,
             caregiver_info: caregiver_info,
+            careseeker_info: careseeker_info,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -126,6 +127,14 @@
          */
         function caregiver_info(model) {
             return AbstractRepo.get('/accounts/caregiverProfile/?email=' + model.email);
+        }
+
+        /**
+         * Get careseeker info .
+         * @returns {*}
+         */
+        function careseeker_info(model) {
+            return AbstractRepo.get('/accounts/careseekerProfile/?email=' + model.email);
         }
 
         /**

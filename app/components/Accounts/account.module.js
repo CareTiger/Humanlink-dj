@@ -62,6 +62,12 @@
                 controller: 'CaregiverProfile',
                 controllerAs: 'vm'
             })
+            .state('account.careseekerProfile', {
+                url: '/careseekerProfile/:id',
+                templateUrl: '/static/templates/accounts/partials/careseekerProfile.html',
+                controller: 'CareseekerProfile',
+                controllerAs: 'vm'
+            })
             .state('reset', {
                 url: '/reset',
                 templateUrl: '/views/accounts/partials/reset.html',

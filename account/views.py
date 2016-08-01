@@ -589,8 +589,19 @@ def caregiver_profile(request):
     return composeJsonResponse(200, '', context)
 
 
-def get_invite(token):
+@login_required
+def careseeker_profile(request):
+    email = request.GET.get('email')
+    account = Account.objects.get(email=email)
+    careseeker = CareSeeker.objects.get(account=account)
+    context = {
+        'team_name': careseeker.team_name,
+        'mission': careseeker.mission,
+    }
+    return composeJsonResponse(200, '', context)
 
+
+def get_invite(token):
     if not token:
         raise Exception("Invitation token is not specified")
 
