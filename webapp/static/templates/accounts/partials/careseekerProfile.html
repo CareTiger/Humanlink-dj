@@ -6,12 +6,15 @@
         <img src="https://placehold.it/150x150">
 
         <p class="vmargin10">
-          <button class="btn btn-primary" ng-click="vm.connect()">Connect</button>
+          <button class="btn btn-primary"
+                  ng-click="vm.connect(vm.careseekerProfile.email)">Connect
+          </button>
         </p>
       </div>
       <div class="col-md-9">
-        <h3><strong>{{ vm.careseekerProfile.team_name }}</strong></h3>
-        <h4>Mission: <strong>{{vm.careseekerProfile.mission }}</strong></h4>
+        <h3 class="text-center"><strong>{{ vm.careseekerProfile.team_name }}</strong></h3>
+        <h4 class="text-center">Mission:
+          <strong>{{ vm.careseekerProfile.mission }}</strong></h4>
       </div>
     </div>
 

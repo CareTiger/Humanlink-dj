@@ -36,7 +36,15 @@
 
         function connect() {
             vm.submitBusy = true;
-            console.log("Connect careseeker team");
+            AccountRepo.connect($stateParams.id).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invitation to " + $stateParams.id + " has been sent and " + $stateParams.id + " has been added to your welcome channel.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
         }
 
     }

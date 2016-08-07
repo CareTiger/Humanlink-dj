@@ -31,7 +31,7 @@
         }
 
         function removeMember(threadId, memberId) {
-            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
+            if ($window.confirm('You are trying to remove a member. Are you sure?')) {
                 var model = {
                     thread_id: threadId,
                     member_id: memberId

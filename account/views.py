@@ -601,6 +601,25 @@ def careseeker_profile(request):
     return composeJsonResponse(200, '', context)
 
 
+@login_required
+@csrf_exempt
+def connect(request):
+    sender = request.user.email
+    receiver = request.GET.get('email')
+
+    account_sender = Account.objects.get(email=sender)
+    account_receiver = Account.objects.get(email=receiver)
+
+    thread = Thread.objects.get(name='welcome', owner=account_sender)
+    threadmember = ThreadMember(thread=thread, account=account_receiver)
+    threadmember.save()
+
+    context = {
+
+    }
+    return composeJsonResponse(200, '', context)
+
+
 def get_invite(token):
     if not token:
         raise Exception("Invitation token is not specified")

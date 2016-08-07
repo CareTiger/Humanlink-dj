@@ -53,7 +53,6 @@ class Thread(models.Model):
     purpose_type = models.IntegerField(choices=THREADPURPOSE_CHOICES, null=False,
                                        default=0)
     purpose = models.TextField(max_length=500, null=True, default="")
-
     hours = models.IntegerField(default=0, null=True)
     hobbies = models.TextField(max_length=500, null=True, default="")
     gender = models.IntegerField(choices=GENDER_CHOICES, default=0, null=True)

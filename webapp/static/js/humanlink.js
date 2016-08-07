@@ -1978,6 +1978,7 @@ window.HL = window.HL || {};
             search: search,
             caregiver_info: caregiver_info,
             careseeker_info: careseeker_info,
+            connect: connect,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -2010,6 +2011,16 @@ window.HL = window.HL || {};
          */
         function accept(model) {
             return AbstractRepo.post('accounts/accept/', model, false)
+                .then(genericSuccess, genericError);
+        }
+
+        /**
+         * Send a connect invitation to people around you.
+         * @param model: email of sender/receiver
+         * @returns {Promise}
+         */
+        function connect(model) {
+            return AbstractRepo.post('accounts/connect/?email=' + model, model, false)
                 .then(genericSuccess, genericError);
         }
 
@@ -2664,7 +2675,15 @@ window.HL = window.HL || {};
 
         function connect() {
             vm.submitBusy = true;
-            console.log("Connect careseeker team");
+            AccountRepo.connect($stateParams.id).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invitation to " + $stateParams.id + " has been sent and " + $stateParams.id + " has been added to your welcome channel.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
         }
 
     }
@@ -5072,7 +5091,7 @@ angular
         }
 
         function removeMember(threadId, memberId) {
-            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
+            if ($window.confirm('You are trying to remove a member. Are you sure?')) {
                 var model = {
                     thread_id: threadId,
                     member_id: memberId
