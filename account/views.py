@@ -541,13 +541,14 @@ def nearme(request):
                     'first': cgvr.account.first,
                     'last': cgvr.account.last,
                     'bio': cgvr.bio,
-                    'headline': cgvr.headline
+                    'headline': cgvr.headline,
+                    'email': cgvr.account.email
                 }
                 cgvr_array.append(cgvr_map)
 
             for cskr in careseekers:
                 cskr_map = {
-                    'account': cskr.account,
+                    'email': cskr.account.email,
                     'mission': cskr.mission,
                     'team_name': cskr.team_name
                 }
@@ -570,6 +571,54 @@ def caregiver_info(request, account_id):
         'caregiver': caregiver
     }
     return composeJsonResponse(200, "", context)
+
+
+@login_required
+def caregiver_profile(request):
+    email = request.GET.get('email')
+    account = Account.objects.get(email=email)
+    caregiver = CareGiver.objects.get(account=account)
+    context = {
+        'headline': caregiver.headline,
+        'bio': caregiver.bio,
+        'certificates': caregiver.certificates,
+        'allergies': caregiver.allergies,
+        'arrangements': caregiver.arrangements,
+        'background_verified': caregiver.background_verified,
+        'phone_verified': caregiver.phone_verified,
+    }
+    return composeJsonResponse(200, '', context)
+
+
+@login_required
+def careseeker_profile(request):
+    email = request.GET.get('email')
+    account = Account.objects.get(email=email)
+    careseeker = CareSeeker.objects.get(account=account)
+    context = {
+        'team_name': careseeker.team_name,
+        'mission': careseeker.mission,
+    }
+    return composeJsonResponse(200, '', context)
+
+
+@login_required
+@csrf_exempt
+def connect(request):
+    sender = request.user.email
+    receiver = request.GET.get('email')
+
+    account_sender = Account.objects.get(email=sender)
+    account_receiver = Account.objects.get(email=receiver)
+
+    thread = Thread.objects.get(name='welcome', owner=account_sender)
+    threadmember = ThreadMember(thread=thread, account=account_receiver)
+    threadmember.save()
+
+    context = {
+
+    }
+    return composeJsonResponse(200, '', context)
 
 
 def get_invite(token):

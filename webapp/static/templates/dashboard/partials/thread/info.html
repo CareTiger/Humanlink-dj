@@ -21,17 +21,33 @@
   </div>
 
   <div ng-show="showChannelInfo">
-    <div ng-if="vm.thread.purpose">
+    <!-- General purpose channel-->
+    <div ng-if="vm.thread.purpose_type === 0">
       <p><strong>Purpose</strong>: {{ vm.thread.purpose }}</p>
-      <p><strong>Notes</strong>: {{ vm.thread.notes }}</p>
-      <p><strong>Hours of care (weekly)</strong>: {{ vm.thread.hours }}</p>
 
       <p>Update channel purpose
         <a ui-sref-active-eq="active"
            ui-sref="dashboard.messages.update"><strong>here.</strong></a>
       </p>
     </div>
+    <!-- Care channel-->
+    <div ng-if="vm.thread.purpose_type === 1">
+      <p><strong>Purpose</strong>: {{ vm.thread.purpose }}</p>
 
+      <p><strong>Hours of care (weekly)</strong>: {{ vm.thread.hours }}</p>
+
+      <p><strong>Gender</strong>: {{ vm.thread.gender }}</p>
+
+      <p><strong>Hobbies</strong>: {{ vm.thread.hobbies }}</p>
+
+      <p><strong>Notes</strong>: {{ vm.thread.notes }}</p>
+
+      <p>Update channel purpose
+        <a ui-sref-active-eq="active"
+           ui-sref="dashboard.messages.update"><strong>here.</strong></a>
+      </p>
+    </div>
+    <!--
     <div ng-if="!vm.thread.purpose">
       <div class="vmargin10">
         No purpose exists for channel <strong>{{ vm.thread.name }}</strong>.
@@ -40,6 +56,7 @@
         here.</a>
       </div>
     </div>
+    -->
   </div>
 
   <div class="info-item-div" ng-click="showChannelMembers = !showChannelMembers">

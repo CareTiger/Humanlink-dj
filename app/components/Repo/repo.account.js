@@ -22,6 +22,9 @@
             me: me,
             threadInvite: threadInvite,
             search: search,
+            caregiver_info: caregiver_info,
+            careseeker_info: careseeker_info,
+            connect: connect,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -54,6 +57,16 @@
          */
         function accept(model) {
             return AbstractRepo.post('accounts/accept/', model, false)
+                .then(genericSuccess, genericError);
+        }
+
+        /**
+         * Send a connect invitation to people around you.
+         * @param model: email of sender/receiver
+         * @returns {Promise}
+         */
+        function connect(model) {
+            return AbstractRepo.post('accounts/connect/?email=' + model, model, false)
                 .then(genericSuccess, genericError);
         }
 
@@ -117,6 +130,22 @@
          */
         function search() {
             return AbstractRepo.get('/accounts/nearme');
+        }
+
+        /**
+         * Get caregiver info .
+         * @returns {*}
+         */
+        function caregiver_info(model) {
+            return AbstractRepo.get('/accounts/caregiverProfile/?email=' + model.email);
+        }
+
+        /**
+         * Get careseeker info .
+         * @returns {*}
+         */
+        function careseeker_info(model) {
+            return AbstractRepo.get('/accounts/careseekerProfile/?email=' + model.email);
         }
 
         /**

@@ -11,7 +11,7 @@
             'app.repo'
         ])
         .config(Config);
-    
+
     // 'ui.bootstrap', 'checklist-model', 'Common'  => see if you need to add these dependencies carried over from other HumanLink Repo.
 
     /** ngInject */
@@ -54,6 +54,18 @@
                 url: '/nearme',
                 templateUrl: '/static/templates/accounts/partials/search.html',
                 controller: 'Nearme',
+                controllerAs: 'vm'
+            })
+            .state('account.caregiverProfile', {
+                url: '/caregiverProfile/:id',
+                templateUrl: '/static/templates/accounts/partials/caregiverProfile.html',
+                controller: 'CaregiverProfile',
+                controllerAs: 'vm'
+            })
+            .state('account.careseekerProfile', {
+                url: '/careseekerProfile/:id',
+                templateUrl: '/static/templates/accounts/partials/careseekerProfile.html',
+                controller: 'CareseekerProfile',
                 controllerAs: 'vm'
             })
             .state('reset', {
@@ -114,7 +126,7 @@
                 templateUrl: '/static/templates/accounts/partials/settings/verification.html',
                 controller: 'settingsVerificationCtrl'
             });
-        }
+    }
 })();
 /**
  * Admin module.
@@ -1465,6 +1477,50 @@ angular
     }
 
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1710,50 +1766,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 6/15/16.
  */
@@ -1964,6 +1976,9 @@ window.HL = window.HL || {};
             me: me,
             threadInvite: threadInvite,
             search: search,
+            caregiver_info: caregiver_info,
+            careseeker_info: careseeker_info,
+            connect: connect,
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
@@ -1996,6 +2011,16 @@ window.HL = window.HL || {};
          */
         function accept(model) {
             return AbstractRepo.post('accounts/accept/', model, false)
+                .then(genericSuccess, genericError);
+        }
+
+        /**
+         * Send a connect invitation to people around you.
+         * @param model: email of sender/receiver
+         * @returns {Promise}
+         */
+        function connect(model) {
+            return AbstractRepo.post('accounts/connect/?email=' + model, model, false)
                 .then(genericSuccess, genericError);
         }
 
@@ -2059,6 +2084,22 @@ window.HL = window.HL || {};
          */
         function search() {
             return AbstractRepo.get('/accounts/nearme');
+        }
+
+        /**
+         * Get caregiver info .
+         * @returns {*}
+         */
+        function caregiver_info(model) {
+            return AbstractRepo.get('/accounts/caregiverProfile/?email=' + model.email);
+        }
+
+        /**
+         * Get careseeker info .
+         * @returns {*}
+         */
+        function careseeker_info(model) {
+            return AbstractRepo.get('/accounts/careseekerProfile/?email=' + model.email);
         }
 
         /**
@@ -2549,6 +2590,102 @@ window.HL = window.HL || {};
                     vm.errorMessage = data;
                 });
         }
+    }
+
+})();
+/**
+ * Controller for the CaregiverProfile view.
+ */
+(function () {
+    'use strict';
+
+    CaregiverProfile.$inject = ["$scope", "$window", "CommonService", "CommonEvents", "Session", "AccountRepo", "SiteAlert", "underscore", "$stateParams"];
+    angular
+        .module('app.account')
+        .controller('CaregiverProfile', CaregiverProfile);
+
+    /** @ngInject */
+    function CaregiverProfile($scope, $window, CommonService, CommonEvents, Session, AccountRepo, SiteAlert,
+                              underscore, $stateParams) {
+
+        var caregiverProfile = {};
+        var vm = this;
+        vm.caregiverProfile = caregiverProfile;
+        vm.submitBusy = false;
+        vm.connect = connect;
+        vm.caregiverProfile.email = $stateParams.id;
+
+        init();
+        function init() {
+            vm.submitBusy = true;
+            AccountRepo.caregiver_info(vm.caregiverProfile).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.caregiverProfile = data.data.response;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function connect() {
+            vm.submitBusy = true;
+            console.log("Connect caregiver");
+        }
+
+    }
+
+})();
+/**
+ * Controller for the CareseekerProfile view.
+ */
+(function () {
+    'use strict';
+
+    CareseekerProfile.$inject = ["$scope", "$window", "CommonService", "CommonEvents", "Session", "AccountRepo", "SiteAlert", "underscore", "$stateParams"];
+    angular
+        .module('app.account')
+        .controller('CareseekerProfile', CareseekerProfile);
+
+    /** @ngInject */
+    function CareseekerProfile($scope, $window, CommonService, CommonEvents, Session, AccountRepo, SiteAlert,
+                               underscore, $stateParams) {
+
+        var careseekerProfile = {};
+        var vm = this;
+        vm.careseekerProfile = careseekerProfile;
+        vm.submitBusy = false;
+        vm.connect = connect;
+        vm.careseekerProfile.email = $stateParams.id;
+
+        init();
+        function init() {
+            vm.submitBusy = true;
+            AccountRepo.careseeker_info(vm.careseekerProfile).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.careseekerProfile = data.data.response;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function connect() {
+            vm.submitBusy = true;
+            AccountRepo.connect($stateParams.id).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invitation to " + $stateParams.id + " has been sent and " + $stateParams.id + " has been added to your welcome channel.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
     }
 
 })();
@@ -4954,7 +5091,7 @@ angular
         }
 
         function removeMember(threadId, memberId) {
-            if ($window.confirm('You are trying to remove a member. Are u sure?')) {
+            if ($window.confirm('You are trying to remove a member. Are you sure?')) {
                 var model = {
                     thread_id: threadId,
                     member_id: memberId
