@@ -267,8 +267,7 @@ def signup(request):
                         ],
                         'to': [
                             {
-                                # 'email': cleaned_data['email'],
-                                'email': 'tim@millcreeksoftware.biz',
+                                'email': cleaned_data['email'],
                             },
                         ],
                         'subject': 'Welcome to Human Link',
