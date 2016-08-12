@@ -6,7 +6,7 @@ from account.models import Account, CareGiver, CareSeeker
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
 	list_filter = ('is_active', )
-	list_display = ('username', 'email', 'phone_number', 'is_active')
+	list_display = ('email', 'username', 'phone_number', 'is_active')
 	search_fields = ('username', 'email', 'phone_number')
 
 
