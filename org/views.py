@@ -128,7 +128,7 @@ def invite_by_email(request, org_id):
 				md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
 				message = {
 					'to': [{
-						'email': 'tim@millcreeksoftware.biz',
+						'email': email,
 						'name': org_invite.name or ''
 					}],
 					'subject': 'You are invited to join {}'.format(org.name),

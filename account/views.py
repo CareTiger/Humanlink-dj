@@ -231,6 +231,7 @@ def signup(request):
                     # Only hits this block of code if they are signing up after being invited to a thread or org, and do
                     # not have a profile yet.
                     if invite_token:
+                        # If there is not thread invitation for that token code, it must be an org invitation
                         if ThreadInvite.objects.filter(token=invite_token):
                             invitation = ThreadInvite.objects.get(token=invite_token)
                             thread = Thread.objects.get(id=invitation.thread.id)
@@ -266,8 +267,7 @@ def signup(request):
                         ],
                         'to': [
                             {
-                                # 'email': cleaned_data['email'],
-                                'email': 'tim@millcreeksoftware.biz',
+                                'email': cleaned_data['email'],
                             },
                         ],
                         'subject': 'Welcome to Human Link',
