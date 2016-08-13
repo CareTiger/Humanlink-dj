@@ -120,7 +120,7 @@ def update_purpose(request, thread_id):
             print cleaned_data
 
             thread.name = cleaned_data['name']
-            thread.purpose_type = cleaned_data ['purpose_type']
+            thread.purpose_type = cleaned_data['purpose_type']
             thread.purpose = cleaned_data['purpose']
             thread.privacy = cleaned_data['privacy']
             thread.gender = cleaned_data['gender']

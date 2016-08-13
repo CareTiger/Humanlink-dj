@@ -26,7 +26,7 @@ class ThreadHistory(forms.Form):
 
 class AddMember(forms.Form):
     account_id = forms.IntegerField(min_value=0, required=False)
-    name = forms.CharField(max_length=70)
+    name = forms.CharField(max_length=70, required=False)
     email = forms.EmailField(max_length=100)
 
 
