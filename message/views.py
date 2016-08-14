@@ -246,7 +246,7 @@ def add_member(request, thread_id):
                 md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                 t = thread_invite.token.replace(' ', '+')
                 # url = "http://localhost:8000/home/thread/{}".format(t)
-                url = "http://humanlink.co:8000/home/thread/{}".format(t)
+                url = "http://humanlink.co/home/thread/{}".format(t)
                 message = {
                     'global_merge_vars': [
                         {
