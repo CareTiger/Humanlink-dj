@@ -8137,6 +8137,9 @@ footer,
 .dashboard .thread .update-container {
   margin: 20px;
 }
+.dashboard .thread .pending-container {
+  margin: 20px;
+}
 
 /*!
  *  Font Awesome 4.6.3 by @davegandy - http://fontawesome.io - @fontawesome

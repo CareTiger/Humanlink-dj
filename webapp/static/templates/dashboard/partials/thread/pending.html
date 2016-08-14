@@ -1,4 +1,4 @@
-<div class="card">
+<div class="pending-container card">
 
   <h4 class="text-center">
     Pending invitations for <strong>{{ ::vm.thread.name }}</strong> channel.
@@ -9,12 +9,31 @@
   </div>
 
   <form name="form">
+
     <div class="form-group row vmargin10">
 
-      <pre>{{ vm.members  | json }}</pre>
+      <div ng-repeat="member in vm.members">
+        <div class="col-sm-offset-1">
+          <div class="media">
+            <div class="media-left">
+              <a href="#">
+                <img class="media-object" src="http://placehold.it/50x50" alt="...">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">{{ member.account }}</h4>
 
-      <div class="col-md-12">
-        <div class="col-xs-6">
+              <p>{{ member.profile.email }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-offset-4 col-sm-4">
           <button type="button" class="btn btn-block btn-default"
                   ng-click="vm.cancel()">Cancel
           </button>
