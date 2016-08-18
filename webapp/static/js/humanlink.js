@@ -1,4 +1,43 @@
 /**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
+})();
+/**
  * Account module.
  */
 (function () {
@@ -129,45 +168,6 @@
     }
 })();
 /**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
-})();
-/**
  * A module that has common directives, services, constants, etc.
  */
 (function () {
@@ -237,86 +237,6 @@
     /** @ngInject */
     function Ctrl($scope) {
         // Empty.
-    }
-
-})();
-/**
- * Core module that bootstrap most of the dependencies and configuration.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$compileProvider", "$logProvider"];
-    angular
-        .module('app.core', [
-            'ngAnimate',
-            'ngMessages',
-            'ui.router',
-            'ui.bootstrap',
-            'app.common',
-            'app.router',
-            'templates',
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($compileProvider, $logProvider) {
-        if (hl.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-            $logProvider.debugEnabled(false);
-        }
-    }
-
-    (function () {
-        'use strict';
-
-        angular
-            .module('templates', [])
-    })();
-
-})();
-/**
- * UI Router wrapper and helpers.
- */
-(function () {
-    'use strict';
-
-    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
-    angular
-        .module('app.router', [])
-        .run(Run);
-
-    /** ngInject */
-    function Run($log, $rootScope, $window, $state) {
-        onStateChange();
-
-        /**
-         * Sets the page title on a state transition.
-         * The page is customized to Humanlink.
-         *
-         * Usage:
-         *   Include a `title` property in the state's resolve object.
-         *
-         *   $stateProvider.state('parent', {
-         *       resolve: {title: function () { return 'constant'; }}
-         *   })
-         *   $stateProvider.state('parent.child', {
-         *       resolve: {title: function (SomeService) {
-         *          return SomeService.stuff();
-         *      }}
-         *   })
-         */
-        function onStateChange() {
-            $log.debug('app.router: onStateChange');
-            $rootScope.$on('$stateChangeSuccess', function () {
-                var title = 'Humanlink';
-                var resTitle = $state.$current.locals.globals.title;
-                if (angular.isString(resTitle)) {
-                    title = resTitle + ' | Humanlink';
-                }
-                $window.document.title = title;
-            });
-        }
     }
 
 })();
@@ -414,6 +334,86 @@
         return DashboardHelper.initialize();
     }
 
+
+})();
+/**
+ * Core module that bootstrap most of the dependencies and configuration.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$compileProvider", "$logProvider"];
+    angular
+        .module('app.core', [
+            'ngAnimate',
+            'ngMessages',
+            'ui.router',
+            'ui.bootstrap',
+            'app.common',
+            'app.router',
+            'templates',
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($compileProvider, $logProvider) {
+        if (hl.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+            $logProvider.debugEnabled(false);
+        }
+    }
+
+    (function () {
+        'use strict';
+
+        angular
+            .module('templates', [])
+    })();
+
+})();
+/**
+ * UI Router wrapper and helpers.
+ */
+(function () {
+    'use strict';
+
+    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
+    angular
+        .module('app.router', [])
+        .run(Run);
+
+    /** ngInject */
+    function Run($log, $rootScope, $window, $state) {
+        onStateChange();
+
+        /**
+         * Sets the page title on a state transition.
+         * The page is customized to Humanlink.
+         *
+         * Usage:
+         *   Include a `title` property in the state's resolve object.
+         *
+         *   $stateProvider.state('parent', {
+         *       resolve: {title: function () { return 'constant'; }}
+         *   })
+         *   $stateProvider.state('parent.child', {
+         *       resolve: {title: function (SomeService) {
+         *          return SomeService.stuff();
+         *      }}
+         *   })
+         */
+        function onStateChange() {
+            $log.debug('app.router: onStateChange');
+            $rootScope.$on('$stateChangeSuccess', function () {
+                var title = 'Humanlink';
+                var resTitle = $state.$current.locals.globals.title;
+                if (angular.isString(resTitle)) {
+                    title = resTitle + ' | Humanlink';
+                }
+                $window.document.title = title;
+            });
+        }
+    }
 
 })();
 /**
@@ -1767,39 +1767,6 @@ window.HL = window.HL || {};
  */
 
 /**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
-/**
  * Dashboard helper/bootstraper.
  */
 (function () {
@@ -1879,6 +1846,39 @@ window.HL = window.HL || {};
 
             return defer.promise;
         }
+    }
+
+})();
+/**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
     }
 
 })();
@@ -2513,6 +2513,95 @@ window.HL = window.HL || {};
     };
 
 })();
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
 /**
  * Parent controller of the account module.
  */
@@ -3746,95 +3835,6 @@ angular
         $scope.chosenDLState = $scope.states[0];
         $scope.chosenAddrState = $scope.states[0];
     }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
 /**
  * Created by timothybaney on 5/16/16.
  */

@@ -79,4 +79,21 @@
 
     </div>
   </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team members</h2>
+    </div>
+    <div class="panel-body">
+
+      <div ng-repeat="threadmember in vm.team.threadmembers |  orderBy:threadmember.email">
+        <p>Channel name : {{ threadmember.name }}</p>
+
+        <p>Email : {{ threadmember.email }}</p>
+        <hr>
+      </div>
+
+    </div>
+  </div>
+
 </form>

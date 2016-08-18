@@ -407,7 +407,21 @@ def update(request):
 @csrf_exempt
 def getTeam(request):
     # """ - Get Team Information """
+    thrd_array = []
+    thrdmbr_array = []
+
     account = Account.objects.get(email=request.user.email)
+    threads = Thread.objects.all().filter(account=account)
+
+    for thrd in threads:
+        threadmembers = ThreadMember.objects.all().filter(thread=thrd)
+
+        for thrdmbr in threadmembers:
+            threadmember_map = {
+                'email': thrdmbr.account.email,
+                'name': thrd.name,
+            }
+            thrdmbr_array.append(threadmember_map)
 
     try:
         team = CareSeeker.objects.get(account=account)
@@ -415,6 +429,7 @@ def getTeam(request):
             'team_name': team.team_name,
             'mission': team.mission,
             'website': team.website,
+            'threadmembers': thrdmbr_array
         }
         return composeJsonResponse(200, "", context)
     except:
@@ -531,6 +546,8 @@ def nearme(request):
 
         if form.is_valid():
             cleaned_data = form.cleaned_data
+
+            # For Beta release we are not going to do a search string
             print '***********'
             print cleaned_data['search_string']
             print '***********'
