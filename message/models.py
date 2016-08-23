@@ -58,6 +58,9 @@ class Thread(models.Model):
     gender = models.IntegerField(choices=GENDER_CHOICES, default=0, null=True)
     notes = models.TextField(max_length=500, null=True, default="")
 
+    def __str__(self):
+        return self.name
+
 
 @property
 def owner_kind(self):
