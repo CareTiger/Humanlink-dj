@@ -235,7 +235,9 @@ def signup(request):
                         if ThreadInvite.objects.filter(token=invite_token):
                             invitation = ThreadInvite.objects.get(token=invite_token)
                             thread = Thread.objects.get(id=invitation.thread.id)
-                            ThreadMember.objects.create(thread=thread, account=account)
+                            threadmember = ThreadMember.objects.filter(thread=thread, account=account)
+                            if not threadmember:
+                                ThreadMember.objects.create(thread=thread, account=account)
                         else:
                             invitation = OrgInvite.objects.get(token=invite_token)
                             if invitation.used:
