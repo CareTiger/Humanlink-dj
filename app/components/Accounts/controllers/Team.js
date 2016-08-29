@@ -27,6 +27,7 @@
                 function (data) {
                     vm.submitBusy = false;
                     vm.team = data.data.response;
+                    console.log(vm.team)
                 },
                 function (data) {
                     vm.submitBusy = false;
@@ -36,6 +37,12 @@
 
         function update(model) {
             vm.submitBusy = true;
+            console.log(model);
+            if (vm.team.public){
+                vm.team.public = 'True'
+            } else {
+                vm.team.public = 'False'
+            }
             AccountRepo.updateTeam(model).then(
                 function (data) {
                     vm.submitBusy = false;

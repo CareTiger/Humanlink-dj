@@ -431,7 +431,8 @@ def getTeam(request):
             'team_name': team.team_name,
             'mission': team.mission,
             'website': team.website,
-            'threadmembers': thrdmbr_array
+            'threadmembers': thrdmbr_array,
+            'public': team.public
         }
         return composeJsonResponse(200, "", context)
     except:
@@ -459,6 +460,7 @@ def update_team(request):
             team.team_name = cleaned_data['team_name']
             team.mission = cleaned_data['mission']
             team.website = cleaned_data['website']
+            team.public = cleaned_data['public']
             team.save()
 
             context = {
