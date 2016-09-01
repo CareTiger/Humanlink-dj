@@ -30,9 +30,9 @@
         }
 
         function changePassword(model) {
-            console.log(model)
-            $log.debug('Fake change password.');
-            return $q.when({'message': 'ok'});
+            console.log(model);
+            return AbstractRepo.post('accounts/signup/', model, false)
+                .then(genericSuccess, genericError);
         }
 
         function updateNotifications(model) {
@@ -74,6 +74,24 @@
             };
             return settings;
         }
+
+        function genericSuccess(response) {
+            return response.data;
+        }
+
+        function genericError(response) {
+            var reason = "Oops, something went wrong. That's our bad.";
+            if (response.status < 500 && response.data.response.message) {
+                reason = response.data.response.message;
+            }
+            return $q.reject(reason);
+        }
+
+        function apiGenericSuccess(response) {
+            return response.data.data;
+        }
+
+
     }
 
 })();

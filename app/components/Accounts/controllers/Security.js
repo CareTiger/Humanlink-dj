@@ -37,12 +37,9 @@
             });
         }
 
-        function changePassword(oldpwd, newpwd) {
-            console.log(oldpwd)
-            console.log(newpwd)
+        function changePassword(model) {
             vm.submitBusy = true;
             vm.errorMessagePasswordChange = null;
-            var model = {oldvalue: oldpwd, newValue: newpwd};
 
             SettingsRepo.changePassword(model).then(
                 function (data) {
