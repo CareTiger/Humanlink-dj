@@ -7825,6 +7825,12 @@ footer,
   display: inline-block;
   margin-left: 20px;
 }
+input#team_public {
+  outline: none;
+  outline-offset: 0px;
+  border: none;
+  box-shadow: none;
+}
 .settings-media .media-body {
   padding: 10px;
   height: 150px;

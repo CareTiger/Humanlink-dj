@@ -36,9 +36,15 @@
 
         function update(model) {
             vm.submitBusy = true;
+            if (vm.team.public){
+                vm.team.public = 'True'
+            } else {
+                vm.team.public = 'False'
+            }
             AccountRepo.updateTeam(model).then(
                 function (data) {
                     vm.submitBusy = false;
+                    console.log(vm.team);
                     SiteAlert.success("Your team information has been updated.");
                 },
                 function (data) {

@@ -48,7 +48,7 @@ class Nearme(forms.Form):
 class CareSeekerInfo(forms.ModelForm):
     class Meta:
         model = CareSeeker
-        fields = ['team_name', 'mission', 'website']
+        fields = ['team_name', 'mission', 'website', 'public']
 
 
 class AcceptInvite(forms.Form):
