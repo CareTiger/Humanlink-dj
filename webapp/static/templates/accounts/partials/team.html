@@ -1,123 +1,126 @@
 <form class="form-horizontal" name="form" ng-submit="vm.update(vm.team)">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">Team profile</h2>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team profile</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="vm.team.public"
+                         ng-checked="vm.team.public == 'True'"/>
+                  Make my team profile public.
+                </label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="has-warning" ng-if="form.team_name.$dirty">
+              <div class="help-block" ng-messages="form.team_name.$error">
+                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+              </div>
+            </div>
+            <div class="help-block">
+              Making your profile public makes it easy for professional Caregivers and
+              families seeking care to join your team.
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
+      </div>
 
-            <div class="form-group">
-                <label for="teamname" class="col-sm-3 control-label">
-                    Public</label>
+      <div class="form-group">
+        <label for="teamname" class="col-sm-3 control-label">
+          Team Name</label>
 
-                <div class="col-sm-9">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <input type="checkbox" id="team_public" class="form-control" name="public"
-                                   ng-model="vm.team.public" ng-checked="vm.team.public == 'True'"/>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="has-warning" ng-if="form.team_name.$dirty">
-                            <div class="help-block" ng-messages="form.team_name.$error">
-                                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
-                            </div>
-                        </div>
-                        <div class="help-block">
-                            By setting your team to public, all users on humanlink will be able to see your team
-                        </div>
-                    </div>
-                </div>
+        <div class="col-sm-9">
+          <div class="row">
+            <div class="col-sm-12">
+              <input id="team_name" class="form-control" name="team_name"
+                     ng-model="vm.team.team_name" placeholder="Your team name"
+                     ng-minlength="2" ng-maxlength="35" hl-focus required/>
             </div>
-
-            <div class="form-group">
-                <label for="teamname" class="col-sm-3 control-label">
-                    Team Name</label>
-
-                <div class="col-sm-9">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <input id="team_name" class="form-control" name="team_name"
-                                   ng-model="vm.team.team_name" placeholder="Your team name"
-                                   ng-minlength="2" ng-maxlength="35" hl-focus required/>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="has-warning" ng-if="form.team_name.$dirty">
-                            <div class="help-block" ng-messages="form.team_name.$error">
-                                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
-                            </div>
-                        </div>
-                        <div class="help-block">
-                            This will be your team name. This helps existing and new team members easily
-                            recognize which team they are a part of. Enter at least 2 characters.
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div>
+            <div class="has-warning" ng-if="form.team_name.$dirty">
+              <div class="help-block" ng-messages="form.team_name.$error">
+                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+              </div>
             </div>
+            <div class="help-block">
+              This will be your team name. This helps existing and new team members easily
+              recognize which team they are a part of. Enter at least 2 characters.
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <div class="form-group">
-                <label for="mission" class="col-sm-3 control-label">
-                    Mission</label>
+      <div class="form-group">
+        <label for="mission" class="col-sm-3 control-label">
+          Mission</label>
 
-                <div class="col-sm-9">
-                    <div class="row">
-                        <div class="col-sm-12">
+        <div class="col-sm-9">
+          <div class="row">
+            <div class="col-sm-12">
               <textarea type="text" id="mission" class="form-control" name="mission"
                         ng-model="vm.team.mission" placeholder="mission"></textarea>
-                        </div>
-                    </div>
-                    <div class="help-block">
-                        A simple statement declaring your team or professional organizations
-                        mission/purpose. Optional.
-                    </div>
-                </div>
             </div>
+          </div>
+          <div class="help-block">
+            A simple statement declaring your team or professional organizations
+            mission/purpose. Optional.
+          </div>
+        </div>
+      </div>
 
-            <div class="form-group">
-                <label for="website" class="col-sm-3 control-label">
-                    Website</label>
+      <div class="form-group">
+        <label for="website" class="col-sm-3 control-label">
+          Website</label>
 
-                <div class="col-sm-9">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <input id="website" class="form-control" name="website"
-                                   ng-model="vm.team.website" placeholder="website"/>
-                        </div>
-                    </div>
-                    <div class="help-block">
-                        your website. Optional.
-                    </div>
-                </div>
+        <div class="col-sm-9">
+          <div class="row">
+            <div class="col-sm-12">
+              <input id="website" class="form-control" name="website"
+                     ng-model="vm.team.website" placeholder="website"/>
             </div>
+          </div>
+          <div class="help-block">
+            your website. Optional.
+          </div>
+        </div>
+      </div>
 
-            <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-3">
-                    <button type="submit" class="btn btn-secondary btn-block btn-sharp"
-                            ng-disabled="!form.team_name.$valid || vm.submitBusy">
-                        Save Changes
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.team_name.$valid || vm.submitBusy">
+            Save Changes
             <span ng-if="vm.submitBusy"><i
                     class="fa fa-circle-o-notch fa-spin"></i></span>
-                    </button>
-                </div>
-            </div>
-
+          </button>
         </div>
+      </div>
+
     </div>
+  </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">Team members</h2>
-        </div>
-        <div class="panel-body">
-
-            <div ng-repeat="threadmember in vm.team.threadmembers |  orderBy:threadmember.email">
-                <p>Channel name : {{ threadmember.name }}</p>
-
-                <p>Email : {{ threadmember.email }}</p>
-                <hr>
-            </div>
-
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team members</h2>
     </div>
+    <div class="panel-body">
+
+      <div ng-repeat="threadmember in vm.team.threadmembers |  orderBy:threadmember.email">
+        <p>Channel name : {{ threadmember.name }}</p>
+
+        <p>Email : {{ threadmember.email }}</p>
+        <hr>
+      </div>
+
+    </div>
+  </div>
 
 </form>
