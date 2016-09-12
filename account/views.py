@@ -562,7 +562,7 @@ def nearme(request):
                     'last': cgvr.account.last,
                     'bio': cgvr.bio,
                     'headline': cgvr.headline,
-                    'email': cgvr.account.email
+                    'email': cgvr.account.email,
                 }
                 cgvr_array.append(cgvr_map)
 
@@ -570,7 +570,8 @@ def nearme(request):
                 cskr_map = {
                     'email': cskr.account.email,
                     'mission': cskr.mission,
-                    'team_name': cskr.team_name
+                    'team_name': cskr.team_name,
+                    'public': cskr.public
                 }
                 cskr_array.append(cskr_map)
 
