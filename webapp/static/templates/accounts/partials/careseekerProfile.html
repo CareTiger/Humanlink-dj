@@ -13,10 +13,11 @@
       </div>
       <div class="col-md-9">
         <h3 class="text-center"><strong>{{ vm.careseekerProfile.team_name }}</strong></h3>
-        <h4 class="text-center">Mission:
-          <strong>{{ vm.careseekerProfile.mission }}</strong></h4>
+        <h4 class="text-center">Our mission: {{ vm.careseekerProfile.mission }}</h4>
       </div>
     </div>
 
   </div>
 </div>
+
+<pre> {{ vm.careseekerProfile | json }}</pre>

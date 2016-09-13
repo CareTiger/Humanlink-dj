@@ -622,6 +622,13 @@ def careseeker_profile(request):
     context = {
         'team_name': careseeker.team_name,
         'mission': careseeker.mission,
+        'website': careseeker.website,
+        'caregiver_needs': careseeker.caregiver_needs,
+        'hoyer_lift': careseeker.hoyer_lift,
+        'cough_assist': careseeker.cough_assist,
+        'adaptive_utensil': careseeker.adaptive_utensil,
+        'meal_prep': careseeker.meal_prep,
+        'housekeeping': careseeker.housekeeping,
     }
     return composeJsonResponse(200, '', context)
 

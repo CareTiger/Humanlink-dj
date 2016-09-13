@@ -241,6 +241,86 @@
 
 })();
 /**
+ * Core module that bootstrap most of the dependencies and configuration.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$compileProvider", "$logProvider"];
+    angular
+        .module('app.core', [
+            'ngAnimate',
+            'ngMessages',
+            'ui.router',
+            'ui.bootstrap',
+            'app.common',
+            'app.router',
+            'templates',
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($compileProvider, $logProvider) {
+        if (hl.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+            $logProvider.debugEnabled(false);
+        }
+    }
+
+    (function () {
+        'use strict';
+
+        angular
+            .module('templates', [])
+    })();
+
+})();
+/**
+ * UI Router wrapper and helpers.
+ */
+(function () {
+    'use strict';
+
+    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
+    angular
+        .module('app.router', [])
+        .run(Run);
+
+    /** ngInject */
+    function Run($log, $rootScope, $window, $state) {
+        onStateChange();
+
+        /**
+         * Sets the page title on a state transition.
+         * The page is customized to Humanlink.
+         *
+         * Usage:
+         *   Include a `title` property in the state's resolve object.
+         *
+         *   $stateProvider.state('parent', {
+         *       resolve: {title: function () { return 'constant'; }}
+         *   })
+         *   $stateProvider.state('parent.child', {
+         *       resolve: {title: function (SomeService) {
+         *          return SomeService.stuff();
+         *      }}
+         *   })
+         */
+        function onStateChange() {
+            $log.debug('app.router: onStateChange');
+            $rootScope.$on('$stateChangeSuccess', function () {
+                var title = 'Humanlink';
+                var resTitle = $state.$current.locals.globals.title;
+                if (angular.isString(resTitle)) {
+                    title = resTitle + ' | Humanlink';
+                }
+                $window.document.title = title;
+            });
+        }
+    }
+
+})();
+/**
  * Dashboard module.
  */
 (function () {
@@ -334,86 +414,6 @@
         return DashboardHelper.initialize();
     }
 
-
-})();
-/**
- * Core module that bootstrap most of the dependencies and configuration.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$compileProvider", "$logProvider"];
-    angular
-        .module('app.core', [
-            'ngAnimate',
-            'ngMessages',
-            'ui.router',
-            'ui.bootstrap',
-            'app.common',
-            'app.router',
-            'templates',
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($compileProvider, $logProvider) {
-        if (hl.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-            $logProvider.debugEnabled(false);
-        }
-    }
-
-    (function () {
-        'use strict';
-
-        angular
-            .module('templates', [])
-    })();
-
-})();
-/**
- * UI Router wrapper and helpers.
- */
-(function () {
-    'use strict';
-
-    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
-    angular
-        .module('app.router', [])
-        .run(Run);
-
-    /** ngInject */
-    function Run($log, $rootScope, $window, $state) {
-        onStateChange();
-
-        /**
-         * Sets the page title on a state transition.
-         * The page is customized to Humanlink.
-         *
-         * Usage:
-         *   Include a `title` property in the state's resolve object.
-         *
-         *   $stateProvider.state('parent', {
-         *       resolve: {title: function () { return 'constant'; }}
-         *   })
-         *   $stateProvider.state('parent.child', {
-         *       resolve: {title: function (SomeService) {
-         *          return SomeService.stuff();
-         *      }}
-         *   })
-         */
-        function onStateChange() {
-            $log.debug('app.router: onStateChange');
-            $rootScope.$on('$stateChangeSuccess', function () {
-                var title = 'Humanlink';
-                var resTitle = $state.$current.locals.globals.title;
-                if (angular.isString(resTitle)) {
-                    title = resTitle + ' | Humanlink';
-                }
-                $window.document.title = title;
-            });
-        }
-    }
 
 })();
 /**
@@ -1767,6 +1767,39 @@ window.HL = window.HL || {};
  */
 
 /**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+/**
  * Dashboard helper/bootstraper.
  */
 (function () {
@@ -1846,39 +1879,6 @@ window.HL = window.HL || {};
 
             return defer.promise;
         }
-    }
-
-})();
-/**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
     }
 
 })();
