@@ -6,6 +6,29 @@
     </div>
     <div class="panel-body">
 
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.cvgr.public"
+                     ng-checked="vm.cvgr.public == 'True'"/>
+              Make my caregiver profile public
+            </label>
+          </div>
+          <div>
+            <div class="has-warning" ng-if="form.team_name.$dirty">
+              <div class="help-block" ng-messages="form.team_name.$error">
+                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+              </div>
+            </div>
+            <div class="help-block">
+              Making your profile public makes it easy for families seeking care to
+              connect with you.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row form-group">
         <label for="headline" class="col-sm-3 control-label">
           Headline

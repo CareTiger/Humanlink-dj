@@ -241,86 +241,6 @@
 
 })();
 /**
- * Core module that bootstrap most of the dependencies and configuration.
- */
-(function () {
-    'use strict';
-
-    Config.$inject = ["$compileProvider", "$logProvider"];
-    angular
-        .module('app.core', [
-            'ngAnimate',
-            'ngMessages',
-            'ui.router',
-            'ui.bootstrap',
-            'app.common',
-            'app.router',
-            'templates',
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($compileProvider, $logProvider) {
-        if (hl.isProd()) {
-            $compileProvider.debugInfoEnabled(false);
-            $logProvider.debugEnabled(false);
-        }
-    }
-
-    (function () {
-        'use strict';
-
-        angular
-            .module('templates', [])
-    })();
-
-})();
-/**
- * UI Router wrapper and helpers.
- */
-(function () {
-    'use strict';
-
-    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
-    angular
-        .module('app.router', [])
-        .run(Run);
-
-    /** ngInject */
-    function Run($log, $rootScope, $window, $state) {
-        onStateChange();
-
-        /**
-         * Sets the page title on a state transition.
-         * The page is customized to Humanlink.
-         *
-         * Usage:
-         *   Include a `title` property in the state's resolve object.
-         *
-         *   $stateProvider.state('parent', {
-         *       resolve: {title: function () { return 'constant'; }}
-         *   })
-         *   $stateProvider.state('parent.child', {
-         *       resolve: {title: function (SomeService) {
-         *          return SomeService.stuff();
-         *      }}
-         *   })
-         */
-        function onStateChange() {
-            $log.debug('app.router: onStateChange');
-            $rootScope.$on('$stateChangeSuccess', function () {
-                var title = 'Humanlink';
-                var resTitle = $state.$current.locals.globals.title;
-                if (angular.isString(resTitle)) {
-                    title = resTitle + ' | Humanlink';
-                }
-                $window.document.title = title;
-            });
-        }
-    }
-
-})();
-/**
  * Dashboard module.
  */
 (function () {
@@ -414,6 +334,86 @@
         return DashboardHelper.initialize();
     }
 
+
+})();
+/**
+ * Core module that bootstrap most of the dependencies and configuration.
+ */
+(function () {
+    'use strict';
+
+    Config.$inject = ["$compileProvider", "$logProvider"];
+    angular
+        .module('app.core', [
+            'ngAnimate',
+            'ngMessages',
+            'ui.router',
+            'ui.bootstrap',
+            'app.common',
+            'app.router',
+            'templates',
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($compileProvider, $logProvider) {
+        if (hl.isProd()) {
+            $compileProvider.debugInfoEnabled(false);
+            $logProvider.debugEnabled(false);
+        }
+    }
+
+    (function () {
+        'use strict';
+
+        angular
+            .module('templates', [])
+    })();
+
+})();
+/**
+ * UI Router wrapper and helpers.
+ */
+(function () {
+    'use strict';
+
+    Run.$inject = ["$log", "$rootScope", "$window", "$state"];
+    angular
+        .module('app.router', [])
+        .run(Run);
+
+    /** ngInject */
+    function Run($log, $rootScope, $window, $state) {
+        onStateChange();
+
+        /**
+         * Sets the page title on a state transition.
+         * The page is customized to Humanlink.
+         *
+         * Usage:
+         *   Include a `title` property in the state's resolve object.
+         *
+         *   $stateProvider.state('parent', {
+         *       resolve: {title: function () { return 'constant'; }}
+         *   })
+         *   $stateProvider.state('parent.child', {
+         *       resolve: {title: function (SomeService) {
+         *          return SomeService.stuff();
+         *      }}
+         *   })
+         */
+        function onStateChange() {
+            $log.debug('app.router: onStateChange');
+            $rootScope.$on('$stateChangeSuccess', function () {
+                var title = 'Humanlink';
+                var resTitle = $state.$current.locals.globals.title;
+                if (angular.isString(resTitle)) {
+                    title = resTitle + ' | Humanlink';
+                }
+                $window.document.title = title;
+            });
+        }
+    }
 
 })();
 /**
@@ -1477,6 +1477,50 @@ angular
     }
 
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1722,83 +1766,6 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
-/**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
 /**
  * Dashboard helper/bootstraper.
  */
@@ -1879,6 +1846,39 @@ window.HL = window.HL || {};
 
             return defer.promise;
         }
+    }
+
+})();
+/**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
     }
 
 })();
@@ -2584,7 +2584,7 @@ window.HL = window.HL || {};
         init();
         function init() {
             vm.submitBusy = true;
-            console.log('Get Caregiver Profile');
+            console.log('Update Caregiver Profile');
             AccountRepo.getCaregiver().then(
                 function (data) {
                     vm.submitBusy = false;
@@ -2598,6 +2598,11 @@ window.HL = window.HL || {};
 
         function update(model) {
             vm.submitBusy = true;
+            if (vm.cvgr.public){
+                vm.cvgr.public = 'True';
+            } else {
+                vm.cvgr.public = 'False'
+            }
             AccountRepo.updateCaregiver(model).then(
                 function (data) {
                     vm.submitBusy = false;
@@ -4411,114 +4416,6 @@ angular
 
 })();
 /**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Directory.$inject = ["$log", "OrgService", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Directory', Directory);
-
-    /** @ngInject */
-    function Directory($log, OrgService, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.memberName = memberName;
-
-        init();
-
-        function init() {
-            $log.debug('directory init');
-            vm.org = orgInfo;
-        }
-
-        function memberName(member) {
-            return OrgService.memberName(member);
-        }
-    }
-
-})();
-/**
- *  Controller for the invite view.
- */
-(function () {
-    'use strict';
-
-    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('OrgInvite', Invite);
-
-    /** @ngInject */
-    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
-        var vm = this;
-
-        vm.org = null;
-        vm.errorMessage = null;
-        vm.submitBusy = false;
-
-        vm.sendInvite = sendInvite;
-        vm.cancelInvite = cancelInvite;
-        vm.invite = null;
-
-        init();
-
-        function init() {
-            $log.debug('invite init');
-            vm.org = orgInfo;
-        }
-
-        function sendInvite(model) {
-            vm.submitBusy = true;
-            vm.errorMessage = null;
-
-            OrgsRepo.sendInvite(vm.org.id, model).then(
-                function (data) {
-                    vm.submitBusy = false;
-                    SiteAlert.success("Your invite has been sent to " + model.email);
-                    vm.invite = null;
-                },
-                function (data) {
-                    vm.submitBusy = false;
-                    vm.errorMessage = data;
-                });
-        }
-
-        function cancelInvite() {
-            CommonService.previous();
-        }
-    }
-
-})();
-/**
- *  Controller for the team view.
- */
-(function () {
-    'use strict';
-
-    Team.$inject = ["$log", "orgInfo"];
-    angular
-        .module('app.dashboard.team')
-        .controller('Team', Team);
-
-    /** @ngInject */
-    function Team($log, orgInfo) {
-        var vm = this;
-
-        init();
-
-        function init() {
-            $log.debug('team init');
-            vm.org = orgInfo;
-        }
-
-    }
-
-})();
-/**
  *
  */
 (function () {
@@ -5026,6 +4923,114 @@ angular
 
 })();
 
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Directory.$inject = ["$log", "OrgService", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Directory', Directory);
+
+    /** @ngInject */
+    function Directory($log, OrgService, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.memberName = memberName;
+
+        init();
+
+        function init() {
+            $log.debug('directory init');
+            vm.org = orgInfo;
+        }
+
+        function memberName(member) {
+            return OrgService.memberName(member);
+        }
+    }
+
+})();
+/**
+ *  Controller for the invite view.
+ */
+(function () {
+    'use strict';
+
+    Invite.$inject = ["$log", "CommonService", "SiteAlert", "OrgsRepo", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('OrgInvite', Invite);
+
+    /** @ngInject */
+    function Invite($log, CommonService, SiteAlert, OrgsRepo, orgInfo) {
+        var vm = this;
+
+        vm.org = null;
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+
+        vm.sendInvite = sendInvite;
+        vm.cancelInvite = cancelInvite;
+        vm.invite = null;
+
+        init();
+
+        function init() {
+            $log.debug('invite init');
+            vm.org = orgInfo;
+        }
+
+        function sendInvite(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            OrgsRepo.sendInvite(vm.org.id, model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your invite has been sent to " + model.email);
+                    vm.invite = null;
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+        }
+
+        function cancelInvite() {
+            CommonService.previous();
+        }
+    }
+
+})();
+/**
+ *  Controller for the team view.
+ */
+(function () {
+    'use strict';
+
+    Team.$inject = ["$log", "orgInfo"];
+    angular
+        .module('app.dashboard.team')
+        .controller('Team', Team);
+
+    /** @ngInject */
+    function Team($log, orgInfo) {
+        var vm = this;
+
+        init();
+
+        function init() {
+            $log.debug('team init');
+            vm.org = orgInfo;
+        }
+
+    }
+
+})();
 /**
  *  Controller for the thread Archive.
  */

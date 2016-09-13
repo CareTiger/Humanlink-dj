@@ -21,7 +21,7 @@
         init();
         function init() {
             vm.submitBusy = true;
-            console.log('Get Caregiver Profile');
+            console.log('Update Caregiver Profile');
             AccountRepo.getCaregiver().then(
                 function (data) {
                     vm.submitBusy = false;
@@ -35,6 +35,11 @@
 
         function update(model) {
             vm.submitBusy = true;
+            if (vm.cvgr.public){
+                vm.cvgr.public = 'True';
+            } else {
+                vm.cvgr.public = 'False'
+            }
             AccountRepo.updateCaregiver(model).then(
                 function (data) {
                     vm.submitBusy = false;

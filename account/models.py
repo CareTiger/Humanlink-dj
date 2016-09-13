@@ -50,6 +50,7 @@ class Account(models.Model):
 
 class CareGiver(models.Model):
     account = models.ForeignKey(Account)
+    public = models.BooleanField(default=False)
     is_hireable = models.BooleanField(default=False, blank=True)
     location = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
@@ -67,7 +68,7 @@ class CareGiver(models.Model):
 
 class CareSeeker(models.Model):
     account = models.ForeignKey(Account)
-    public = models.BooleanField(default=True)
+    public = models.BooleanField(default=False)
     team_name = models.CharField(max_length=100, null=False)
     mission = models.TextField(null=True, blank=True)
     main_phone = models.CharField(max_length=20, null=True, blank=True)

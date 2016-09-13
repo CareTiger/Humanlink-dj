@@ -38,7 +38,7 @@ class BasicInfo(forms.ModelForm):
 class CareGiverInfo(forms.ModelForm):
     class Meta:
         model = CareGiver
-        fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements']
+        fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements', 'public']
 
 
 class Nearme(forms.Form):

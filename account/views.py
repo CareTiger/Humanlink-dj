@@ -485,6 +485,7 @@ def get_caregiver(request):
             'arrangements': caregiver.arrangements,
             'allergies': caregiver.allergies,
             'certificates': caregiver.certificates,
+            'public': caregiver.public,
         }
         return composeJsonResponse(200, "", context)
     except:
@@ -515,6 +516,7 @@ def update_caregiver(request):
             caregiver.certificates = cleaned_data['certificates']
             caregiver.arrangements = cleaned_data['arrangements']
             caregiver.allergies = cleaned_data['allergies']
+            caregiver.public = cleaned_data['public']
             caregiver.save()
 
             context = {
@@ -563,6 +565,7 @@ def nearme(request):
                     'bio': cgvr.bio,
                     'headline': cgvr.headline,
                     'email': cgvr.account.email,
+                    'public': cgvr.public
                 }
                 cgvr_array.append(cgvr_map)
 
