@@ -38,7 +38,8 @@ class BasicInfo(forms.ModelForm):
 class CareGiverInfo(forms.ModelForm):
     class Meta:
         model = CareGiver
-        fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements', 'public']
+        fields = ['headline', 'bio', 'certificates', 'allergies', 'arrangements',
+                  'public']
 
 
 class Nearme(forms.Form):
@@ -48,7 +49,8 @@ class Nearme(forms.Form):
 class CareSeekerInfo(forms.ModelForm):
     class Meta:
         model = CareSeeker
-        fields = ['team_name', 'mission', 'website', 'public']
+        fields = ['team_name', 'mission', 'website', 'public', 'hoyer_lift',
+                  'cough_assist', 'adaptive_utensil', 'meal_prep', 'housekeeping']
 
 
 class AcceptInvite(forms.Form):

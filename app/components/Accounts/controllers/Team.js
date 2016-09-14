@@ -37,9 +37,34 @@
         function update(model) {
             vm.submitBusy = true;
             if (vm.team.public){
-                vm.team.public = 'True'
+                vm.team.public = 'True';
             } else {
-                vm.team.public = 'False'
+                vm.team.public = 'False';
+            }
+            if (vm.team.meal_prep){
+                vm.team.meal_prep = 'True';
+            } else {
+                vm.team.meal_prep = 'False';
+            }
+            if (vm.team.housekeeping){
+                vm.team.housekeeping = 'True';
+            } else {
+                vm.team.housekeeping = 'False';
+            }
+            if (vm.team.hoyer_lift){
+                vm.team.hoyer_lift = 'True';
+            } else {
+                vm.team.hoyer_lift = 'False';
+            }
+            if (vm.team.cough_assist){
+                vm.team.cough_assist = 'True';
+            } else {
+                vm.team.cough_assist = 'False';
+            }
+            if (vm.team.meal_prep){
+                vm.team.meal_prep = 'True';
+            } else {
+                vm.team.meal_prep = 'False';
             }
             AccountRepo.updateTeam(model).then(
                 function (data) {

@@ -1,7 +1,8 @@
 <form class="form-horizontal" name="form" ng-submit="vm.update(vm.team)">
+
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Team profile</h2>
+      <h2 class="panel-title">Public Profile</h2>
     </div>
     <div class="panel-body">
 
@@ -11,7 +12,7 @@
             <label>
               <input type="checkbox" ng-model="vm.team.public"
                      ng-checked="vm.team.public == 'True'"/>
-              Make my team profile public
+              Make my profile public
             </label>
           </div>
           <div>
@@ -21,12 +22,33 @@
               </div>
             </div>
             <div class="help-block">
-              Making your profile public makes it easy for professional Caregivers and
-              families seeking care to join your team.
+              Making your profile public makes it easy for professional caregivers and
+              families seeking care to know more about your organization/team and your
+              current needs.
             </div>
           </div>
         </div>
       </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.team_name.$valid || vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team profile</h2>
+    </div>
+    <div class="panel-body">
 
       <div class="form-group">
         <label for="teamname" class="col-sm-3 control-label">
@@ -105,18 +127,103 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Team members</h2>
+      <h2 class="panel-title">My caregiver needs</h2>
     </div>
     <div class="panel-body">
 
-      <div ng-repeat="threadmember in vm.team.threadmembers |  orderBy:threadmember.email">
-        <p>Channel name : {{ threadmember.name }}</p>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.meal_prep"
+                     ng-checked="vm.team.meal_prep == 'True'"/>
+              Meal prep
+            </label>
+          </div>
+        </div>
+      </div>
 
-        <p>Email : {{ threadmember.email }}</p>
-        <hr>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.housekeeping"
+                     ng-checked="vm.team.housekeeping == 'True'"/>
+              Housekeeping
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.hoyer_lift"
+                     ng-checked="vm.team.hoyer_lift == 'True'"/>
+              Hoyer Lift
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.cough_assist"
+                     ng-checked="vm.team.cough_assist == 'True'"/>
+              Cough Assist
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.adaptive_utensil"
+                     ng-checked="vm.team.adaptive_utensil == 'True'"/>
+              Adaptive utensil
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.team_name.$valid || vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Team members</h2>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div ng-repeat="threadmember in vm.team.threadmembers |  orderBy:threadmember.email">
+            <p>Channel name : {{ threadmember.name }}</p>
+
+            <p>Email : {{ threadmember.email }}</p>
+            <hr>
+          </div>
+
+        </div>
       </div>
 
     </div>
   </div>
 
 </form>
+<pre>{{ vm.team | json }}</pre>

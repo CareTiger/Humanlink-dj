@@ -461,6 +461,11 @@ def update_team(request):
             team.mission = cleaned_data['mission']
             team.website = cleaned_data['website']
             team.public = cleaned_data['public']
+            team.hoyer_lift = cleaned_data['hoyer_lift']
+            #team.cough_assist = cleaned_data['cough_assist']
+            #team.adaptive_utensil = cleaned_data['adaptive_utensil']
+            #team.meal_prep = cleaned_data['meal_prep']
+            #team.housekeeping = cleaned_data['housekeeping']
             team.save()
 
             context = {
