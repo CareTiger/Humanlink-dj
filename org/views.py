@@ -15,7 +15,7 @@ from message.models import Thread, PRIVACY_CHOICES
 import mandrill
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def orgs(request):
 	if request.method == "GET":
 		return _orgs_get(request)
@@ -89,7 +89,7 @@ def _orgs_post(request):
 	return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def invite_by_email(request, org_id):
 	# """Invite a new member by email address to org."""

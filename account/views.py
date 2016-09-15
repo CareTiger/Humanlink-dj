@@ -30,7 +30,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
 
-
+@login_required(login_url='/home/login/')
 def index(request):
     # """ -Return Account Template """
     account = Account.objects.get(email=request.user.email)
@@ -365,7 +365,7 @@ def invite(request, token):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def me(request):
     # """ - Retrieve Current Account Information in JSON Format """
     account = Account.objects.get(email=request.user.email)
@@ -381,7 +381,7 @@ def me(request):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def update(request):
     # """ - Update Account Information """
@@ -405,7 +405,7 @@ def update(request):
             return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def getTeam(request):
     # """ - Get Team Information """
@@ -441,7 +441,7 @@ def getTeam(request):
         return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def update_team(request):
     # """ - Update Team Information """
@@ -476,7 +476,7 @@ def update_team(request):
             return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def get_caregiver(request):
     # """ -Retrieve Caregiver Details for an Account """
@@ -499,7 +499,7 @@ def get_caregiver(request):
         return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def update_caregiver(request):
     # """ -Updates Account's Caregiver Information. """
@@ -532,7 +532,7 @@ def update_caregiver(request):
             return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def profile(request, account_id):
     # """ -Retrieve Profile With Account ID """
 
@@ -544,7 +544,7 @@ def profile(request, account_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def nearme(request):
     caregivers = CareGiver.objects.all()
     careseekers = CareSeeker.objects.all()
@@ -591,7 +591,7 @@ def nearme(request):
             return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def caregiver_info(request, account_id):
     # """ -Retrieve Caregiver Details for an Account """
 
@@ -602,7 +602,7 @@ def caregiver_info(request, account_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def caregiver_profile(request):
     email = request.GET.get('email')
     account = Account.objects.get(email=email)
@@ -619,7 +619,7 @@ def caregiver_profile(request):
     return composeJsonResponse(200, '', context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def careseeker_profile(request):
     email = request.GET.get('email')
     account = Account.objects.get(email=email)
@@ -638,7 +638,7 @@ def careseeker_profile(request):
     return composeJsonResponse(200, '', context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def connect(request):
     sender = request.user.email

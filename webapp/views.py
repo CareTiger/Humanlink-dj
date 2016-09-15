@@ -29,7 +29,6 @@ def check_availability(request, email):
     data = check_account_availability(email)
     return data
 
-
 def home(request):
     if request.user.is_active:
 
@@ -52,7 +51,7 @@ def home(request):
                       context_instance=RequestContext(request))
 
 
-# @login_required
+@login_required(login_url='/home/login/')
 def app(request):
     account = Account.objects.get(email=request.user.email)
     try:
@@ -77,7 +76,7 @@ def app(request):
     return render(request, "dashboard/index.html", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def settings(request):
     account = Account.objects.get(email=request.user.email)
     context = {

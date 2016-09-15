@@ -21,7 +21,7 @@ from pusher.pusher import Pusher
 from account.views import broadcast
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def get_threads(request):
     # """Get list of all the threads for the account."""
 
@@ -68,7 +68,7 @@ def get_threads(request):
     return composeJsonResponse(200, "", threads)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def new_thread(request):
     # """Create a new thread."""
@@ -104,7 +104,7 @@ def new_thread(request):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def update_purpose(request, thread_id):
     # """Retrieve and update thread information."""
@@ -136,7 +136,7 @@ def update_purpose(request, thread_id):
             return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def send(request, thread_id):
     # """Send a message to the thread."""
@@ -170,7 +170,7 @@ def send(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def history(request, thread_id):
     # """Retrieve messages history for the thread up until `ts`."""
@@ -320,7 +320,7 @@ def thread_invite(request, token):
     return composeJsonResponse(200, '', context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def leave(request, thread_id):
     # """Leave the thread."""
@@ -335,7 +335,7 @@ def leave(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def remove(request, thread_id, member_id):
     # """Remove a user from the thread."""
@@ -350,7 +350,7 @@ def remove(request, thread_id, member_id):
         return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 @csrf_exempt
 def archive(request, thread_id):
     # """Archive the thread."""
@@ -371,7 +371,7 @@ def archive(request, thread_id):
     return composeJsonResponse(200, "", context)
 
 
-@login_required
+@login_required(login_url='/home/login/')
 def unarchive(thread_id):
     # """Un-archive the thread."""
 
