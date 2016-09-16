@@ -129,6 +129,45 @@
     }
 })();
 /**
+ * Admin module.
+ */
+(function () {
+    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
+    angular
+        .module('Admin', [
+            'ui.bootstrap',
+            'checklist-model',
+            'Common'
+        ])
+        .config(Config);
+
+    /** ngInject */
+    function Config($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+            .state('admin', {
+                abstract: true,
+                templateUrl: '/views/admin/partials/base_admin.html',
+                data: {
+                    // role: userSessionProvider.roles.AUTHORIZED
+                }
+            })
+            .state('admin.verification', {
+                url: '/verification',
+                templateUrl: '/views/admin/partials/verification.html',
+                controller: 'verificationCtrl'
+            })
+            .state('admin.password', {
+                url: '/password',
+                templateUrl: '/views/admin/partials/password.html',
+                controller: 'passwordCtrl'
+            });
+    }
+
+})();
+/**
  * A module that has common directives, services, constants, etc.
  */
 (function () {
@@ -282,45 +321,6 @@
 
 })();
 /**
- * Admin module.
- */
-(function () {
-    Config.$inject = ["$stateProvider", "$urlRouterProvider"];
-    angular
-        .module('Admin', [
-            'ui.bootstrap',
-            'checklist-model',
-            'Common'
-        ])
-        .config(Config);
-
-    /** ngInject */
-    function Config($stateProvider, $urlRouterProvider) {
-
-        $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('admin', {
-                abstract: true,
-                templateUrl: '/views/admin/partials/base_admin.html',
-                data: {
-                    // role: userSessionProvider.roles.AUTHORIZED
-                }
-            })
-            .state('admin.verification', {
-                url: '/verification',
-                templateUrl: '/views/admin/partials/verification.html',
-                controller: 'verificationCtrl'
-            })
-            .state('admin.password', {
-                url: '/password',
-                templateUrl: '/views/admin/partials/password.html',
-                controller: 'passwordCtrl'
-            });
-    }
-
-})();
-/**
  * Dashboard module.
  */
 (function () {
@@ -416,80 +416,6 @@
 
 
 })();
-Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
-		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
-var home = angular.module('Home', ['ui.router']).config(Config)
-
-function Config($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
-
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
-                controller: 'homeBaseCtrl'
-            })
-            .state('caregiver', {
-                url: '/caregiver',
-                templateUrl: '/static/templates/home/partials/caregiver.html',
-                controller: 'caregiverCtrl'
-            })
-            .state('search', {
-                url: '/search',
-                templateUrl: '/static/templates/home/partials/search.html',
-                controller: 'searchCtrl'
-            })
-            .state('faq', {
-                url: '/faq',
-                templateUrl: '/static/templates/home/partials/faq.html',
-                controller: 'faqCtrl'
-            })
-            .state('previewProviderProfile', {
-                url: '/previewProviderProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
-                controller: 'previewProviderProfileCtrl'
-            })
-            .state('previewSeekerProfile', {
-                url: '/previewSeekerProfile/:account_id',
-                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
-                controller: 'previewSeekerProfileCtrl'
-            })
-            .state('careseeker', {
-                url: '/careseeker',
-                templateUrl: '/static/templates/home/partials/careseeker.html',
-                controller: 'careseekerCtrl'
-            })
-            .state('aboutus', {
-                url: '/aboutus',
-                templateUrl: '/static/templates/home/partials/about_us.html',
-                controller: 'aboutusCtrl'
-            })
-            .state('terms', {
-                url: '/terms',
-                templateUrl: '/static/templates/home/partials/terms.html',
-                controller: 'termsCtrl'
-            })
-            .state('privacy', {
-                url: '/privacy',
-                templateUrl: '/static/templates/home/partials/privacy.html',
-                controller: 'privacyCtrl'
-            })
-            .state('press', {
-                url: '/press',
-                templateUrl: '/static/templates/home/partials/press.html',
-                controller: 'pressCtrl'
-            })
-            .state('interest', {
-                url: '/interest',
-                templateUrl: '/static/templates/home/partials/interest.html',
-                controller: 'interestCtrl'
-            })
-            .state('pricing', {
-                url: '/pricing',
-                templateUrl: '/static/templates/home/partials/pricing.html',
-                controller: 'pricingCtrl'
-            });
-}
 /**
  * Guest module.
  */
@@ -617,15 +543,80 @@ function Config($stateProvider, $urlRouterProvider){
     }
 
 })();
-/**
- * Repository module that communicates with the backend APIs.
- */
-(function () {
-    'use strict';
+Config.$inject = ["$stateProvider", "$urlRouterProvider", "$locationProvider",
+		 		  "$urlMatcherFactoryProvider", "$httpProvider"];
+var home = angular.module('Home', ['ui.router']).config(Config)
 
-    angular.module('app.repo', []);
+function Config($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
 
-})();
+        $stateProvider
+            .state('home', {
+                url: '/',
+                templateUrl: '/static/templates/home/partials/home.html',
+                controller: 'homeBaseCtrl'
+            })
+            .state('caregiver', {
+                url: '/caregiver',
+                templateUrl: '/static/templates/home/partials/caregiver.html',
+                controller: 'caregiverCtrl'
+            })
+            .state('search', {
+                url: '/search',
+                templateUrl: '/static/templates/home/partials/search.html',
+                controller: 'searchCtrl'
+            })
+            .state('faq', {
+                url: '/faq',
+                templateUrl: '/static/templates/home/partials/faq.html',
+                controller: 'faqCtrl'
+            })
+            .state('previewProviderProfile', {
+                url: '/previewProviderProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewProviderProfile.html',
+                controller: 'previewProviderProfileCtrl'
+            })
+            .state('previewSeekerProfile', {
+                url: '/previewSeekerProfile/:account_id',
+                templateUrl: '/static/templates/home/partials/previewSeekerProfile.html',
+                controller: 'previewSeekerProfileCtrl'
+            })
+            .state('careseeker', {
+                url: '/careseeker',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
+                controller: 'careseekerCtrl'
+            })
+            .state('aboutus', {
+                url: '/aboutus',
+                templateUrl: '/static/templates/home/partials/about_us.html',
+                controller: 'aboutusCtrl'
+            })
+            .state('terms', {
+                url: '/terms',
+                templateUrl: '/static/templates/home/partials/terms.html',
+                controller: 'termsCtrl'
+            })
+            .state('privacy', {
+                url: '/privacy',
+                templateUrl: '/static/templates/home/partials/privacy.html',
+                controller: 'privacyCtrl'
+            })
+            .state('press', {
+                url: '/press',
+                templateUrl: '/static/templates/home/partials/press.html',
+                controller: 'pressCtrl'
+            })
+            .state('interest', {
+                url: '/interest',
+                templateUrl: '/static/templates/home/partials/interest.html',
+                controller: 'interestCtrl'
+            })
+            .state('pricing', {
+                url: '/pricing',
+                templateUrl: '/static/templates/home/partials/pricing.html',
+                controller: 'pricingCtrl'
+            });
+}
 /**
  * Nearme module.
  */
@@ -672,6 +663,15 @@ function Config($stateProvider, $urlRouterProvider){
 
 })();
 
+/**
+ * Repository module that communicates with the backend APIs.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.repo', []);
+
+})();
 /**
  * Settings module.
  */
@@ -1522,122 +1522,6 @@ angular
 
 })();
 /**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
-/**
- * Dashboard helper/bootstraper.
- */
-(function () {
-    'use strict';
-
-    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('DashboardHelper', DashboardHelper);
-
-    /** ngInject */
-    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
-                             MessagesService, Session) {
-
-        return {
-            initialize: init
-        };
-
-        /**
-         * Bootstraps the Dashboard module, specifically:
-         *   - Fetches org summary
-         *   - Fetches thread messages
-         *   - Binds pusher events.
-         */
-        function init() {
-            var threadsPr = MessagesService.getThreads().then(function (threads) {
-                // Asynchronously fetch thread histories.
-                // TODO: Delay won't be necessary once all templates are in one place.
-                $timeout(function () {fetchThreads(threads)}, 100);
-                return threads;
-            });
-            var pusherPr = bindPusher();
-            return $q.all([threadsPr, pusherPr]);
-        //    remember to put pusherPr back into array on line above next to threadsPr
-        }
-
-        /**
-         * Fetches history for all the threads in the org.
-         *
-         * TODO: only fetch recent 3-5 threads.
-         */
-        function fetchThreads(threads) {
-            threads[0].forEach(function (thread) {
-                if (thread.is_archived) {
-                    return;
-                }
-                MessagesService.getHistory(thread.id);
-            });
-        }
-
-        /**
-         * Subscribes to user's Pusher channel and binds callback events.
-         */
-        function bindPusher() {
-            var defer = $q.defer();
-            var channelName = 'public-account-' + Session.account.id;
-            var channel = $pusher.client.subscribe(channelName);
-
-            /** - Used for testing Pusher.com - delete when Pusher testing is not required
-            channel.bind('my_event', function(data) {
-                alert('There\'s a new chat !');
-            });
-             */
-
-            channel.bind('pusher:subscription_succeeded', function (data) {
-                $log.debug('Pusher subscribed: ' + channel.name);
-                PushListener.bindAndListen(channel);
-                defer.resolve(data);
-            });
-            channel.bind('pusher:subscription_error', function (status) {
-                if (status === 403) {
-                    var msg = 'Pusher channel not authorized.';
-                    $log.warn(msg);
-                    defer.reject(msg);
-                }
-            });
-
-            return defer.promise;
-        }
-    }
-
-})();
-/**
  * Created by timothybaney on 5/16/16.
  */
 'use strict';
@@ -1882,6 +1766,122 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+/**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+/**
+ * Dashboard helper/bootstraper.
+ */
+(function () {
+    'use strict';
+
+    DashboardHelper.$inject = ["$q", "$log", "$timeout", "$pusher", "PushListener", "MessagesService", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('DashboardHelper', DashboardHelper);
+
+    /** ngInject */
+    function DashboardHelper($q, $log, $timeout, $pusher, PushListener,
+                             MessagesService, Session) {
+
+        return {
+            initialize: init
+        };
+
+        /**
+         * Bootstraps the Dashboard module, specifically:
+         *   - Fetches org summary
+         *   - Fetches thread messages
+         *   - Binds pusher events.
+         */
+        function init() {
+            var threadsPr = MessagesService.getThreads().then(function (threads) {
+                // Asynchronously fetch thread histories.
+                // TODO: Delay won't be necessary once all templates are in one place.
+                $timeout(function () {fetchThreads(threads)}, 100);
+                return threads;
+            });
+            var pusherPr = bindPusher();
+            return $q.all([threadsPr, pusherPr]);
+        //    remember to put pusherPr back into array on line above next to threadsPr
+        }
+
+        /**
+         * Fetches history for all the threads in the org.
+         *
+         * TODO: only fetch recent 3-5 threads.
+         */
+        function fetchThreads(threads) {
+            threads[0].forEach(function (thread) {
+                if (thread.is_archived) {
+                    return;
+                }
+                MessagesService.getHistory(thread.id);
+            });
+        }
+
+        /**
+         * Subscribes to user's Pusher channel and binds callback events.
+         */
+        function bindPusher() {
+            var defer = $q.defer();
+            var channelName = 'public-account-' + Session.account.id;
+            var channel = $pusher.client.subscribe(channelName);
+
+            /** - Used for testing Pusher.com - delete when Pusher testing is not required
+            channel.bind('my_event', function(data) {
+                alert('There\'s a new chat !');
+            });
+             */
+
+            channel.bind('pusher:subscription_succeeded', function (data) {
+                $log.debug('Pusher subscribed: ' + channel.name);
+                PushListener.bindAndListen(channel);
+                defer.resolve(data);
+            });
+            channel.bind('pusher:subscription_error', function (status) {
+                if (status === 403) {
+                    var msg = 'Pusher channel not authorized.';
+                    $log.warn(msg);
+                    defer.reject(msg);
+                }
+            });
+
+            return defer.promise;
+        }
+    }
+
+})();
 (function () {
     'use strict';
 
@@ -3010,10 +3010,10 @@ angular
             } else {
                 vm.team.cough_assist = 'False';
             }
-            if (vm.team.meal_prep){
-                vm.team.meal_prep = 'True';
+            if (vm.team.adaptive_utensil){
+                vm.team.adaptive_utensil = 'True';
             } else {
-                vm.team.meal_prep = 'False';
+                vm.team.adaptive_utensil = 'False';
             }
             AccountRepo.updateTeam(model).then(
                 function (data) {
@@ -3801,6 +3801,95 @@ angular
  * Created by timothybaney on 5/16/16.
  */
 
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
+        function ($scope, $http, userSession) {
+
+            $scope.updatePassword = function (model) {
+                $http.post('/post_admin_password', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+
+        }]);
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
+'use strict';
+
+/**
+ * Base controller for the home module.
+ */
+angular
+    .module('Admin')
+    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
+        function ($scope, $http, $window, userSession) {
+
+            $scope.verificationModel = {};
+            $scope.usr = userSession;
+            var account_email = $scope.usr.userdata.email;
+
+            $scope.getVerification = function (model) {
+                $http({
+                    url: '/get_admin_verification',
+                    method: "GET",
+                    params: {email: model.email, account_email: account_email}
+                }).then(function (response) {
+                    $scope.verificationModel = response.data;
+                }, function (response) {
+                    $scope.siteAlert.type = "danger";
+                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
+                });
+            };
+
+            $scope.updateVerification = function (model) {
+                console.log(model);
+                $http.post('/post_admin_verification', model)
+                    .success(function (data, status) {
+                        $scope.siteAlert.type = "success";
+                        $scope.siteAlert.message = "Your settings were updated successfully.";
+                    })
+                    .error(function () {
+                        $scope.siteAlert.type = "danger";
+                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
+                    });
+
+            };
+        }]);
+
+/**
+ * Created by timothybaney on 5/16/16.
+ */
+
 angular
     .module('Common')
     .constant('Constants', window.HL.constants);
@@ -4149,95 +4238,6 @@ angular
     .module('Common')
     .constant('Constants', window.HL.constants);
 /**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('adminBaseCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('passwordCtrl', ['$scope', '$http', 'userSession',
-        function ($scope, $http, userSession) {
-
-            $scope.updatePassword = function (model) {
-                $http.post('/post_admin_password', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-
-        }]);
-/**
- * Created by timothybaney on 5/16/16.
- */
-
-'use strict';
-
-/**
- * Base controller for the home module.
- */
-angular
-    .module('Admin')
-    .controller('verificationCtrl', ['$scope', '$http', '$window', 'userSession',
-        function ($scope, $http, $window, userSession) {
-
-            $scope.verificationModel = {};
-            $scope.usr = userSession;
-            var account_email = $scope.usr.userdata.email;
-
-            $scope.getVerification = function (model) {
-                $http({
-                    url: '/get_admin_verification',
-                    method: "GET",
-                    params: {email: model.email, account_email: account_email}
-                }).then(function (response) {
-                    $scope.verificationModel = response.data;
-                }, function (response) {
-                    $scope.siteAlert.type = "danger";
-                    $scope.siteAlert.message = ("Oops. " + response.status + " Error. Please try again.");
-                });
-            };
-
-            $scope.updateVerification = function (model) {
-                console.log(model);
-                $http.post('/post_admin_verification', model)
-                    .success(function (data, status) {
-                        $scope.siteAlert.type = "success";
-                        $scope.siteAlert.message = "Your settings were updated successfully.";
-                    })
-                    .error(function () {
-                        $scope.siteAlert.type = "danger";
-                        $scope.siteAlert.message = "Oops. There was a problem. Please try again.";
-                    });
-
-            };
-        }]);
-
-/**
  * Parent controller of the dashboard module.
  */
 (function () {
@@ -4440,6 +4440,514 @@ angular
     }
 
 })();
+/**
+ *
+ */
+(function () {
+    'use strict';
+
+    AccountService.$inject = ["$log", "$q", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('AccountService', AccountService);
+
+    /** @ngInject */
+    function AccountService($log, $q, Session) {
+
+        return {
+            isAccountMe: isAccountMe,
+            accountName: getAccountName
+        };
+
+        /**
+         * Checks if the account ID is the same as the logged in user's.
+         *
+         * @param accountId:
+         * @return {Account|false}
+         */
+        function isAccountMe(accountId) {
+            return Session.account.id === parseInt(accountId);
+        }
+
+        /**
+         * Returns account name.
+         * @param member: Account object
+         * @returns {String}
+         */
+        function getAccountName(profile) {
+            if (profile.name.trim()) {
+                return profile.name;
+            }
+            var name = profile.first;
+            if (profile.last) {
+                name += ' ' + profile.last;
+            }
+            if (!name) {
+                name = profile.username || profile.email || 'Unnamed';
+            }
+            profile.name = name;
+            return name;
+        }
+    }
+})();
+
+/**
+ * Provides an interface to register thread message formatters such
+ * as markdown, autolinks, mentions, URL previews, etc.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.dashboard')
+        .factory('MessageFormatter', MessageFormatter);
+
+    /** ngInject */
+    function MessageFormatter() {
+
+        var fact = {};
+
+        /**
+         * Array of functions to execute whenever the `run` method is called.
+         * The functions are called in array order, each passing its return
+         * value through to the next.
+         */
+        fact.formatters = [];
+        fact.run = run;
+
+        return fact;
+
+        function run(value) {
+            fact.formatters.forEach(function (fmt) {
+                value = fmt(value);
+            });
+            return value;
+        }
+
+    }
+
+})();
+/**
+ * Messages service.
+ */
+(function () {
+    'use strict';
+
+    MessagesService.$inject = ["$q", "$log", "$state", "underscore", "MessagesRepo"];
+    angular
+        .module('app.dashboard')
+        .factory('MessagesService', MessagesService);
+
+    /** ngInject */
+    function MessagesService($q, $log, $state, underscore, MessagesRepo) {
+        var self = this;
+
+        var cache = {
+            threads: null,
+            threadsIndexed: null,
+            // thread_id => messages mapping.
+            messages: {}
+        };
+
+        return {
+            append: append,
+            getThreads: getThreads,
+            getHistory: getHistory,
+            getThreadInfo: getThreadInfo,
+            send: send,
+            navigateToThread: navigateToThread
+        };
+
+        /**
+         * Returns list of threads the user is member of.
+
+         * @param forceRemote: if true, forces a remote request.
+         * @return {Promise -> Array}
+         */
+        function getThreads(forceRemote) {
+            if (cache.threads && !forceRemote) {
+                return $q.when(cache.threads);
+            }
+            return MessagesRepo.fetchThreads()
+                .then(function (threads) {
+                threads.threads.forEach(function (thread) {
+                    thread.membersIndexed = underscore.indexBy(thread.members, 'account');
+                });
+
+                cache.threads = underscore.sortBy(threads, 'name');
+                cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
+
+                return cache.threads;
+            });
+        }
+
+        /**
+         * Returns a cached thread history.
+         *
+         * The content of the array may change after the return call.
+         * (e.g a message is posted or removed).
+         *
+         * Be careful modifying the content of the returned array as it
+         * may have side affects.
+         *
+         * @param threadId
+         * @param forceRemote: if true, forces a remote request.
+         *
+         * @return {Promise -> Array} messages
+         */
+        function getHistory(threadId, forceRemote) {
+            threadId = parseInt(threadId);
+            if (cache.messages[threadId] && !forceRemote) {
+                    return $q.when(cache.messages[threadId]);
+            }
+            return MessagesRepo.fetchHistory(threadId).then(function (thread) {
+                cache.messages[threadId] = thread.all_chats.slice().reverse();
+                return cache.messages[threadId];
+            });
+        }
+
+        /**
+         * Appends a message to the end of the cached messages.
+         *
+         * @param threadId
+         * @param message
+         * @return {Promise -> Array}
+         */
+        function append(threadId, message) {
+            threadId = parseInt(threadId);
+            return getHistory(threadId).then(function (messages) {
+                if (!messages) {
+                    $log.warn('Trying to append to a non-existing thread.');
+                    return;
+                }
+
+                message = JSON.parse(message);
+
+                var newMessage = {
+                    'account': {
+                        'gravatar_url': message['gravatar_url'],
+                        'name': message['name']
+                    },
+                    'created': message['created'],
+                    'kind': 0,
+                    'remover': null,
+                    'text': message['text']
+
+                }
+
+                console.log(message);
+                //console.log('messages before');
+                //console.log(messages);
+                messages.push(newMessage);
+                //console.log('messages after');
+                console.log(messages);
+                return messages;
+            });
+        }
+
+        /**
+         * Post a new message to a thread.
+         *
+         * TODO: add a temporary message while sending is in progress.
+         *
+         * @param model
+         * @return {Promise -> Object}
+         */
+        function send(threadId, model) {
+            threadId = parseInt(threadId);
+            return MessagesRepo.send(threadId, model);
+        }
+
+        /**
+         * Returns cached thread information.
+         *
+         * @param threadId
+         * @return {Thread}
+         */
+        function getThreadInfo(threadId) {
+            threadId = parseInt(threadId);
+            console.log(threadId)
+            return cache.threadsIndexed[threadId];
+        }
+
+        /**
+         * Navigates to a thread view.
+         * @param threadId
+         */
+        function navigateToThread(threadId) {
+            var thread = getThreadInfo(threadId);
+            return $state.go('dashboard.messages', {
+                threadId: thread.id,
+                owner: thread.owner.id,
+                thread: thread.name
+            });
+        }
+    }
+
+})();
+/**
+ * HTML5 notifications.
+ * Docs: https://developer.mozilla.org/en-US/docs/Web/API/notification
+ *
+ * This service is a generic wrapper around the HTML5 Notification API.
+ */
+(function () {
+    'use strict';
+
+    NotificationManager.$inject = ["$window", "$timeout", "$q"];
+    angular
+        .module('app.dashboard')
+        .factory('NotificationManager', NotificationManager);
+
+    /** ngInject */
+    function NotificationManager($window, $timeout, $q) {
+
+        var notif = {
+            permission: null,
+            isGranted: isGranted,
+            requestPermission: requestPermission,
+            showNotification: showNotification
+        };
+
+        if ($window.Notification) {
+            notif.permission = Notification.permission;
+        }
+
+        return notif;
+
+        /**
+         * Wraps `Notification.requestPermission` in a promise;
+         * @return {Promise}
+         */
+        function requestPermission() {
+            var defer = $q.defer();
+
+            if (!$window.Notification) {
+                return defer.reject('HTML5 Notification not supported.');
+            }
+            if (isGranted()) {
+                return defer.resolve(Notification.permission);
+            }
+            Notification.requestPermission(function (permission) {
+                if (Notification.permission != permission) {
+                    Notification.permission = permission;
+                }
+                notif.permission = permission;
+                return defer.resolve(permission);
+            });
+
+            return defer.promise;
+        }
+
+        /**
+         * Displays a notification for 10 seconds.
+         *
+         * See `window.Notification` for argument descriptions.
+         *
+         * @return {window.Notification | undefined}
+         */
+        function showNotification(title, options, onclick) {
+            if ($window.document.hasFocus() || !isGranted()) {
+                return;
+            }
+            var n = new Notification(title, options);
+            if (angular.isFunction(onclick)) {
+                n.onclick = onclick;
+            }
+            $timeout(n.close.bind(n), 10000);
+            return n;
+        }
+
+        function isGranted() {
+            return $window.Notification && Notification.permission === 'granted';
+        }
+
+    }
+
+})();
+/**
+ * Notifications service.
+ */
+(function () {
+    'use strict';
+
+    Notifications.$inject = ["$window", "AccountService", "MessagesService", "NotificationManager"];
+    angular
+        .module('app.dashboard')
+        .factory('Notifications', Notifications);
+
+    /** ngInject */
+    function Notifications($window, AccountService, MessagesService,
+                           NotificationManager) {
+
+        return {
+            newMessage: newMessage
+        };
+
+        /**
+         * Displays a new message notification.
+         * @param threadId
+         * @param chat
+         */
+        function newMessage(threadId, chat) {
+            if (!displayOk() || chat.kind !== 0 || AccountService.isAccountMe(chat.account_id)) {
+                return;
+            }
+            var thread = MessagesService.getThreadInfo(threadId);
+            var account = thread.membersIndexed[chat.account_id];
+            var title = thread.name;
+            var body = AccountService.accountName(account.profile) + ': ' + chat.text;
+
+            NotificationManager.showNotification(title, {
+                body: body,
+                icon: thread.membersIndexed[chat.account_id].profile.gravatar_url,
+                tag: 'main'
+            }, onclick);
+
+            function onclick() {
+                $window.focus();
+                MessagesService.navigateToThread(thread.id);
+            }
+        }
+
+        function displayOk() {
+            return !$window.document.hasFocus() && NotificationManager.isGranted();
+        }
+
+    }
+
+})();
+/**
+ * Various helper methods for working with orgs and org members.
+ */
+(function () {
+    'use strict';
+
+    OrgService.$inject = ["$q", "underscore", "OrgsRepo", "Session"];
+    angular
+        .module('app.dashboard')
+        .factory('OrgService', OrgService);
+
+    /** @ngInject */
+    function OrgService($q, underscore, OrgsRepo, Session) {
+
+        var cache = {
+            orgs: null,
+            allThreads: {},
+            allMembers: {}
+        };
+
+        return {
+            cache: cache,
+            getSummary: getSummary,
+            getOrgByUsername: getOrgByUsername
+        };
+
+        /**
+         * Gets org summary.
+         *
+         * @return {Promise}
+         */
+        function getSummary() {
+            if (cache.orgs) {
+                return $q.when(cache.orgs);
+            }
+            return OrgsRepo.fetchSummary().then(function (orgs) {
+                orgs.all_orgs.forEach(butter);
+                cache.orgs = orgs.all_orgs;
+                return cache.orgs;
+            });
+
+            function butter(org) {
+                if (org.members) {
+                    org.membersIndexed = underscore.indexBy(org.members, 'id');
+                    angular.extend(cache.allMembers, org.membersIndexed);
+                }
+                if (org.threads) {
+                    org.threads = underscore.sortBy(org.threads, 'name');
+                    org.threadsIndexed = underscore.indexBy(org.threads, 'id');
+                    angular.extend(cache.allThreads, org.threadsIndexed);
+                }
+                return org;
+            }
+        }
+
+        /**
+         * Returns an org by username.
+         * @param username
+         * @return {Promise}
+         */
+        function getOrgByUsername(username) {
+            return getSummary().then(function (orgs) {
+                return underscore.findWhere(orgs, {username: username});
+            });
+        }
+
+    }
+
+})();
+/**
+ * Dashboard push notification listeners.
+ *
+ * This service is responsible for listening and dispatching events
+ * that were sent from Pusher.
+ */
+(function () {
+    'use strict';
+
+    PushListener.$inject = ["$log", "$rootScope", "CommonService", "Notifications", "MessagesService"];
+    angular
+        .module('app.dashboard')
+        .factory('PushListener', PushListener);
+
+    /** ngInject */
+    function PushListener($log, $rootScope, CommonService,
+                          Notifications, MessagesService) {
+
+        var EVENTS = {
+            newMessage: 'message.new',
+            threadCreated: 'thread.created'
+
+        };
+
+        // New message listener.
+        CommonService.on(EVENTS.newMessage, onNewMessage);
+
+        return {
+            bindAndListen: bindAndListen
+        };
+
+        /**
+         * Bind pre-defined user events to the given Pusher channel.
+         *
+         * This method simply re-broadcasts those events at the $rootScope level
+         * so that anybody can subscribe at an application level.
+         *
+         * @param channel user's private channel
+         */
+        function bindAndListen(channel) {
+            angular.forEach(EVENTS, function (name, key) {
+                channel.bind(name, function (data) {
+                    CommonService.broadcast(name, data);
+                    digest();
+                });
+            });
+        }
+
+        function onNewMessage(scope, data) {
+            $log.debug(EVENTS.newMessage + ': on');
+            MessagesService.append(data.thread_id, data.chat);
+            Notifications.newMessage(data.thread_id, data.chat);
+        }
+
+        function digest () {
+            $rootScope.$digest();
+        }
+
+    }
+
+})();
+
 /**
  *  Controller for the team view.
  */
@@ -6006,514 +6514,6 @@ angular
 
 
     }]);
-/**
- *
- */
-(function () {
-    'use strict';
-
-    AccountService.$inject = ["$log", "$q", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('AccountService', AccountService);
-
-    /** @ngInject */
-    function AccountService($log, $q, Session) {
-
-        return {
-            isAccountMe: isAccountMe,
-            accountName: getAccountName
-        };
-
-        /**
-         * Checks if the account ID is the same as the logged in user's.
-         *
-         * @param accountId:
-         * @return {Account|false}
-         */
-        function isAccountMe(accountId) {
-            return Session.account.id === parseInt(accountId);
-        }
-
-        /**
-         * Returns account name.
-         * @param member: Account object
-         * @returns {String}
-         */
-        function getAccountName(profile) {
-            if (profile.name.trim()) {
-                return profile.name;
-            }
-            var name = profile.first;
-            if (profile.last) {
-                name += ' ' + profile.last;
-            }
-            if (!name) {
-                name = profile.username || profile.email || 'Unnamed';
-            }
-            profile.name = name;
-            return name;
-        }
-    }
-})();
-
-/**
- * Provides an interface to register thread message formatters such
- * as markdown, autolinks, mentions, URL previews, etc.
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.dashboard')
-        .factory('MessageFormatter', MessageFormatter);
-
-    /** ngInject */
-    function MessageFormatter() {
-
-        var fact = {};
-
-        /**
-         * Array of functions to execute whenever the `run` method is called.
-         * The functions are called in array order, each passing its return
-         * value through to the next.
-         */
-        fact.formatters = [];
-        fact.run = run;
-
-        return fact;
-
-        function run(value) {
-            fact.formatters.forEach(function (fmt) {
-                value = fmt(value);
-            });
-            return value;
-        }
-
-    }
-
-})();
-/**
- * Messages service.
- */
-(function () {
-    'use strict';
-
-    MessagesService.$inject = ["$q", "$log", "$state", "underscore", "MessagesRepo"];
-    angular
-        .module('app.dashboard')
-        .factory('MessagesService', MessagesService);
-
-    /** ngInject */
-    function MessagesService($q, $log, $state, underscore, MessagesRepo) {
-        var self = this;
-
-        var cache = {
-            threads: null,
-            threadsIndexed: null,
-            // thread_id => messages mapping.
-            messages: {}
-        };
-
-        return {
-            append: append,
-            getThreads: getThreads,
-            getHistory: getHistory,
-            getThreadInfo: getThreadInfo,
-            send: send,
-            navigateToThread: navigateToThread
-        };
-
-        /**
-         * Returns list of threads the user is member of.
-
-         * @param forceRemote: if true, forces a remote request.
-         * @return {Promise -> Array}
-         */
-        function getThreads(forceRemote) {
-            if (cache.threads && !forceRemote) {
-                return $q.when(cache.threads);
-            }
-            return MessagesRepo.fetchThreads()
-                .then(function (threads) {
-                threads.threads.forEach(function (thread) {
-                    thread.membersIndexed = underscore.indexBy(thread.members, 'account');
-                });
-
-                cache.threads = underscore.sortBy(threads, 'name');
-                cache.threadsIndexed = underscore.indexBy(threads.threads, 'id');
-
-                return cache.threads;
-            });
-        }
-
-        /**
-         * Returns a cached thread history.
-         *
-         * The content of the array may change after the return call.
-         * (e.g a message is posted or removed).
-         *
-         * Be careful modifying the content of the returned array as it
-         * may have side affects.
-         *
-         * @param threadId
-         * @param forceRemote: if true, forces a remote request.
-         *
-         * @return {Promise -> Array} messages
-         */
-        function getHistory(threadId, forceRemote) {
-            threadId = parseInt(threadId);
-            if (cache.messages[threadId] && !forceRemote) {
-                    return $q.when(cache.messages[threadId]);
-            }
-            return MessagesRepo.fetchHistory(threadId).then(function (thread) {
-                cache.messages[threadId] = thread.all_chats.slice().reverse();
-                return cache.messages[threadId];
-            });
-        }
-
-        /**
-         * Appends a message to the end of the cached messages.
-         *
-         * @param threadId
-         * @param message
-         * @return {Promise -> Array}
-         */
-        function append(threadId, message) {
-            threadId = parseInt(threadId);
-            return getHistory(threadId).then(function (messages) {
-                if (!messages) {
-                    $log.warn('Trying to append to a non-existing thread.');
-                    return;
-                }
-
-                message = JSON.parse(message);
-
-                var newMessage = {
-                    'account': {
-                        'gravatar_url': message['gravatar_url'],
-                        'name': message['name']
-                    },
-                    'created': message['created'],
-                    'kind': 0,
-                    'remover': null,
-                    'text': message['text']
-
-                }
-
-                console.log(message);
-                //console.log('messages before');
-                //console.log(messages);
-                messages.push(newMessage);
-                //console.log('messages after');
-                console.log(messages);
-                return messages;
-            });
-        }
-
-        /**
-         * Post a new message to a thread.
-         *
-         * TODO: add a temporary message while sending is in progress.
-         *
-         * @param model
-         * @return {Promise -> Object}
-         */
-        function send(threadId, model) {
-            threadId = parseInt(threadId);
-            return MessagesRepo.send(threadId, model);
-        }
-
-        /**
-         * Returns cached thread information.
-         *
-         * @param threadId
-         * @return {Thread}
-         */
-        function getThreadInfo(threadId) {
-            threadId = parseInt(threadId);
-            console.log(threadId)
-            return cache.threadsIndexed[threadId];
-        }
-
-        /**
-         * Navigates to a thread view.
-         * @param threadId
-         */
-        function navigateToThread(threadId) {
-            var thread = getThreadInfo(threadId);
-            return $state.go('dashboard.messages', {
-                threadId: thread.id,
-                owner: thread.owner.id,
-                thread: thread.name
-            });
-        }
-    }
-
-})();
-/**
- * HTML5 notifications.
- * Docs: https://developer.mozilla.org/en-US/docs/Web/API/notification
- *
- * This service is a generic wrapper around the HTML5 Notification API.
- */
-(function () {
-    'use strict';
-
-    NotificationManager.$inject = ["$window", "$timeout", "$q"];
-    angular
-        .module('app.dashboard')
-        .factory('NotificationManager', NotificationManager);
-
-    /** ngInject */
-    function NotificationManager($window, $timeout, $q) {
-
-        var notif = {
-            permission: null,
-            isGranted: isGranted,
-            requestPermission: requestPermission,
-            showNotification: showNotification
-        };
-
-        if ($window.Notification) {
-            notif.permission = Notification.permission;
-        }
-
-        return notif;
-
-        /**
-         * Wraps `Notification.requestPermission` in a promise;
-         * @return {Promise}
-         */
-        function requestPermission() {
-            var defer = $q.defer();
-
-            if (!$window.Notification) {
-                return defer.reject('HTML5 Notification not supported.');
-            }
-            if (isGranted()) {
-                return defer.resolve(Notification.permission);
-            }
-            Notification.requestPermission(function (permission) {
-                if (Notification.permission != permission) {
-                    Notification.permission = permission;
-                }
-                notif.permission = permission;
-                return defer.resolve(permission);
-            });
-
-            return defer.promise;
-        }
-
-        /**
-         * Displays a notification for 10 seconds.
-         *
-         * See `window.Notification` for argument descriptions.
-         *
-         * @return {window.Notification | undefined}
-         */
-        function showNotification(title, options, onclick) {
-            if ($window.document.hasFocus() || !isGranted()) {
-                return;
-            }
-            var n = new Notification(title, options);
-            if (angular.isFunction(onclick)) {
-                n.onclick = onclick;
-            }
-            $timeout(n.close.bind(n), 10000);
-            return n;
-        }
-
-        function isGranted() {
-            return $window.Notification && Notification.permission === 'granted';
-        }
-
-    }
-
-})();
-/**
- * Notifications service.
- */
-(function () {
-    'use strict';
-
-    Notifications.$inject = ["$window", "AccountService", "MessagesService", "NotificationManager"];
-    angular
-        .module('app.dashboard')
-        .factory('Notifications', Notifications);
-
-    /** ngInject */
-    function Notifications($window, AccountService, MessagesService,
-                           NotificationManager) {
-
-        return {
-            newMessage: newMessage
-        };
-
-        /**
-         * Displays a new message notification.
-         * @param threadId
-         * @param chat
-         */
-        function newMessage(threadId, chat) {
-            if (!displayOk() || chat.kind !== 0 || AccountService.isAccountMe(chat.account_id)) {
-                return;
-            }
-            var thread = MessagesService.getThreadInfo(threadId);
-            var account = thread.membersIndexed[chat.account_id];
-            var title = thread.name;
-            var body = AccountService.accountName(account.profile) + ': ' + chat.text;
-
-            NotificationManager.showNotification(title, {
-                body: body,
-                icon: thread.membersIndexed[chat.account_id].profile.gravatar_url,
-                tag: 'main'
-            }, onclick);
-
-            function onclick() {
-                $window.focus();
-                MessagesService.navigateToThread(thread.id);
-            }
-        }
-
-        function displayOk() {
-            return !$window.document.hasFocus() && NotificationManager.isGranted();
-        }
-
-    }
-
-})();
-/**
- * Various helper methods for working with orgs and org members.
- */
-(function () {
-    'use strict';
-
-    OrgService.$inject = ["$q", "underscore", "OrgsRepo", "Session"];
-    angular
-        .module('app.dashboard')
-        .factory('OrgService', OrgService);
-
-    /** @ngInject */
-    function OrgService($q, underscore, OrgsRepo, Session) {
-
-        var cache = {
-            orgs: null,
-            allThreads: {},
-            allMembers: {}
-        };
-
-        return {
-            cache: cache,
-            getSummary: getSummary,
-            getOrgByUsername: getOrgByUsername
-        };
-
-        /**
-         * Gets org summary.
-         *
-         * @return {Promise}
-         */
-        function getSummary() {
-            if (cache.orgs) {
-                return $q.when(cache.orgs);
-            }
-            return OrgsRepo.fetchSummary().then(function (orgs) {
-                orgs.all_orgs.forEach(butter);
-                cache.orgs = orgs.all_orgs;
-                return cache.orgs;
-            });
-
-            function butter(org) {
-                if (org.members) {
-                    org.membersIndexed = underscore.indexBy(org.members, 'id');
-                    angular.extend(cache.allMembers, org.membersIndexed);
-                }
-                if (org.threads) {
-                    org.threads = underscore.sortBy(org.threads, 'name');
-                    org.threadsIndexed = underscore.indexBy(org.threads, 'id');
-                    angular.extend(cache.allThreads, org.threadsIndexed);
-                }
-                return org;
-            }
-        }
-
-        /**
-         * Returns an org by username.
-         * @param username
-         * @return {Promise}
-         */
-        function getOrgByUsername(username) {
-            return getSummary().then(function (orgs) {
-                return underscore.findWhere(orgs, {username: username});
-            });
-        }
-
-    }
-
-})();
-/**
- * Dashboard push notification listeners.
- *
- * This service is responsible for listening and dispatching events
- * that were sent from Pusher.
- */
-(function () {
-    'use strict';
-
-    PushListener.$inject = ["$log", "$rootScope", "CommonService", "Notifications", "MessagesService"];
-    angular
-        .module('app.dashboard')
-        .factory('PushListener', PushListener);
-
-    /** ngInject */
-    function PushListener($log, $rootScope, CommonService,
-                          Notifications, MessagesService) {
-
-        var EVENTS = {
-            newMessage: 'message.new',
-            threadCreated: 'thread.created'
-
-        };
-
-        // New message listener.
-        CommonService.on(EVENTS.newMessage, onNewMessage);
-
-        return {
-            bindAndListen: bindAndListen
-        };
-
-        /**
-         * Bind pre-defined user events to the given Pusher channel.
-         *
-         * This method simply re-broadcasts those events at the $rootScope level
-         * so that anybody can subscribe at an application level.
-         *
-         * @param channel user's private channel
-         */
-        function bindAndListen(channel) {
-            angular.forEach(EVENTS, function (name, key) {
-                channel.bind(name, function (data) {
-                    CommonService.broadcast(name, data);
-                    digest();
-                });
-            });
-        }
-
-        function onNewMessage(scope, data) {
-            $log.debug(EVENTS.newMessage + ': on');
-            MessagesService.append(data.thread_id, data.chat);
-            Notifications.newMessage(data.thread_id, data.chat);
-        }
-
-        function digest () {
-            $rootScope.$digest();
-        }
-
-    }
-
-})();
-
 /**
  * Parent controller of the nearme module.
  */

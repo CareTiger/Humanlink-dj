@@ -61,10 +61,10 @@
             } else {
                 vm.team.cough_assist = 'False';
             }
-            if (vm.team.meal_prep){
-                vm.team.meal_prep = 'True';
+            if (vm.team.adaptive_utensil){
+                vm.team.adaptive_utensil = 'True';
             } else {
-                vm.team.meal_prep = 'False';
+                vm.team.adaptive_utensil = 'False';
             }
             AccountRepo.updateTeam(model).then(
                 function (data) {

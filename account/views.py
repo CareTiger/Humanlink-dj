@@ -30,6 +30,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 import mandrill
 
+
 @login_required(login_url='/home/login/')
 def index(request):
     # """ -Return Account Template """
@@ -235,9 +236,11 @@ def signup(request):
                         if ThreadInvite.objects.filter(token=invite_token):
                             invitation = ThreadInvite.objects.get(token=invite_token)
                             thread = Thread.objects.get(id=invitation.thread.id)
-                            threadmember = ThreadMember.objects.filter(thread=thread, account=account)
+                            threadmember = ThreadMember.objects.filter(thread=thread,
+                                                                       account=account)
                             if not threadmember:
-                                ThreadMember.objects.create(thread=thread, account=account)
+                                ThreadMember.objects.create(thread=thread,
+                                                            account=account)
                         else:
                             invitation = OrgInvite.objects.get(token=invite_token)
                             if invitation.used:
@@ -432,7 +435,12 @@ def getTeam(request):
             'mission': team.mission,
             'website': team.website,
             'threadmembers': thrdmbr_array,
-            'public': team.public
+            'public': team.public,
+            'cough_assist': team.cough_assist,
+            'hoyer_lift': team.hoyer_lift,
+            'adaptive_utensil': team.adaptive_utensil,
+            'meal_prep': team.meal_prep,
+            'housekeeping': team.housekeeping,
         }
         return composeJsonResponse(200, "", context)
     except:
@@ -462,10 +470,10 @@ def update_team(request):
             team.website = cleaned_data['website']
             team.public = cleaned_data['public']
             team.hoyer_lift = cleaned_data['hoyer_lift']
-            #team.cough_assist = cleaned_data['cough_assist']
-            #team.adaptive_utensil = cleaned_data['adaptive_utensil']
-            #team.meal_prep = cleaned_data['meal_prep']
-            #team.housekeeping = cleaned_data['housekeeping']
+            team.cough_assist = cleaned_data['cough_assist']
+            team.adaptive_utensil = cleaned_data['adaptive_utensil']
+            team.meal_prep = cleaned_data['meal_prep']
+            team.housekeeping = cleaned_data['housekeeping']
             team.save()
 
             context = {
