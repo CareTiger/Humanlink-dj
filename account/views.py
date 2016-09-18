@@ -22,7 +22,7 @@ from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, Threa
 from org.models import Org, OrgInvite, OrgMember
 from pusher.pusher import Pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp, \
-    CareSeekerInfo, Nearme
+    CareSeekerInfo, Nearme, ResetPassword
 from django.contrib.auth import logout
 from django.http import QueryDict
 import ast
@@ -663,6 +663,30 @@ def connect(request):
 
     }
     return composeJsonResponse(200, '', context)
+
+
+@login_required(login_url='/home/login/')
+@csrf_exempt
+def reset_password(request):
+    # Reset the password
+
+    if request.method == 'POST':
+        print '############'
+        account = Account.objects.get(email=request.user.email)
+
+        form = ResetPassword(requestPost(request))
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            old_password = cleaned_data['old_password']
+            if account.check_password(old_password):
+                new_password = cleaned_data['new_password']
+                account.password = account._set_password(new_password)
+                account.save()
+
+        context = {
+            'message': 'ok'
+        }
+        return composeJsonResponse(200, '', context)
 
 
 def get_invite(token):

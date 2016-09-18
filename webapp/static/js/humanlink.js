@@ -1477,50 +1477,6 @@ angular
     }
 
 })();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .constant('CommonEvents', getEvents());
-
-    /**
-     * Common event names.
-     * @returns {{viewLoading: string, viewReady: string}}
-     */
-    function getEvents() {
-        return {
-            viewLoading: 'viewLoading',
-            viewReady: 'viewReady'
-        };
-    }
-
-})();
-/**
- * pusher-js wrapper as a factory.
- * Docs: https://github.com/pusher/pusher-js
- */
-(function () {
-    'use strict';
-
-    angular
-        .module('app.common')
-        .factory('$pusher', $pusher);
-
-    /** ngInject */
-    function $pusher() {
-        var self = this;
-        self.client = new Pusher('2676265f725e22f7e5d0', {
-          cluster: 'mt1',
-          encrypted: true
-        });
-
-        return {
-            client: self.client
-        };
-    }
-
-})();
 /**
  * Created by timothybaney on 5/16/16.
  */
@@ -1766,6 +1722,50 @@ window.HL = window.HL || {};
  * Created by timothybaney on 5/16/16.
  */
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .constant('CommonEvents', getEvents());
+
+    /**
+     * Common event names.
+     * @returns {{viewLoading: string, viewReady: string}}
+     */
+    function getEvents() {
+        return {
+            viewLoading: 'viewLoading',
+            viewReady: 'viewReady'
+        };
+    }
+
+})();
+/**
+ * pusher-js wrapper as a factory.
+ * Docs: https://github.com/pusher/pusher-js
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.common')
+        .factory('$pusher', $pusher);
+
+    /** ngInject */
+    function $pusher() {
+        var self = this;
+        self.client = new Pusher('2676265f725e22f7e5d0', {
+          cluster: 'mt1',
+          encrypted: true
+        });
+
+        return {
+            client: self.client
+        };
+    }
+
+})();
 /**
  * Created by timothybaney on 6/15/16.
  */
@@ -1982,6 +1982,7 @@ window.HL = window.HL || {};
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
+            resetPassword: resetPassword,
         };
 
         /**
@@ -2108,6 +2109,16 @@ window.HL = window.HL || {};
          */
         function get_caregivers() {
             return AbstractRepo.get('/accounts/search_caregivers/');
+        }
+
+        /**
+         * reset password information.
+         * @param model
+         * @returns {Promise}
+         */
+        function resetPassword(model) {
+            return AbstractRepo.post('accounts/reset_password/', model, false)
+                .then(apiGenericSuccess, genericError);
         }
 
         /**
@@ -2822,14 +2833,14 @@ window.HL = window.HL || {};
 (function () {
     'use strict';
 
-    Security.$inject = ["$scope", "SettingsRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    Security.$inject = ["$scope", "SettingsRepo", "AccountRepo", "CommonEvents", "SiteAlert"];
     angular
         .module('app.account')
         .controller('Security', Security);
 
     /* @ngInject */
     function Security($scope, SettingsRepo,
-                      CommonService, CommonEvents, SiteAlert) {
+                      AccountRepo, CommonEvents, SiteAlert) {
         var vm = this;
         vm.settings = null;
         vm.changePassword = changePassword;
@@ -2842,35 +2853,29 @@ window.HL = window.HL || {};
 
         vm.reasons = [
             {"value": 0, "name": "Duplicate", "description": "I have a duplicate account"},
-            {"value": 1, "name": "Dontneed", "description": "I don't need the services anymore."},
+            {"value": 1, "name": "Don't need", "description": "I don't need the services anymore."},
             {"value": 2, "name": "Different", "description": "I am using a different professional service."},
             {"value": 3, "name": "Other", "description": "Other Reasons"}
         ];
 
         init();
         function init() {
-            load();
-        }
-
-        function load() {
-            SettingsRepo.getSettings().then(function (data) {
-                CommonService.broadcast(CommonEvents.viewReady);
-            });
+            console.log('Update password');
         }
 
         function changePassword(model) {
             vm.submitBusy = true;
             vm.errorMessagePasswordChange = null;
 
-            SettingsRepo.changePassword(model).then(
-                function (data) {
+            AccountRepo.resetPassword(model).then(
+                function(data){
                     vm.submitBusy = false;
                     SiteAlert.success("Your password has been changed.");
                 },
                 function (data) {
                     vm.submitBusy = false;
                     vm.errorMessagePasswordChange = data;
-                });
+            });
         }
 
         function closeAccount(reason) {
@@ -2880,7 +2885,7 @@ window.HL = window.HL || {};
                 SettingsRepo.closeAccount(reason).then(
                     function (data) {
                         SiteAlert.success("Your account is now closed.");
-                        CommonService.hardRedirect('/logout');
+                        //CommonService.hardRedirect('/logout');
                     },
                     function (data) {
                         vm.submitBusy = false;

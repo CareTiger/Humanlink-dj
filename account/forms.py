@@ -52,6 +52,10 @@ class CareSeekerInfo(forms.ModelForm):
         fields = ['team_name', 'mission', 'website', 'public', 'hoyer_lift',
                   'cough_assist', 'adaptive_utensil', 'meal_prep', 'housekeeping']
 
+class ResetPassword(forms.Form):
+    old_password = forms.CharField(required=True)
+    new_password = forms.CharField(required=True)
+    new_password_confirm = forms.CharField(required=True)
 
 class AcceptInvite(forms.Form):
     email = forms.EmailField(required=True)

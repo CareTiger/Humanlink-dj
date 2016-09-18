@@ -28,6 +28,7 @@
             get_caregivers: get_caregivers,
             get_seekers: get_seekers,
             check_availability: check_availability,
+            resetPassword: resetPassword,
         };
 
         /**
@@ -154,6 +155,16 @@
          */
         function get_caregivers() {
             return AbstractRepo.get('/accounts/search_caregivers/');
+        }
+
+        /**
+         * reset password information.
+         * @param model
+         * @returns {Promise}
+         */
+        function resetPassword(model) {
+            return AbstractRepo.post('accounts/reset_password/', model, false)
+                .then(apiGenericSuccess, genericError);
         }
 
         /**
