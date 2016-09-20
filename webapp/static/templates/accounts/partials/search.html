@@ -15,24 +15,27 @@
 
 <form>
   <hr>
-  <h4><strong>Caregivers near me</strong></h4>
-  <ul class="row vmargin5" ng-repeat="cgvr in vm.nearme.caregivers">
-    <div ng-show="cgvr.public === true">
-      <h5>{{ cgvr.first }} {{ cgvr.last }}</h5>
-      <h5>Headline: {{ cgvr.headline }}</h5>
-      <h5>Bio: {{ cgvr.bio }}</h5>
-      <h5><a href="#/caregiverProfile/{{ cgvr.email }}">Read more...</a></h5>
+  <ul class="list-group">
+    <div ng-repeat="cgvr in vm.nearme.caregivers">
+      <div ng-show="cgvr.public === true">
+        <li class="list-group-item list-group-item-success">
+          <h5><strong>Name:</strong>{{ cgvr.first }} {{ cgvr.last }}</h5>
+          <h5><strong>Headline:</strong> {{ cgvr.headline }}</h5>
+          <h5><strong>Bio:</strong> {{ cgvr.bio }}</h5>
+          <h5><a href="#/caregiverProfile/{{ cgvr.email }}">Read more...</a></h5>
+        </li>
+      </div>
+    </div>
+    <div ng-repeat="cskr in vm.nearme.careseekers">
+      <div ng-show="cskr.public === true">
+        <li class="list-group-item list-group-item-info">
+          <h5><strong>Team Name:</strong> {{ cskr.team_name }}</h5>
+          <h5><strong>Mission:</strong> {{ cskr.mission }}</h5>
+          <h5><a href="#/careseekerProfile/{{ cskr.email }}">Read more...</a></h5>
+        </li>
+      </div>
     </div>
   </ul>
-</form>
-<form>
-  <hr>
-  <h4><strong>Careseekers near me</strong></h4>
-  <ul class="row vmargin5" ng-repeat="cskr in vm.nearme.careseekers">
-    <div ng-show="cskr.public === true">
-      <h5>{{ cskr.team_name }}</h5>
-      <h5>Mission: {{ cskr.mission }}</h5>
-      <h5><a href="#/careseekerProfile/{{ cskr.email }}">Read more...</a></h5>
-    </div>
+  <ul class="row vmargin5">
   </ul>
 </form>
