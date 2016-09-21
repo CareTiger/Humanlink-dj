@@ -567,9 +567,9 @@ def nearme(request):
             cleaned_data = form.cleaned_data
 
             # For Beta release we are not going to do a search string
-            print '***********'
-            print cleaned_data['search_string']
-            print '***********'
+            # print '***********'
+            # print cleaned_data['search_string']
+            # print '***********'
 
             for cgvr in caregivers:
                 cgvr_map = {

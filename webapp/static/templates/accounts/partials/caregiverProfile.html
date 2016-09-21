@@ -9,16 +9,18 @@
           <button class="btn btn-primary" ng-click="vm.connect()">Connect</button>
         </p>
       </div>
+    </div>
+    <hr>
+    <div class="row">
       <div class="col-md-9">
-        <h3><strong>{{profile.first_name}} {{profile.last_name}}</strong></h3>
-        <h4>Headline: <strong>{{vm.caregiverProfile.headline}}</strong></h4>
-        <h4>Bio: {{vm.caregiverProfile.bio}}</h4>
-        <h4>Education/Experience: {{vm.caregiverProfile.certificates}}</h4>
-        <h4>Living arrangements: {{vm.caregiverProfile.arrangements}}</h4>
-        <h4>Allergies: {{vm.caregiverProfile.bio}}</h4>
+        <h4>Caregiver name: {{ profile.first_name }} {{ profile.last_name }}</h4>
+        <h4>Headline: {{ vm.caregiverProfile.headline }}</h4>
+        <h4>Bio: {{ vm.caregiverProfile.bio }}</h4>
+        <h4>Education/Experience: {{ vm.caregiverProfile.certificates }}</h4>
+        <h4>Living arrangements: {{ vm.caregiverProfile.arrangements }}</h4>
+        <h4>Allergies: {{ vm.caregiverProfile.allergies }}</h4>
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-offset-3 col-md-9">
         <hr>
