@@ -677,8 +677,8 @@ def reset_password(request):
         form = ResetPassword(requestPost(request))
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            old_password = cleaned_data['old_password']
-            if account.check_password(old_password):
+            passwords_match = account.check_password(cleaned_data['old_password'])
+            if passwords_match:
                 new_password = cleaned_data['new_password']
                 account.password = account._set_password(new_password)
                 account.save()
