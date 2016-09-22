@@ -673,15 +673,24 @@ def reset_password(request):
     if request.method == 'POST':
         print '############'
         account = Account.objects.get(email=request.user.email)
+        session_user = request.user
 
         form = ResetPassword(requestPost(request))
+
         if form.is_valid():
             cleaned_data = form.cleaned_data
+
             passwords_match = account.check_password(cleaned_data['old_password'])
+
             if passwords_match:
                 new_password = cleaned_data['new_password']
                 account.password = account._set_password(new_password)
                 account.save()
+
+                # Updates the Django user with new password so authentication will work
+                session_user.set_password(cleaned_data['new_password'])
+                session_user.save()
+
 
         context = {
             'message': 'ok'
