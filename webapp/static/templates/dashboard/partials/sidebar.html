@@ -1,28 +1,46 @@
 <div class="teams">
 
   <div class="name row">
-
     <div class="title col-xs-6">Channels</div>
 
-    <div class="col-xs-3">
+    <div class="col-xs-4">
       <a title="Create new channel" ui-sref-active-eq="active"
          ui-sref="dashboard.new_thread">
-           <span class="glyphicon glyphicon-plus-sign"></span></a>
+        <span class="glyphicon glyphicon-plus-sign"></span></a>
     </div>
-
   </div>
 
   <ul class="list-unstyled">
     <div ng-repeat="thread in sidebar.threads">
-        <li ng-repeat="thread in thread track by thread.id">
-            <a class="item" ui-sref-active="active"
+      <li ng-repeat="thread in thread track by thread.id">
+        <div ng-hide="thread.is_archived">
+          <a class="item" ui-sref-active="active"
              ui-sref="dashboard.messages.default(
                 {owner: thread.owner.id, thread: thread.name, threadId: thread.id})">
-            <span class="archived" title="Archived" ng-if="thread.is_archived">[A]</span>
             {{ thread.name }}
-              <small>({{ thread.owner.email }})</small>
-            </a>
-        </li>
+            <small>({{ thread.owner.email }})</small>
+          </a>
+        </div>
+      </li>
+    </div>
+  </ul>
+
+  <div class="name row">
+    <div class="title col-xs-6">Archived</div>
+  </div>
+
+  <ul class="list-unstyled">
+    <div ng-repeat="thread in sidebar.threads">
+      <li ng-repeat="thread in thread track by thread.id">
+        <div ng-show="thread.is_archived">
+          <a class="item" ui-sref-active="active"
+             ui-sref="dashboard.messages.default(
+                {owner: thread.owner.id, thread: thread.name, threadId: thread.id})">
+            {{ thread.name }}
+            <small>({{ thread.owner.email }})</small>
+          </a>
+        </div>
+      </li>
     </div>
   </ul>
 
