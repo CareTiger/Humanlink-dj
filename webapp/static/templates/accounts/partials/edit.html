@@ -116,4 +116,27 @@
 
     </form>
   </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Address</h2>
+    </div>
+    <form class="form-horizontal" name="form" ng-submit="vm.update(vm.profile)">
+      <div class="panel-body">
+
+
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-3">
+            <button type="submit" class="btn btn-secondary btn-block btn-sharp">
+              Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+
 </div>
