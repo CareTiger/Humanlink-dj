@@ -22,6 +22,7 @@ class Account(models.Model):
     is_active = models.BooleanField(default=True)
     email = models.EmailField(max_length=255, null=True, blank=True, unique=True)
     password = models.CharField(max_length=120, null=True)
+    password_token = models.CharField(max_length=16, unique=True, null=True)
     first = models.CharField(max_length=35, null=True, blank=True)
     last = models.CharField(max_length=35, null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)

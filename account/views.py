@@ -262,7 +262,8 @@ def signup(request):
 
                     md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                     t = invite_token.replace(' ', '+')
-                    url = "https://localhost:8000/verify/{}".format(t)
+                    #url = "https://localhost:8000/verify/{}".format(t)
+                    url = "https://humanlink.co/verify/{}".format(t)
                     message = {
                         'global_merge_vars': [
                             {
@@ -703,6 +704,46 @@ def reset_password_email(request):
 
     if request.method == 'POST':
         print '############'
+        #get email address
+        account = Account.objects.get(email='goofy@gmail.com')
+
+        #generate email token and save it to the account
+        token = generate_token(8)
+        account.password_token = token
+
+        #send password reset email
+        md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
+        t = account.token.replace(' ', '+')
+        # url = "http://localhost:8000/home/thread/{}".format(t)
+        url = "https://humanlink.co/home/reset/{}".format(t)
+        message = {
+            'global_merge_vars': [
+                {
+                    "name": "inviter",
+                    "content": account.email
+                },
+                {
+                    "name": "thread_name",
+                    "content": thread.name
+                },
+                {
+                    "name": "invite_url",
+                    "content": url
+                }
+            ],
+            'to': [
+                {'email': cleaned_data['email']},
+            ],
+        }
+        message['from_name'] = message.get('from_name', 'Humanlink')
+        message['from_email'] = message.get('from_email', 'support@humanlink.co')
+        try:
+            md.messages.send_template(
+                template_name='humanlink-thread-invite', message=message,
+                template_content=[], async=True)
+        except mandrill.Error as e:
+            logging.exception(e)
+            raise Exception(e)
 
         context = {
             'message': 'ok'
