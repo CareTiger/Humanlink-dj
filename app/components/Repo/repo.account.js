@@ -29,6 +29,7 @@
             get_seekers: get_seekers,
             check_availability: check_availability,
             resetPassword: resetPassword,
+            resetPasswordEmail: resetPasswordEmail,
         };
 
         /**
@@ -164,6 +165,16 @@
          */
         function resetPassword(model) {
             return AbstractRepo.post('accounts/reset_password/', model, false)
+                .then(apiGenericSuccess, genericError);
+        }
+
+        /**
+         * reset password request using email
+         * @param model
+         * @returns {Promise}
+         */
+        function resetPasswordEmail(model) {
+            return AbstractRepo.post('accounts/reset_password_email/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 

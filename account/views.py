@@ -22,7 +22,7 @@ from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, Threa
 from org.models import Org, OrgInvite, OrgMember
 from pusher.pusher import Pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp, \
-    CareSeekerInfo, Nearme, ResetPassword
+    CareSeekerInfo, Nearme, ResetPassword, ResetPasswordEmail
 from django.contrib.auth import logout
 from django.http import QueryDict
 import ast
@@ -691,6 +691,18 @@ def reset_password(request):
                 session_user.set_password(cleaned_data['new_password'])
                 session_user.save()
 
+        context = {
+            'message': 'ok'
+        }
+        return composeJsonResponse(200, '', context)
+
+
+@csrf_exempt
+def reset_password_email(request):
+    # Reset the password
+
+    if request.method == 'POST':
+        print '############'
 
         context = {
             'message': 'ok'

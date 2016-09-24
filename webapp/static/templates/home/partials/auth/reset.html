@@ -1,0 +1,40 @@
+<div class="account-login" id="login-view">
+  <div class="card">
+    <div class="col-md-8 col-md-offset-2">
+
+      <form class="form-horizontal" name="form">
+        <div class="row col-sm-offset-2 col-sm-8">
+          <h4 class="text-center">Reset your password</h4>
+          <h5 class="text-center">Enter your email address below and we'll send you a link
+            to reset your password.</h5>
+
+          <div class="alert alert-danger" ng-if="vm.errorMessage">
+            {{ vm.errorMessage }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-8 col-md-6">
+            <input type="email" id="email" name="email"
+                   class="form-control input-lg"
+                   placeholder="name@example.com"
+                   ng-model="vm.email"
+                   required
+                   hl-focus>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-8 col-md-6">
+            <button class="btn btn-lg btn-block btn-secondary btn-sharp"
+                    ng-click="vm.reset(vm.email)"
+                    ng-disabled="!form.$valid || vm.submitBusy">
+              Send reset password email
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

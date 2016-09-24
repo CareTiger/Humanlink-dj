@@ -50,8 +50,9 @@
             })
             .state('auth.reset', {
                 url: '/reset',
-                template: "<div class='card card-half'>This screen is not yet ready. ¯\\_(ツ)_/¯</div>",
-                controller: broadcastReady
+                templateUrl: '/static/templates/home/partials/auth/reset.html',
+                controller: 'Reset',
+                controllerAs: 'vm'
             })
             .state('auth.join', {
                 abstract: true,

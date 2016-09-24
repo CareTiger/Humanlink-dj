@@ -468,8 +468,9 @@
             })
             .state('auth.reset', {
                 url: '/reset',
-                template: "<div class='card card-half'>This screen is not yet ready. ¯\\_(ツ)_/¯</div>",
-                controller: broadcastReady
+                templateUrl: '/static/templates/home/partials/auth/reset.html',
+                controller: 'Reset',
+                controllerAs: 'vm'
             })
             .state('auth.join', {
                 abstract: true,
@@ -1522,39 +1523,6 @@ angular
 
 })();
 /**
- * Created by timothybaney on 6/15/16.
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .constant('Config', getConfig());
-
-    function getConfig() {
-
-        return {
-            api_path: '',
-
-            pusher: {
-                // TODO: add environment-based configs values.
-                key: 'feea095554f736862bf4',
-                options: {
-                    encrypted: true
-                    // auth: {
-                    //     headers: {
-                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
-                    //     //    Token needs to be dynamic
-                    //     }
-                    // }
-                }
-            }
-        };
-    }
-
-})();
-/**
  * Created by timothybaney on 5/16/16.
  */
 'use strict';
@@ -1800,6 +1768,39 @@ window.HL = window.HL || {};
  */
 
 /**
+ * Created by timothybaney on 6/15/16.
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.core')
+        .constant('Config', getConfig());
+
+    function getConfig() {
+
+        return {
+            api_path: '',
+
+            pusher: {
+                // TODO: add environment-based configs values.
+                key: 'feea095554f736862bf4',
+                options: {
+                    encrypted: true
+                    // auth: {
+                    //     headers: {
+                    //         'X-CSRFToken': 'ih3Kz95cZcjs69BMTHI14cNQO4naGTgR',
+                    //     //    Token needs to be dynamic
+                    //     }
+                    // }
+                }
+            }
+        };
+    }
+
+})();
+/**
  * Dashboard helper/bootstraper.
  */
 (function () {
@@ -1983,6 +1984,7 @@ window.HL = window.HL || {};
             get_seekers: get_seekers,
             check_availability: check_availability,
             resetPassword: resetPassword,
+            resetPasswordEmail: resetPasswordEmail,
         };
 
         /**
@@ -2118,6 +2120,16 @@ window.HL = window.HL || {};
          */
         function resetPassword(model) {
             return AbstractRepo.post('accounts/reset_password/', model, false)
+                .then(apiGenericSuccess, genericError);
+        }
+
+        /**
+         * reset password request using email
+         * @param model
+         * @returns {Promise}
+         */
+        function resetPasswordEmail(model) {
+            return AbstractRepo.post('accounts/reset_password_email/', model, false)
                 .then(apiGenericSuccess, genericError);
         }
 
@@ -5998,6 +6010,52 @@ angular
                     vm.errorMessage = data;
                     $anchorScroll('login-view');
                 });
+        }
+    }
+
+})();
+/**
+ * Controller for the reset view.
+ */
+(function () {
+    'use strict';
+
+    Reset.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.guest')
+        .controller('Reset', Reset);
+
+    /** @ngInject */
+    function Reset($log, $anchorScroll, $stateParams,
+                   AccountRepo, CommonService, CommonEvents, SiteAlert) {
+
+        var vm = this;
+        var next = null;
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.reset = reset;
+
+        init();
+
+        function init() {
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function reset(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            AccountRepo.resetPasswordEmail(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your reset password email is on the way.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
         }
     }
 

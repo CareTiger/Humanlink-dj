@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^connect/', views.connect, name="connect"),
     url(r'^search_caregivers/', views.get_caregivers, name="get_caregivers"),
     url(r'^search_seekers/', views.get_careseekers, name="get_careseekers"),
+    url(r'^reset_password_email/', views.reset_password_email, name="reset_password_email"),
     url(r'^reset_password/', views.reset_password, name="reset_password")]
