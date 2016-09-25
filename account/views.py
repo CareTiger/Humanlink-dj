@@ -22,7 +22,7 @@ from message.models import Thread, ThreadChat, CHAT_CHOICES, ThreadMember, Threa
 from org.models import Org, OrgInvite, OrgMember
 from pusher.pusher import Pusher
 from .forms import BasicInfo, CareGiverInfo, LoginForm, AcceptInvite, SignUp, \
-    CareSeekerInfo, Nearme, ResetPassword, ResetPasswordEmail
+    CareSeekerInfo, Nearme, ResetPassword, ResetPasswordEmail, VerifyEmail
 from django.contrib.auth import logout
 from django.http import QueryDict
 import ast
@@ -262,8 +262,8 @@ def signup(request):
 
                     md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
                     t = invite_token.replace(' ', '+')
-                    #url = "https://localhost:8000/verify/{}".format(t)
-                    url = "https://humanlink.co/verify/{}".format(t)
+                    # url = "https://localhost:8000/verify/{}".format(t)
+                    url = "https://humanlink.co/home/verify/{}".format(t)
                     message = {
                         'global_merge_vars': [
                             {
@@ -704,14 +704,14 @@ def reset_password_email(request):
 
     if request.method == 'POST':
         print '############'
-        #get email address
+        # get email address
         account = Account.objects.get(email='goofy@gmail.com')
 
-        #generate email token and save it to the account
+        # generate email token and save it to the account
         token = generate_token(8)
         account.password_token = token
 
-        #send password reset email
+        # send password reset email
         md = mandrill.Mandrill(settings.MANDRILL_API_KEY)
         t = account.token.replace(' ', '+')
         # url = "http://localhost:8000/home/thread/{}".format(t)
@@ -724,7 +724,7 @@ def reset_password_email(request):
                 },
                 {
                     "name": "thread_name",
-                    "content": thread.name
+                    "content": 'content'
                 },
                 {
                     "name": "invite_url",
@@ -732,7 +732,7 @@ def reset_password_email(request):
                 }
             ],
             'to': [
-                {'email': cleaned_data['email']},
+                {'email': 'ven@humanlink.co'},
             ],
         }
         message['from_name'] = message.get('from_name', 'Humanlink')
@@ -749,6 +749,26 @@ def reset_password_email(request):
             'message': 'ok'
         }
         return composeJsonResponse(200, '', context)
+
+
+@csrf_exempt
+def verify_email(request):
+    print '############'
+
+    if request.method == "POST":
+        form = VerifyEmail(requestPost(request))
+
+        if form.is_valid():
+            print '############'
+
+            cleaned_data = form.cleaned_data
+
+            email = cleaned_data['email']
+
+    context = {
+        'message': 'ok'
+    }
+    return composeJsonResponse(200, '', context)
 
 
 def get_invite(token):

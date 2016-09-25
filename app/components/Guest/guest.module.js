@@ -54,6 +54,12 @@
                 controller: 'Reset',
                 controllerAs: 'vm'
             })
+            .state('auth.verify', {
+                url: '/verify',
+                templateUrl: '/static/templates/home/partials/auth/verify.html',
+                controller: 'Verify',
+                controllerAs: 'vm'
+            })
             .state('auth.join', {
                 abstract: true,
                 templateUrl: '/static/templates/home/partials/auth/join.html',

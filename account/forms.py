@@ -63,6 +63,12 @@ class ResetPasswordEmail(forms.Form):
     email = forms.EmailField(required=True)
 
 
+class VerifyEmail(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['email']
+
+
 class AcceptInvite(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)

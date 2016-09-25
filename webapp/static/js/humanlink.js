@@ -472,6 +472,12 @@
                 controller: 'Reset',
                 controllerAs: 'vm'
             })
+            .state('auth.verify', {
+                url: '/verify',
+                templateUrl: '/static/templates/home/partials/auth/verify.html',
+                controller: 'Verify',
+                controllerAs: 'vm'
+            })
             .state('auth.join', {
                 abstract: true,
                 templateUrl: '/static/templates/home/partials/auth/join.html',
@@ -1984,6 +1990,7 @@ window.HL = window.HL || {};
             get_seekers: get_seekers,
             check_availability: check_availability,
             resetPassword: resetPassword,
+            verifyEmail: verifyEmail,
             resetPasswordEmail: resetPasswordEmail,
         };
 
@@ -2111,6 +2118,16 @@ window.HL = window.HL || {};
          */
         function get_caregivers() {
             return AbstractRepo.get('/accounts/search_caregivers/');
+        }
+
+        /**
+         * verify email.
+         * @param model
+         * @returns {Promise}
+         */
+        function verifyEmail(model) {
+            return AbstractRepo.post('accounts/verify_email/', model, false)
+                .then(apiGenericSuccess, genericError);
         }
 
         /**
@@ -6184,6 +6201,52 @@ angular
         function gotoLogin() {
             $location.hash('login-view');
             $anchorScroll();
+        }
+    }
+
+})();
+/**
+ * Controller for the Verify view.
+ */
+(function () {
+    'use strict';
+
+    Verify.$inject = ["$log", "$anchorScroll", "$stateParams", "AccountRepo", "CommonService", "CommonEvents", "SiteAlert"];
+    angular
+        .module('app.guest')
+        .controller('Verify', Verify);
+
+    /** @ngInject */
+    function Verify($log, $anchorScroll, $stateParams,
+                    AccountRepo, CommonService, CommonEvents, SiteAlert) {
+
+        var vm = this;
+        var next = null;
+
+        vm.errorMessage = null;
+        vm.submitBusy = false;
+        vm.verify = verify;
+
+        init();
+
+        function init() {
+            CommonService.broadcast(CommonEvents.viewReady);
+        }
+
+        function verify(model) {
+            vm.submitBusy = true;
+            vm.errorMessage = null;
+
+            AccountRepo.verifyEmail(model).then(
+                function (data) {
+                    vm.submitBusy = false;
+                    SiteAlert.success("Your email was successfully verified.");
+                },
+                function (data) {
+                    vm.submitBusy = false;
+                    vm.errorMessage = data;
+                });
+
         }
     }
 

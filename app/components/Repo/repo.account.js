@@ -29,6 +29,7 @@
             get_seekers: get_seekers,
             check_availability: check_availability,
             resetPassword: resetPassword,
+            verifyEmail: verifyEmail,
             resetPasswordEmail: resetPasswordEmail,
         };
 
@@ -156,6 +157,16 @@
          */
         function get_caregivers() {
             return AbstractRepo.get('/accounts/search_caregivers/');
+        }
+
+        /**
+         * verify email.
+         * @param model
+         * @returns {Promise}
+         */
+        function verifyEmail(model) {
+            return AbstractRepo.post('accounts/verify_email/', model, false)
+                .then(apiGenericSuccess, genericError);
         }
 
         /**
