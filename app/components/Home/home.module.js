@@ -21,6 +21,11 @@ function Config($stateProvider, $urlRouterProvider){
                 templateUrl: '/static/templates/home/partials/search.html',
                 controller: 'searchCtrl'
             })
+            .state('contact', {
+                url: '/contact',
+                templateUrl: '/static/templates/home/partials/contact.html',
+                controller: 'contactCtrl'
+            })
             .state('faq', {
                 url: '/faq',
                 templateUrl: '/static/templates/home/partials/faq.html',
