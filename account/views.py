@@ -617,6 +617,8 @@ def caregiver_profile(request):
     account = Account.objects.get(email=email)
     caregiver = CareGiver.objects.get(account=account)
     context = {
+        'first': account.first,
+        'last': account.last,
         'headline': caregiver.headline,
         'bio': caregiver.bio,
         'certificates': caregiver.certificates,
@@ -624,6 +626,7 @@ def caregiver_profile(request):
         'arrangements': caregiver.arrangements,
         'background_verified': caregiver.background_verified,
         'phone_verified': caregiver.phone_verified,
+        'offlineID_verified': caregiver.offlineID_verified,
     }
     return composeJsonResponse(200, '', context)
 

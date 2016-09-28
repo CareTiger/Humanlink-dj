@@ -2,50 +2,6 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Profile visibility</h2>
-    </div>
-    <div class="panel-body">
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.public"
-                     ng-checked="vm.team.public == 'True'"/>
-              Make my profile public
-            </label>
-          </div>
-          <div>
-            <div class="has-warning" ng-if="form.team_name.$dirty">
-              <div class="help-block" ng-messages="form.team_name.$error">
-                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
-              </div>
-            </div>
-            <div class="help-block">
-              Making your profile public makes it easy for professional caregivers and
-              families seeking care to know more about your organization/team and your
-              current needs.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-3">
-          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
-                  ng-disabled="!form.team_name.$valid || vm.submitBusy">
-            Save Changes
-            <span ng-if="vm.submitBusy"><i
-                    class="fa fa-circle-o-notch fa-spin"></i></span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
       <h2 class="panel-title">Team profile</h2>
     </div>
     <div class="panel-body">
@@ -107,6 +63,30 @@
           </div>
           <div class="help-block">
             your website. Optional.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.team.public"
+                     ng-checked="vm.team.public == 'True'"/>
+              Make my profile public
+            </label>
+          </div>
+          <div>
+            <div class="has-warning" ng-if="form.team_name.$dirty">
+              <div class="help-block" ng-messages="form.team_name.$error">
+                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+              </div>
+            </div>
+            <div class="help-block">
+              Making your profile public makes it easy for members of your community and
+              independent professional caregivers to know more about your
+              organization/team.
+            </div>
           </div>
         </div>
       </div>
@@ -205,7 +185,7 @@
     </div>
   </div>
 
-<!--
+  <!--
   <div class="panel panel-default">
     <div class="panel-heading">
       <h2 class="panel-title">Team members</h2>

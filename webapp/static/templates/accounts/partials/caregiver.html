@@ -2,50 +2,7 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Profile visibility</h2>
-    </div>
-    <div class="panel-body">
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.cvgr.public"
-                     ng-checked="vm.cvgr.public == 'True'"/>
-              Make my caregiver profile public
-            </label>
-          </div>
-          <div>
-            <div class="has-warning" ng-if="form.team_name.$dirty">
-              <div class="help-block" ng-messages="form.team_name.$error">
-                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
-              </div>
-            </div>
-            <div class="help-block">
-              Making your profile public makes it easy for families seeking care to
-              connect with you.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-3">
-          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
-                  ng-disabled="!form.headline.$valid || vm.submitBusy">
-            Save Changes
-            <span ng-if="vm.submitBusy"><i
-                    class="fa fa-circle-o-notch fa-spin"></i></span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">Headline and Bio</h2>
+      <h2 class="panel-title">Headline</h2>
     </div>
     <div class="panel-body">
 
@@ -68,33 +25,26 @@
         </div>
       </div>
 
-      <div class="row form-group">
-        <label for="bio" class="col-sm-3 control-label">Bio</label>
-
-        <div class="col-sm-9">
-          <textarea ng-model="vm.cvgr.bio"
-                    placeholder="Write something about yourself"
-                    rows="4" id="bio" class="form-control">
-          </textarea>
-
-          <p class="help-block"><b>humanlink</b> is built on trust.
-            Our care seekers want to know that you are compassionate and caring.
-            This is your opportunity to let them know about you.
-            Taking a few minutes to build an awesome online profile can increase
-            your chances of getting hired.
-          </p>
-
-          <p class="help-block">Tell our users why they should they hire you?
-            If you are a volunteer at an organization that helps your community or
-            If you are religious or spiritual share with them why it is important
-            to you?
-          </p>
-
-          <p class="help-block">Tell our users about things you like:
-            what are 5 things you can't live without?
-            Share your favorite travel destinations, books, movies, shows, music,
-            food.
-          </p>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="vm.cvgr.public"
+                     ng-checked="vm.cvgr.public == 'True'"/>
+              Make my caregiver profile public
+            </label>
+          </div>
+          <div>
+            <div class="has-warning" ng-if="form.team_name.$dirty">
+              <div class="help-block" ng-messages="form.team_name.$error">
+                <div ng-message="alphanum">Letters, numbers, and dashes only.</div>
+              </div>
+            </div>
+            <div class="help-block">
+              Making your profile public makes it easy for families seeking care to
+              connect with you.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -200,5 +150,55 @@
 
     </div>
   </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Personal Bio</h2>
+    </div>
+    <div class="panel-body">
+      <div class="row form-group">
+        <label for="bio" class="col-sm-3 control-label">Bio</label>
+
+        <div class="col-sm-9">
+          <textarea ng-model="vm.cvgr.bio"
+                    placeholder="Write something about yourself"
+                    rows="4" id="bio" class="form-control">
+          </textarea>
+
+          <p class="help-block"><b>humanlink</b> is built on trust.
+            Our care seekers want to know that you are compassionate and caring.
+            This is your opportunity to let them know about you.
+            Taking a few minutes to build an awesome online profile can increase
+            your chances of getting hired.
+          </p>
+
+          <p class="help-block">Tell our users why they should they hire you?
+            If you are a volunteer at an organization that helps your community or
+            If you are religious or spiritual share with them why it is important
+            to you?
+          </p>
+
+          <p class="help-block">Tell our users about things you like:
+            what are 5 things you can't live without?
+            Share your favorite travel destinations, books, movies, shows, music,
+            food.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <button type="submit" class="btn btn-secondary btn-block btn-sharp"
+                  ng-disabled="!form.headline.$valid || vm.submitBusy">
+            Save Changes
+            <span ng-if="vm.submitBusy"><i
+                    class="fa fa-circle-o-notch fa-spin"></i></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
 </form>

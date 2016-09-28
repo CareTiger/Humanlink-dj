@@ -13,7 +13,7 @@
     <hr>
     <div class="row">
       <div class="col-md-9">
-        <h4>Caregiver name: {{ profile.first_name }} {{ profile.last_name }}</h4>
+        <h4>Name: {{ vm.caregiverProfile.first }} {{ vm.caregiverProfile.last }}</h4>
         <h4>Headline: {{ vm.caregiverProfile.headline }}</h4>
         <h4>Bio: {{ vm.caregiverProfile.bio }}</h4>
         <h4>Education/Experience: {{ vm.caregiverProfile.certificates }}</h4>
@@ -21,102 +21,15 @@
         <h4>Allergies: {{ vm.caregiverProfile.allergies }}</h4>
       </div>
     </div>
+    <hr>
     <div class="row">
-      <div class="col-md-offset-3 col-md-9">
-        <hr>
-        <h3 class="text-center">Trust and Verification</h3>
-
-        <div class="profile-trust">
-          <div class="row">
-
-            <div class="col-sm-4">
-              <div ng-show="vm.caregiverProfile.phone_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-ok-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Phone</p>
-
-                  <p>Verified</p>
-                </div>
-              </div>
-
-              <div ng-hide="vm.caregiverProfile.phone_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-remove-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Phone</p>
-
-                  <p>Not Verified</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-4">
-              <div ng-show="profile.offlineID_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-ok-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Offline ID</p>
-
-                  <p>Verified</p>
-                </div>
-              </div>
-
-              <div ng-hide="profile.offlineID_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-remove-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Offline ID</p>
-
-                  <p>Not Verified</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-4">
-              <div ng-show="vm.caregiverProfile.background_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-ok-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Background</p>
-
-                  <p>Verified</p>
-                </div>
-              </div>
-
-              <div ng-hide="vm.caregiverProfile.background_verified">
-                <div class="col-sm-3">
-                  <h4>
-                    <span class="glyphicon glyphicon-remove-sign"></span>
-                  </h4>
-                </div>
-                <div class="col-sm-9">
-                  <p class="lead">Background</p>
-
-                  <p>Not Verified</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+      <div class="col-md-9">
+        <h4>Phone verified: {{ vm.caregiverProfile.phone_verified }}</h4>
+        <h4>Offline ID verified: {{ vm.caregiverProfile.offlineID_verified }}</h4>
+        <h4>Background check: {{ vm.caregiverProfile.background_verified }}</h4>
       </div>
     </div>
+
 
   </div>
 </div>
