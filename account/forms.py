@@ -49,8 +49,7 @@ class Nearme(forms.Form):
 class CareSeekerInfo(forms.ModelForm):
     class Meta:
         model = CareSeeker
-        fields = ['team_name', 'mission', 'website', 'public', 'hoyer_lift',
-                  'cough_assist', 'adaptive_utensil', 'meal_prep', 'housekeeping']
+        fields = ['team_name', 'mission', 'website', 'public', 'caregiver_needs']
 
 
 class ResetPassword(forms.Form):

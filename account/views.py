@@ -437,11 +437,7 @@ def getTeam(request):
             'website': team.website,
             'threadmembers': thrdmbr_array,
             'public': team.public,
-            'cough_assist': team.cough_assist,
-            'hoyer_lift': team.hoyer_lift,
-            'adaptive_utensil': team.adaptive_utensil,
-            'meal_prep': team.meal_prep,
-            'housekeeping': team.housekeeping,
+            'caregiver_needs': team.caregiver_needs,
         }
         return composeJsonResponse(200, "", context)
     except:
@@ -470,11 +466,7 @@ def update_team(request):
             team.mission = cleaned_data['mission']
             team.website = cleaned_data['website']
             team.public = cleaned_data['public']
-            team.hoyer_lift = cleaned_data['hoyer_lift']
-            team.cough_assist = cleaned_data['cough_assist']
-            team.adaptive_utensil = cleaned_data['adaptive_utensil']
-            team.meal_prep = cleaned_data['meal_prep']
-            team.housekeeping = cleaned_data['housekeeping']
+            team.caregiver_needs = cleaned_data['caregiver_needs']
             team.save()
 
             context = {
@@ -641,11 +633,6 @@ def careseeker_profile(request):
         'mission': careseeker.mission,
         'website': careseeker.website,
         'caregiver_needs': careseeker.caregiver_needs,
-        'hoyer_lift': careseeker.hoyer_lift,
-        'cough_assist': careseeker.cough_assist,
-        'adaptive_utensil': careseeker.adaptive_utensil,
-        'meal_prep': careseeker.meal_prep,
-        'housekeeping': careseeker.housekeeping,
     }
     return composeJsonResponse(200, '', context)
 

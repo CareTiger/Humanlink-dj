@@ -77,10 +77,4 @@ class CareSeeker(models.Model):
     website = models.CharField(max_length=100, null=True, blank=True)
     video = models.FileField(max_length=200, null=True, blank=True)
     email = models.FileField(max_length=200, null=True, blank=True)
-    # Email and video will later have to be made into FileBrowser
-    caregiver_needs = models.CharField(max_length=200, null=True)
-    hoyer_lift = models.BooleanField(default=False)
-    cough_assist = models.BooleanField(default=False)
-    adaptive_utensil = models.BooleanField(default=False)
-    meal_prep = models.BooleanField(default=False)
-    housekeeping = models.BooleanField(default=False)
+    caregiver_needs = models.TextField(null=True, blank=True)

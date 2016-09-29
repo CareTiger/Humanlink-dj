@@ -107,67 +107,37 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">My team's caregiver needs</h2>
+      <h2 class="panel-title">Care needs</h2>
     </div>
     <div class="panel-body">
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.meal_prep"
-                     ng-checked="vm.team.meal_prep == 'True'"/>
-              Meal prep
-            </label>
-          </div>
-        </div>
-      </div>
+      <div class="row form-group">
+        <label for="bio" class="col-sm-3 control-label">Desc</label>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.housekeeping"
-                     ng-checked="vm.team.housekeeping == 'True'"/>
-              Housekeeping
-            </label>
-          </div>
-        </div>
-      </div>
+        <div class="col-sm-9">
+          <textarea ng-model="vm.team.caregiver_needs"
+                    placeholder="Caregiver (professional or volunteer) skills you need"
+                    rows="4" id="bio" class="form-control">
+          </textarea>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.hoyer_lift"
-                     ng-checked="vm.team.hoyer_lift == 'True'"/>
-              Hoyer Lift
-            </label>
-          </div>
-        </div>
-      </div>
+          <p class="help-block"><b>humanlink</b> is built on trust.
+            Our care seekers want to know that you are compassionate and caring.
+            This is your opportunity to let them know about you.
+            Taking a few minutes to build an awesome online profile can increase
+            your chances of getting hired.
+          </p>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.cough_assist"
-                     ng-checked="vm.team.cough_assist == 'True'"/>
-              Cough Assist
-            </label>
-          </div>
-        </div>
-      </div>
+          <p class="help-block">Tell our users why they should they hire you?
+            If you are a volunteer at an organization that helps your community or
+            If you are religious or spiritual share with them why it is important
+            to you?
+          </p>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="vm.team.adaptive_utensil"
-                     ng-checked="vm.team.adaptive_utensil == 'True'"/>
-              Adaptive utensil
-            </label>
-          </div>
+          <p class="help-block">Tell our users about things you like:
+            what are 5 things you can't live without?
+            Share your favorite travel destinations, books, movies, shows, music,
+            food.
+          </p>
         </div>
       </div>
 

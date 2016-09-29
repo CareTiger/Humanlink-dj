@@ -1,8 +1,8 @@
 <div class="settings-profile">
   <div class="card">
 
-    <div class="row">
-      <div class="col-md-3 text-center">
+    <div class="row text-center">
+      <div class="col-md-3">
         <img src="https://placehold.it/150x150">
 
         <p class="vmargin10">
@@ -15,27 +15,10 @@
 
     <hr>
     <div class="row col-sm-offset-1">
-
-      <h4>Team name: {{ vm.careseekerProfile.team_name }}</h4>
-      <h4>Our mission: {{ vm.careseekerProfile.mission }}</h4>
-      <h4>Caregiver skills required:
-
-        <div class="col-sm-offset-4" ng-show="vm.careseekerProfile.housekeeping">
-          Housekeeping
-        </div>
-        <div class="col-sm-offset-4" ng-show="vm.careseekerProfile.hoyer_lift">
-          Hoyer lift
-        </div>
-        <div class="col-sm-offset-4" ng-show="vm.careseekerProfile.adaptive_utensil">
-          Adaptive utensil
-        </div>
-        <div class="col-sm-offset-4" ng-show="vm.careseekerProfile.meal_prep">
-          Meal prep
-        </div>
-        <div class="col-sm-offset-4" ng-show="vm.careseekerProfile.cough_assist">
-          Cough assist
-        </div>
-      </h4>
+      <h4>Team/Organization name: {{ vm.careseekerProfile.team_name }}</h4>
+      <h4>Mission: {{ vm.careseekerProfile.mission }}</h4>
+      <h4>Website: {{ vm.careseekerProfile.mission }}</h4>
+      <h4>Caregiver/Volunteer skills: {{ vm.careseekerProfile.caregiver_needs }}</h4>
     </div>
 
   </div>
