@@ -40,6 +40,7 @@
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your invite has been sent to " + model.email);
+                    CommonService.previous();
                     vm.invite = null;
                 },
                 function (data) {

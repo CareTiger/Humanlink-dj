@@ -52,6 +52,7 @@
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your update was successful.");
+                    CommonService.previous();
                     SiteAlert.check();
                 },
                 function (data) {
