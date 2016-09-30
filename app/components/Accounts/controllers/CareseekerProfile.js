@@ -18,6 +18,7 @@
         vm.careseekerProfile = careseekerProfile;
         vm.submitBusy = false;
         vm.connect = connect;
+        vm.back = back;
         vm.careseekerProfile.email = $stateParams.id;
 
         init();
@@ -45,6 +46,10 @@
                     vm.submitBusy = false;
                     vm.errorMessage = data;
                 });
+        }
+
+        function back(){
+            CommonService.previous();
         }
 
     }

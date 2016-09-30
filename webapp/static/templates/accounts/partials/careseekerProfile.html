@@ -1,25 +1,54 @@
 <div class="settings-profile">
   <div class="card">
+    <!--
+      <div class="row text-center">
+        <div class="col-md-3">
+          <img src="https://placehold.it/150x150">
 
-    <div class="row text-center">
-      <div class="col-md-3">
-        <img src="https://placehold.it/150x150">
-
-        <p class="vmargin10">
-          <button class="btn btn-primary"
-                  ng-click="vm.connect(vm.careseekerProfile.email)">Connect
-          </button>
-        </p>
+        </div>
       </div>
-    </div>
+  -->
+    <form name="form">
 
-    <hr>
-    <div class="row col-sm-offset-1">
-      <h4>Team/Organization name: {{ vm.careseekerProfile.team_name }}</h4>
-      <h4>Mission: {{ vm.careseekerProfile.mission }}</h4>
-      <h4>Website: {{ vm.careseekerProfile.mission }}</h4>
-      <h4>Caregiver/Volunteer skills: {{ vm.careseekerProfile.caregiver_needs }}</h4>
-    </div>
+      <div class="form-group row">
+        <label class="col-sm-3 control-label">Team/Organization name</label>
+
+        <div class="col-sm-9">{{ vm.careseekerProfile.team_name }}</div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 control-label">Mission:</label>
+
+        <div class="col-sm-9">{{ vm.careseekerProfile.mission }}</div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 control-label">Website::</label>
+
+        <div class="col-sm-9">{{ vm.careseekerProfile.website }}</div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 control-label">Caregiver/Volunteer skills:</label>
+
+        <div class="col-sm-9">{{ vm.careseekerProfile.caregiver_needs }}</div>
+      </div>
+
+      <div class="form-group row vmargin10">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="col-xs-6">
+            <button class="btn btn-block btn-primary"
+                    ng-click="vm.connect(vm.careseekerProfile.email)">Connect
+            </button>
+          </div>
+          <div class="col-xs-6">
+            <button class="btn btn-block btn-default"
+                    ng-click="vm.back()">Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
 
   </div>
 </div>
