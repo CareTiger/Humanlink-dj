@@ -62,7 +62,7 @@ class CareGiver(models.Model):
     arrangements = models.TextField(null=True, blank=True)
     background_verified = models.BooleanField(default=False, blank=True)
     phone_verified = models.BooleanField(default=False, blank=True)
-    #offlineID_verified = models.BooleanField(default=False, blank=True)
+    offlineID_verified = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.account.email
