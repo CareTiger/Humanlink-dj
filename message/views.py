@@ -54,13 +54,14 @@ def get_threads(request):
                 },
                 "name": thread.name,
                 "purpose": thread.purpose,
-                "purpose_type": thread.purpose_type,
                 "is_archived": thread.is_archived,
                 "members": threads_members,
-                "hours": thread.hours,
-                "hobbies": thread.hobbies,
-                "notes": thread.notes,
-                "gender": thread.gender
+
+
+
+
+
+
             }
             all_threads.append(threadObject)
 
@@ -106,7 +107,7 @@ def new_thread(request):
 
 @login_required(login_url='/home/login/')
 @csrf_exempt
-def update_purpose(request, thread_id):
+def update(request, thread_id):
     # """Retrieve and update thread information."""
 
     thread = Thread.objects.get(id=thread_id)
@@ -120,13 +121,7 @@ def update_purpose(request, thread_id):
             print cleaned_data
 
             thread.name = cleaned_data['name']
-            thread.purpose_type = cleaned_data['purpose_type']
             thread.purpose = cleaned_data['purpose']
-            thread.privacy = cleaned_data['privacy']
-            thread.gender = cleaned_data['gender']
-            thread.notes = cleaned_data['notes']
-            thread.hours = cleaned_data['hours']
-            thread.hobbies = cleaned_data['hobbies']
             thread.save()
 
             context = {"thread": thread}

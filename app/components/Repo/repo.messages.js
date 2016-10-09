@@ -16,7 +16,7 @@
             create: create,
             invite: invite,
             removeMember: removeMember,
-            updatePurpose: updatePurpose,
+            update: update,
             leave: leave,
             archive: archive,
             search: search
@@ -87,7 +87,7 @@
          * @param threadId:
          * @param model: {thread name, purpose}
          */
-        function updatePurpose(threadId, model) {
+        function update(threadId, model) {
             return AbstractRepo.put('/message/' + threadId + '/update/', model)
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }

@@ -7,29 +7,6 @@
   </div>
 
   <form class="form-horizontal" name="form">
-    <div class="form-group">
-      <label for="type" class="col-sm-3 control-label">Channel type</label>
-
-      <div class="col-sm-9 col-md-7">
-        <div class="radio">
-          <label>
-            <input type="radio" name="type" id="type" value="0"
-                   ng-model="vm.thread.purpose_type">General channel
-          </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input type="radio" name="type" id="type" value="1"
-                   ng-model="vm.thread.purpose_type">
-            Care channel
-          </label>
-        </div>
-        <div class="help-block">
-          Select a channel type. Care channels provide options to get patient specific
-          details.
-        </div>
-      </div>
-    </div>
 
     <div class="form-group">
       <label for="name" class="col-sm-3 control-label">{{ sidepanel.isOpen }}Name</label>
@@ -55,11 +32,11 @@
     </div>
 
     <div class="form-group">
-      <label for="purpose" class="col-sm-3 control-label">Purpose</label>
+      <label for="purpose" class="col-sm-3 control-label">Notes</label>
 
       <div class="col-sm-9 col-md-7">
         <textarea type="text" id="purpose" name="purpose" class="form-control"
-                  ng-model="vm.thread.purpose" rows="3"
+                  ng-model="vm.thread.purpose" rows="8"
                   placeholder="Optional"></textarea>
 
         <div class="help-block">
@@ -69,79 +46,8 @@
       </div>
     </div>
 
-    <div ng-show="vm.thread.purpose_type == '1'">
-
-      <div class="form-group">
-        <label for="hours" class="col-sm-3 control-label">Hours of care</label>
-
-        <div class="col-sm-9 col-md-7">
-          <input type="text" id="hours" name="hours" class="form-control"
-                 maxlength="5" ng-model="vm.thread.hours"
-                 hl-alphanum hl-focus/>
-
-          <div class="has-warning" ng-if="form.hours.$dirty">
-            <div class="help-block" ng-messages="form.hours.$error">
-              <div ng-message="alphanum">Letters, numbers, and dashes only. Blank
-                spaces are not allowed.
-              </div>
-            </div>
-          </div>
-
-          <div class="help-block">
-            Estimated number of care hours per week.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="gender" class="col-sm-3 control-label">Gender of recipient</label>
-
-        <div class="col-sm-9 col-md-7">
-          <select id="gender" class="form-control"
-                  ng-model="vm.thread.gender" convert-to-number>
-            <option value="">---Please select---</option><!-- not selected / blank option -->
-            <option value="0">Don't disclose</option>
-            <option value="1">Female</option>
-            <option value="2">Male</option>
-          </select>
-
-          <div class="help-block">
-            Some care professionals have gender preferences. While this is an optional
-            field, disclosing gender of care recipient expedites care delivery.
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="hobbies" class="col-sm-3 control-label">
-          Hobbies/Interests/Past Profession</label>
-
-        <div class="col-sm-9 col-md-7">
-          <textarea type="text" id="hobbies" name="hobbies" class="form-control"
-                    rows="2" ng-model="vm.thread.hobbies">
-          </textarea>
-
-          <div class="help-block">General information that might help care providers</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="notes" class="col-sm-3 control-label">Extra Notes</label>
-
-        <div class="col-sm-9 col-md-7">
-              <textarea type="text" id="notes" name="notes" class="form-control"
-                        rows="2" ng-model="vm.thread.notes">
-              </textarea>
-
-          <div class="help-block">
-            Any additional information that you think will help your careproviders.
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="form-group">
-      <div class="col-md-offset-3 col-sm-9 col-md-7">
+      <div class="col-sm-offset-3 col-sm-9 col-md-7">
         <div class="row">
           <div class="col-xs-6">
             <button type="submit" class="btn btn-block btn-secondary"

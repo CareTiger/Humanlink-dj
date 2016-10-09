@@ -2239,7 +2239,7 @@ window.HL = window.HL || {};
             create: create,
             invite: invite,
             removeMember: removeMember,
-            updatePurpose: updatePurpose,
+            update: update,
             leave: leave,
             archive: archive,
             search: search
@@ -2310,7 +2310,7 @@ window.HL = window.HL || {};
          * @param threadId:
          * @param model: {thread name, purpose}
          */
-        function updatePurpose(threadId, model) {
+        function update(threadId, model) {
             return AbstractRepo.put('/message/' + threadId + '/update/', model)
                 .then(apiGenericSuccess, AbstractRepo.genericError);
         }
@@ -5665,7 +5665,7 @@ angular
 
 })();
 /**
- *  Controller for the thread Update.
+ *  Controller for the thread  info Update.
  */
 (function () {
     'use strict';
@@ -5707,14 +5707,9 @@ angular
             model = {
                 name: vm.thread.name,
                 purpose: vm.thread.purpose,
-                purpose_type: vm.thread.purpose_type,
-                hours: vm.thread.hours,
-                notes: vm.thread.notes,
-                gender: vm.thread.gender,
-                hobbies: vm.thread.hobbies,
             };
 
-            MessagesRepo.updatePurpose(vm.thread.id, model).then(
+            MessagesRepo.update(vm.thread.id, model).then(
                 function (data) {
                     vm.submitBusy = false;
                     SiteAlert.success("Your update was successful.");

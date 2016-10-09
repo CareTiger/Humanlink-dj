@@ -5,7 +5,7 @@ from message.views import *
 urlpatterns = [
     url(r'^$', get_threads, name="get_threads"),
     url(r'^create/?$', new_thread, name="new_thread"),
-    url(r'^(?P<thread_id>\d+)/update/?$', update_purpose, name="update_purpose"),
+    url(r'^(?P<thread_id>\d+)/update/?$', update, name="update"),
     url(r'^(?P<thread_id>\d+)/send/?$', send, name="send"),
     url(r'^(?P<thread_id>\d+)/history/?$', history, name="history"),
     url(r'^(?P<thread_id>\d+)/member/?$', add_member, name="add_member"),
