@@ -8,7 +8,7 @@ function Config($stateProvider, $urlRouterProvider){
         $stateProvider
             .state('home', {
                 url: '/',
-                templateUrl: '/static/templates/home/partials/home.html',
+                templateUrl: '/static/templates/home/partials/careseeker.html',
                 controller: 'homeBaseCtrl'
             })
             .state('caregiver', {
