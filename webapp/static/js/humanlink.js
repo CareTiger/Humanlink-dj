@@ -6384,9 +6384,13 @@ angular
  */
 angular
     .module('Home')
-    .controller('homeBaseCtrl', ['$scope', '$http',
-        function ($scope, $http) {
-                // bring in userSession if this controller ever gets used.
+    .controller('homeBaseCtrl', ['$scope', '$window', '$http',
+        function ($scope, $window, $http) {
+            // bring in userSession if this controller ever gets used.
+            $scope.SignUp = function () {
+                $window.location.href = '/home/join';
+            };
+
         }]);
 /**
  * Created by timothybaney on 5/16/16.
