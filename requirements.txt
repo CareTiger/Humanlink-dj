@@ -2,7 +2,7 @@ cairocffi==0.7.2
 CairoSVG==1.0.20
 cffi==1.5.2
 configs==3.0.3
-cryptography==1.4
+cryptography==3.2
 cssselect==0.9.1
 Django==1.9.6
 djrill==2.1.0
